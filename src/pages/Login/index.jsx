@@ -1,9 +1,10 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import FormLogin from "../../components/FormLogin";
 import { Link } from "react-router-dom";
 import login from "../../data/login.jsx";
 import LoginContext from "../../contexts/LoginContext";
+import UserContext from "../../contexts/UserContext";
 import { ThreeDots } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
 
@@ -15,6 +16,9 @@ export default function Login() {
     email: "",
     password: "",
   });
+  const { setToken,
+    setPicture,
+    setUserName } = useContext(UserContext);
   const navigate = useNavigate();
 
   async function userLogin() {
@@ -28,12 +32,14 @@ export default function Login() {
       setAlert(true);
       const response = resp.response;
       localStorage.setItem("token", response.data.token);
-      localStorage.setItem("userName", response.data.name);
+      localStorage.setItem("userName", response.data.username);
+      localStorage.setItem("picture", response.data.picture);
       setToken(response.data.token);
-      setUserName(response.data.name);
+      setUserName(response.data.username);
+      setPicture(response.data.picture);
       setTimeout(() => {
         setSwap(false);
-        navigate("/records");
+        navigate("/timeline");
       }, 500);
     } else {
       setTimeout(() => {
@@ -47,50 +53,114 @@ export default function Login() {
     <LoginContext.Provider
       value={{ form, setForm, swap, setSwap, loading, setLoading }}
     >
-      <DivLogin>
-        <Title>My Wallet</Title>
+      <DivGlobal>
+        <DivLeft>
+          <Logo>
+            linkr
+          </Logo>
+          <Text>
+            save, share and discover
+            the best links on the web
+          </Text>
+        </DivLeft>
 
-        <FormLogin />
+        <DivLogin>
 
-        <Button onClick={userLogin} disabled={swap}>
-          {swap ? (
-            <ThreeDots color="#ffffff" height={40} width={80} />
-          ) : (
-            "Entrar"
+          <FormLogin />
+
+          <Button onClick={userLogin} disabled={swap}>
+            {swap ? (
+              <ThreeDots color="#ffffff" height={40} width={80} />
+            ) : (
+              "Log In"
+            )}
+          </Button>
+          {alert ? null : (
+            <TextAlert>
+              Por favor, verifique as suas informações e tente novamente.
+            </TextAlert>
           )}
-        </Button>
-        {alert ? null : (
-          <TextAlert>
-            Por favor, verifique as suas informações e tente novamente.
-          </TextAlert>
-        )}
 
-        <MyLink to="/register">
-          <TextRegister>Primeira vez? Cadastre-se!</TextRegister>
-        </MyLink>
-      </DivLogin>
+          <MyLink to="/sign-up">
+            <TextRegister>Frist time? Create an account</TextRegister>
+          </MyLink>
+        </DivLogin>
+      </DivGlobal>
     </LoginContext.Provider>
   );
 }
 
-const Title = styled.h1`
-  font-family: "Saira Stencil One";
-  font-size: 32px;
+const Logo = styled.h2`
+  font-family: "Passion One";
+  font-size: 106px;
+  font-style: normal;
+  font-weight: 700;
   color: #ffffff;
+  letter-spacing: .5rem;
+  @media (max-width: 1100px) {
+    font-size: 76px;
+  }
+`;
+
+const Text = styled.p`
+  font-family: 'Oswald';
+  font-style: normal;
+  line-height: 50px;
+  width:500px;
+  font-weight: 700;
+  font-size: 43px;
+  color: #ffffff;
+  @media (max-width: 1100px) {
+    font-size: 23px;
+    width: 237px;
+    line-height: 34px;
+  }
 `;
 
 const MyLink = styled(Link)`
-  text-decoration: none;
   margin-top: 50px;
+  text-decoration: none;
+`;
+
+const DivLeft = styled.div`
+  width: 60%;
+  height: 100vh;
+  padding-left: 6%;
+  display: flex;
+  padding-top: 16%;
+  background-color:#151515;
+  flex-direction: column;
+  align-items: left;
+  @media (max-width: 1100px) {
+    width: 100%;
+    height: 175px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 0px;
+  }
+`;
+
+const DivGlobal = styled.div`
+  width: 100%;
+  height: 100vh;
+  @media (min-width: 1100px) {
+    display:flex;
+  }
 `;
 
 const DivLogin = styled.div`
-  width: 100%;
+  width: 40%;
   height: 94vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  @media (max-width: 1100px) {
+    width: 100%;
+    height:auto;
+    margin-top: 20px;
+  }
 `;
 
 const TextAlert = styled.h2`
@@ -98,30 +168,46 @@ const TextAlert = styled.h2`
   text-align: center;
   margin-top: 20px;
   color: #ffffff;
+  font-family: "Passion One";
 `;
 
 const TextRegister = styled.h2`
-  font-size: 16px;
   text-align: center;
-  font-weight: 700;
-  color: #ffffff;
-`;
-const Button = styled.button`
-  width: 350px;
-  height: 46px;
-
-  color: #ffffff;
-  font-size: 21px;
+  font-family: 'Lato';
+  font-style: normal;
   font-weight: 400;
-  background: #a328d6;
+  color: #ffffff;
+  font-size: 22px;
+  border-bottom: 1px solid #ffffff;
+  padding-bottom: 3px;
+  line-height: 1.5;
+  @media (max-width: 1100px) {
+    font-size: 17px;
+  }
+`;
+
+const Button = styled.button`
+  width: 429px;
+  height: 65px;
+ font-family:'Oswald';
+  color: #ffffff;
+  font-size: 27px;
+  font-weight: 400;
+  background: #1877F2;
   display: flex;
   font-weight: 700;
   justify-content: center;
   align-items: center;
 
-  border: 1px solid #a328d6;
-  border-radius: 5px;
+  border: 1px solid #1877F2;
+  border-radius: 6px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+
+  @media (max-width: 1100px) {
+    width: 330px;
+    height: 55px;
+    font-size: 22px;
+  }
 
   :hover {
     filter: brightness(1.1);

@@ -4,26 +4,26 @@ import GlobalStyle from "./assets/styles/globalStyle";
 import Login from "./pages/Login";
 import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import LoginContext from "./contexts/LoginContext";
+import UserContext from "./contexts/UserContext";
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
-  const [nomeUsuario, setNomeUsuario] = useState(
-    localStorage.getItem("nomeUsuario")
+  const [userName, setUserName] = useState(
+    localStorage.getItem("userName")
   );
-  const [fotoUsuario, setFotoUsuario] = useState(
-    localStorage.getItem("fotoUsuario")
+  const [picture, setPicture] = useState(
+    localStorage.getItem("picture")
   );
 
   return (
-    <LoginContext.Provider
+    <UserContext.Provider
       value={{
         token,
         setToken,
-        fotoUsuario,
-        setFotoUsuario,
-        nomeUsuario,
-        setNomeUsuario,
+        picture,
+        setPicture,
+        userName,
+        setUserName,
       }}
     >
       <GlobalStyle />
@@ -33,6 +33,6 @@ export default function App() {
           <Route path="/" element={<Login />} />
         </Routes>
       </BrowserRouter>
-    </LoginContext.Provider>
+    </UserContext.Provider>
   );
 }
