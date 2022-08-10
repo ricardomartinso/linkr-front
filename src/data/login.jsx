@@ -1,17 +1,13 @@
 import axios from "axios";
-export default async function logout(token) {
+export default async function login(form) {
   try {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    await axios.delete(
-      `https://projeto13mywalletback.herokuapp.com/logout`,
-      config
+    const response = await axios.post(
+      "https://linkr-backend-30.herokuapp.com/login",
+      form
     );
-    return { status: true };
+    return { status: true, response };
   } catch {
     return { status: false };
   }
 }
+

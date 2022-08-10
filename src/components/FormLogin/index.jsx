@@ -17,17 +17,17 @@ export default function FormLogin() {
       <DivInput>
         <Input
           type="email"
-          placeholder="Email"
+          placeholder="e-mail"
           name="email"
           onChange={handleForm}
           value={form.email}
           disabled={swap}
-          // autoComplete='off'
+        // autoComplete='off'
         />
       </DivInput>
       <DivInput>
         <Input
-          placeholder="Senha"
+          placeholder="password"
           type="password"
           name="password"
           onChange={handleForm}
@@ -41,35 +41,42 @@ export default function FormLogin() {
 }
 
 const DivForm = styled.div`
-  margin: 36px 0px 16px 0px;
+  margin-bottom: 18px;
+  margin-top: -4em;
+  @media (max-width: 1100px) {
+    margin-top:20px;
+  }
 `;
 
 const DivInput = styled.div`
-  margin-top: 10px;
+  margin-top: 15px;
   font-weight: 400;
   width: 100%;
 `;
 
 const Input = styled.input`
-  color: #666666;
+  color: #151515;
   font-size: 18px;
-  width: 350px;
-  height: 58px;
+  width: 429px;
+  height: 65px;
   padding-left: 15px;
   background-color: #ffffff;
   border: 1px solid #d5d5d5;
-  border-radius: 5px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 27px;
+  @media (max-width: 1100px) {
+    width: 330px;
+    height: 55px;
+    font-size: 23px;
+  }
 
   ::-webkit-input-placeholder {
-    color: #000000;
-    font-size: 20px;
-    font-weight: 400;
+    color: #9F9F9F;
   }
 
   :disabled {
     color: #afafaf;
     background-color: #f2f2f2;
-    font-size: 20px;
-    font-weight: 400;
   }
 `;
