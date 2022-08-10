@@ -12,6 +12,7 @@ export default function Login() {
   const [swap, setSwap] = useState(false);
   const [alert, setAlert] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState([]);
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -23,14 +24,14 @@ export default function Login() {
 
   async function userLogin() {
     setSwap(true);
-    const resp = await login(form);
-    if (resp.status) {
+    const { result: resp, status: status } = await login(form);
+    if (status) {
       setForm({
         email: "",
         password: "",
       });
       setAlert(true);
-      const response = resp.response;
+      const response = resp;
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("userName", response.data.username);
       localStorage.setItem("picture", response.data.picture);
@@ -42,11 +43,22 @@ export default function Login() {
         navigate("/timeline");
       }, 500);
     } else {
+      if (typeof resp.data === 'string') {
+        setError([resp.data])
+      } else {
+        setError(resp.data)
+      }
       setTimeout(() => {
         setSwap(false);
         setAlert(false);
       }, 500);
+
     }
+  }
+
+  function updateError(item) {
+    const newList = error.filter((elem) => elem !== item)
+    setError(newList)
   }
 
   return (
@@ -75,11 +87,13 @@ export default function Login() {
               "Log In"
             )}
           </Button>
-          {alert ? null : (
-            <TextAlert>
-              Por favor, verifique as suas informações e tente novamente.
-            </TextAlert>
-          )}
+          {error.length === 0 ? null :
+            error.map((item, index) => (
+              <ErrorMessage key={index}>
+                <h3>{item}</h3>
+                <h4 onClick={() => updateError(item)}>X</h4>
+              </ErrorMessage>
+            ))}
 
           <MyLink to="/sign-up">
             <TextRegister>Frist time? Create an account</TextRegister>
@@ -114,6 +128,41 @@ const Text = styled.p`
     font-size: 23px;
     width: 237px;
     line-height: 34px;
+  }
+`;
+
+const ErrorMessage = styled.div`
+ font-family: 'Lato';
+  width: 429px;
+  height: 45px;
+  background-color: #FF3642;
+  display: flex;
+  margin-top: 30px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 20px 0px 20px;
+  border-radius: 5px;
+  margin-bottom: -1em;
+
+  h4 {
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 1);
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  h3 {
+    color: rgba(255, 255, 255, 1);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  @media (max-width: 1100px) {
+    width: 330px;
+    height: 45px;
   }
 `;
 
@@ -163,13 +212,6 @@ const DivLogin = styled.div`
   }
 `;
 
-const TextAlert = styled.h2`
-  font-size: 16px;
-  text-align: center;
-  margin-top: 20px;
-  color: #ffffff;
-  font-family: "Passion One";
-`;
 
 const TextRegister = styled.h2`
   text-align: center;
@@ -189,7 +231,7 @@ const TextRegister = styled.h2`
 const Button = styled.button`
   width: 429px;
   height: 65px;
- font-family:'Oswald';
+  font-family:'Oswald';
   color: #ffffff;
   font-size: 27px;
   font-weight: 400;
