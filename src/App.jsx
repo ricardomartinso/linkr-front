@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import UserContext from "./contexts/UserContext";
+import Teste from "./components/Header/Teste";
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -31,6 +32,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/teste" element={<Teste />} />
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>
