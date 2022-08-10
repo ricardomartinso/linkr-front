@@ -2,12 +2,14 @@ import axios from "axios";
 export default async function login(form) {
   try {
     const response = await axios.post(
-      "https://linkr-backend-30.herokuapp.com/login",
+      "https://linkr-backend-30.herokuapp.com/signin",
       form
     );
-    return { status: true, response };
-  } catch {
-    return { status: false };
+    const result = response;
+    return { status: true, result };
+  } catch (err) {
+    const { response: result } = err;
+    return { status: false, result };
   }
 }
 
