@@ -9,8 +9,8 @@ export default function Header() {
     <TopBar>
       <h1 className="logo">Linkr</h1>
       <MenuContainer>
-        <MenuIcon />
-        <ProfileImg src={picture} alt="imagem de perfil"/>
+        <MenuIcon className="menu-icon" />
+        <ProfileImg src={picture} alt="imagem de perfil" />
       </MenuContainer>
     </TopBar>
   );
