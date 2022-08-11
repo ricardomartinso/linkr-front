@@ -2,10 +2,17 @@ import { IoHeart } from "react-icons/io5";
 import { IoHeartOutline } from "react-icons/io5";
 import styled from "styled-components";
 import { useState } from "react";
+import { ReactTagify } from "react-tagify";
+import { useNavigate } from "react-router-dom";
 
 export default function Post({ picture, description, link, username, likes }) {
+  const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
-
+  const tagStyle = {
+    color: "white",
+    fontWeight: "bold",
+    cursor: "pointer",
+  };
   return (
     <PostStyled>
       <PictureLikes>
@@ -34,7 +41,17 @@ export default function Post({ picture, description, link, username, likes }) {
       </PictureLikes>
       <PostInfo>
         <div className="username">{username}</div>
-        <div className="description">{description}</div>
+        <div className="description">
+          <ReactTagify
+            tagStyle={tagStyle}
+            tagClicked={(e) => {
+              const hashtagWithoutHash = e.replace("#", "");
+              navigate(`/hashtag/${hashtagWithoutHash}`);
+            }}
+          >
+            {description}
+          </ReactTagify>
+        </div>
         <div className="link">
           <div className="url-metadata-info">
             <div className="link-title">
