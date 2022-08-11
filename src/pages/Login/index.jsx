@@ -40,7 +40,7 @@ export default function Login() {
       setPicture(response.data.picture);
       setTimeout(() => {
         setSwap(false);
-        navigate("/timeline");
+        navigate("/teste");
       }, 500);
     } else {
       if (typeof resp.data === 'string') {
