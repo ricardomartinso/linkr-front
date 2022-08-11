@@ -38,7 +38,7 @@ export default function Login() {
       setPicture(response.data.picture);
       setTimeout(() => {
         setSwap(false);
-        navigate("/teste");
+        navigate("/timeline");
       }, 500);
     } else {
       if (typeof resp.data === "string") {
