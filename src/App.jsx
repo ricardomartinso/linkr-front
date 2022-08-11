@@ -5,15 +5,12 @@ import Login from "./pages/Login";
 import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import UserContext from "./contexts/UserContext";
+import Timeline from "./pages/Timeline";
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
-  const [userName, setUserName] = useState(
-    localStorage.getItem("userName")
-  );
-  const [picture, setPicture] = useState(
-    localStorage.getItem("picture")
-  );
+  const [userName, setUserName] = useState(localStorage.getItem("userName"));
+  const [picture, setPicture] = useState(localStorage.getItem("picture"));
 
   return (
     <UserContext.Provider
@@ -31,6 +28,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/timeline" element={<Timeline />} />
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>
