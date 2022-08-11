@@ -1,75 +1,19 @@
 import styled from "styled-components";
-import { IoHeart } from "react-icons/io5";
-import { IoHeartOutline } from "react-icons/io5";
 import { useState, useContext } from "react";
 import Header from "../../components/Header";
 import axios from "axios";
 import UserContext from "../../contexts/UserContext";
+import Post from "../../components/Post";
 
 export default function Timeline() {
+  const { token, userName, picture } = useContext(UserContext);
+
   const [description, setDescription] = useState("");
   const [link, setLink] = useState("");
   const [isSubmiting, setIsSubmiting] = useState(false);
   const [messageError, setMessageError] = useState("");
-  const { token } = useContext(UserContext);
-  const [isLiked, setIsLiked] = useState(false);
 
-  const postData = [
-    {
-      username: "ricardomartins_",
-      picture:
-        "https://f.i.uol.com.br/fotografia/2021/02/18/1613671083602eaaabe3537_1613671083_3x2_md.jpg",
-      description:
-        "Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material",
-      link: "https://localhost.com",
-      likes: "1520",
-    },
-    {
-      username: "juvenaljuvencio",
-      picture:
-        "https://f.i.uol.com.br/fotografia/2021/02/18/1613671083602eaaabe3537_1613671083_3x2_md.jpg",
-      description:
-        "Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material",
-      link: "https://localhost.com",
-      likes: "1520",
-    },
-    {
-      username: "bntdetechies",
-      picture:
-        "https://f.i.uol.com.br/fotografia/2021/02/18/1613671083602eaaabe3537_1613671083_3x2_md.jpg",
-      description:
-        "Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material",
-      link: "https://localhost.com",
-      likes: "1520",
-    },
-    {
-      username: "alexanderarnould",
-      picture:
-        "https://f.i.uol.com.br/fotografia/2021/02/18/1613671083602eaaabe3537_1613671083_3x2_md.jpg",
-      description:
-        "Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material",
-      link: "https://localhost.com",
-      likes: "1520",
-    },
-    {
-      username: "jeriscleia",
-      picture:
-        "https://f.i.uol.com.br/fotografia/2021/02/18/1613671083602eaaabe3537_1613671083_3x2_md.jpg",
-      description:
-        "Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material",
-      link: "https://localhost.com",
-      likes: "1520",
-    },
-    {
-      username: "testeuser",
-      picture:
-        "https://f.i.uol.com.br/fotografia/2021/02/18/1613671083602eaaabe3537_1613671083_3x2_md.jpg",
-      description:
-        "Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material",
-      link: "https://localhost.com",
-      likes: "1520",
-    },
-  ];
+  const [posts, setPosts] = useState([]);
 
   async function submitPost(e) {
     e.preventDefault();
@@ -88,13 +32,21 @@ export default function Timeline() {
 
       const promise = await axios.post(
         "https://linkr-backend-30.herokuapp.com/post",
-        auth,
-        post
+        post,
+        auth
       );
+      const newPost = {
+        username: userName,
+        picture: picture,
+        description,
+        link,
+        likes: "0",
+      };
 
       setMessageError("");
       setDescription("");
       setLink("");
+      setPosts((state) => [...state, newPost]);
       setIsSubmiting(false);
     } catch (error) {
       setMessageError("Houve um erro ao adicionar seu post!");
@@ -146,39 +98,15 @@ export default function Timeline() {
               </div>
             </Form>
           </AddPost>
-          {postData.map((post) => {
+          {posts.reverse().map((post) => {
             return (
-              <Post>
-                <PictureLikes>
-                  <div className="picture">
-                    <img src={post.picture} alt="IMG" />
-                  </div>
-                  <div className="likes">
-                    {isLiked ? (
-                      <IoHeart
-                        fontSize={"20px"}
-                        color={"red"}
-                        onClick={() => {
-                          setIsLiked(false);
-                        }}
-                      />
-                    ) : (
-                      <IoHeartOutline
-                        fontSize={"20px"}
-                        onClick={() => {
-                          setIsLiked(true);
-                        }}
-                      />
-                    )}
-                    <p>{post.likes} likes</p>
-                  </div>
-                </PictureLikes>
-                <PostInfo>
-                  <div className="username">{post.username}</div>
-                  <div className="description">{post.description}</div>
-                  <div className="link">{post.link}</div>
-                </PostInfo>
-              </Post>
+              <Post
+                picture={post.picture}
+                likes={post.likes}
+                username={post.username}
+                description={post.description}
+                link={post.link}
+              />
             );
           })}
         </Posts>
@@ -186,6 +114,7 @@ export default function Timeline() {
     </>
   );
 }
+
 const Container = styled.div`
   display: flex;
   align-items: flex-start;
@@ -292,94 +221,6 @@ const Form = styled.form`
   justify-content: center;
   flex-direction: column;
   width: 90%;
-`;
-const Post = styled.div`
-  display: flex;
-
-  width: 100%;
-  height: 232px;
-  background-color: black;
-  color: white;
-  margin-bottom: 18px;
-  font-family: "Lato";
-
-  @media (min-width: 800px) {
-    height: 276px;
-    border-radius: 10px;
-  }
-`;
-const PictureLikes = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  width: 20%;
-
-  .picture {
-    margin-top: 14px;
-    margin-bottom: 20px;
-
-    img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-    }
-  }
-  .likes {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    p {
-      margin-top: 20px;
-    }
-  }
-  @media (min-width: 800px) {
-    .picture {
-      img {
-        width: 50px;
-        height: 50px;
-      }
-    }
-    .likes {
-      p {
-        margin-top: 5px;
-      }
-    }
-    font-size: 15px;
-  }
-`;
-const PostInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  width: 80%;
-  .username {
-    font-size: 17px;
-    margin-top: 15px;
-  }
-  .description {
-    font-size: 17px;
-    width: 95%;
-    word-break: normal;
-    margin-top: 10px;
-    color: #b7b7b7;
-  }
-  .link {
-    background-color: #8f4e28;
-    margin-top: 10px;
-    width: 95%;
-    height: 115px;
-  }
-
-  @media (min-width: 800px) {
-    font-size: 20px;
-
-    .link {
-      border: 1px solid #ffffff49;
-      border-radius: 10px;
-      height: 62%;
-    }
-  }
 `;
 
 const PostError = styled.div`
