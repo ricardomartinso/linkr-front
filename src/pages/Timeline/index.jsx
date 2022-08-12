@@ -4,10 +4,11 @@ import Header from "../../components/Header";
 import axios from "axios";
 import UserContext from "../../contexts/UserContext";
 import Post from "../../components/Post";
+import { useNavigate } from "react-router-dom";
+import Sidebar from "../../components/Sidebar";
 
 export default function Timeline() {
   const { token, userName, picture } = useContext(UserContext);
-
   const [description, setDescription] = useState("");
   const [link, setLink] = useState("");
   const [isSubmiting, setIsSubmiting] = useState(false);
@@ -59,9 +60,8 @@ export default function Timeline() {
     <>
       <Header></Header>
       <Container>
-        <h1>Timeline</h1>
-
         <Posts>
+          <h1>Timeline</h1>
           {messageError === "" ? (
             <></>
           ) : (
@@ -110,6 +110,8 @@ export default function Timeline() {
             );
           })}
         </Posts>
+
+        <Sidebar />
       </Container>
     </>
   );
@@ -117,10 +119,9 @@ export default function Timeline() {
 
 const Container = styled.div`
   display: flex;
-  align-items: flex-start;
   justify-content: center;
-  flex-direction: column;
-  margin-top: 6.5rem;
+  margin: 6.5rem auto 0 auto;
+  height: 100%;
 
   h1 {
     font-family: "Passion One", sans-serif;
@@ -145,9 +146,9 @@ const Posts = styled.div`
 
   @media (min-width: 800px) {
     width: 611px;
-    margin: 0 auto;
   }
 `;
+
 const AddPost = styled.div`
   display: flex;
   align-items: center;
