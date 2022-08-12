@@ -78,14 +78,14 @@ export default function Login() {
               "Log In"
             )}
           </Button>
-          {error.length === 0
+          {error?.length === 0
             ? null
             : error.map((item, index) => (
-                <ErrorMessage key={index}>
-                  <h3>{item}</h3>
-                  <h4 onClick={() => updateError(item)}>X</h4>
-                </ErrorMessage>
-              ))}
+              <ErrorMessage key={index}>
+                <h3>{item}</h3>
+                <h4 onClick={() => updateError(item)}>X</h4>
+              </ErrorMessage>
+            ))}
 
           <MyLink to="/sign-up">
             <TextRegister>First time? Create an account</TextRegister>

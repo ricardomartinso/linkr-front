@@ -1,9 +1,10 @@
 import styled from "styled-components";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect, useInsertionEffect } from "react";
 import Header from "../../components/Header";
 import axios from "axios";
 import UserContext from "../../contexts/UserContext";
 import Post from "../../components/Post";
+import getPosts from "../../data/getPosts.jsx";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 
@@ -16,46 +17,19 @@ export default function Timeline() {
 
   const [posts, setPosts] = useState([]);
 
-  // const postData = [
-  //   {
-  //     username: "ricardomartins_",
-  //     picture:
-  //       "https://f.i.uol.com.br/fotografia/2021/02/18/1613671083602eaaabe3537_1613671083_3x2_md.jpg",
-  //     description:
-  //       "Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material",
-  //     link: "https://localhost.com/",
-  //     likes: "1520",
-  //   },
-  //   {
-  //     username: "juvenaljuvencio",
-  //     picture:
-  //       "https://f.i.uol.com.br/fotografia/2021/02/18/1613671083602eaaabe3537_1613671083_3x2_md.jpg",
-  //     description:
-  //       "Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material",
-  //     link: "https://localhost.com/",
-  //     likes: "1520",
-  //   },
-  //   {
-  //     username: "bntdetechies",
-  //     picture:
-  //       "https://f.i.uol.com.br/fotografia/2021/02/18/1613671083602eaaabe3537_1613671083_3x2_md.jpg",
-  //     description:
-  //       "Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material",
-  //     link: "https://localhost.com/",
-  //     likes: "1520",
-  //   },
-  //   {
-  //     username: "alexanderarnould",
-  //     picture:
-  //       "https://f.i.uol.com.br/fotografia/2021/02/18/1613671083602eaaabe3537_1613671083_3x2_md.jpg",
-  //     description:
-  //       "Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material",
-  //     link: "https://localhost.com/",
-  //     likes: "1520",
-  //   },
-  // ];
+
+  useEffect(() => {
+    async function pullPosts() {
+      const { resp: response } = await getPosts();
+      setPosts(response.data);
+    }
+    pullPosts()
+  }, [])
+
+
 
   async function submitPost(e) {
+    console.log('executou oo submit')
     e.preventDefault();
     setIsSubmiting(true);
 
@@ -75,18 +49,10 @@ export default function Timeline() {
         post,
         auth
       );
-      const newPost = {
-        username: userName,
-        picture: picture,
-        description,
-        link,
-        likes: "0",
-      };
 
       setMessageError("");
       setDescription("");
       setLink("");
-      setPosts((state) => [...state, newPost]);
       setIsSubmiting(false);
     } catch (error) {
       setMessageError("Houve um erro ao adicionar seu post!");
@@ -139,10 +105,10 @@ export default function Timeline() {
           </AddPost>
           {posts.map((post) => {
             return (
-              <Post
-                picture={post.picture}
-                likes={post.likes}
-                username={post.username}
+              <Post key={post.id}
+                picture={post.user.picture}
+                likes={post.postLikes.count}
+                username={post.user.username}
                 description={post.description}
                 link={post.link}
               />
