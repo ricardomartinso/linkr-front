@@ -6,16 +6,14 @@ import "./assets/styles/reset.css";
 import GlobalStyle from "./assets/styles/globalStyle";
 import Login from "./pages/Login";
 import UserContext from "./contexts/UserContext";
+import Timeline from "./pages/Timeline";
 import SignUp from "./pages/singUp";
+
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
-  const [userName, setUserName] = useState(
-    localStorage.getItem("userName")
-  );
-  const [picture, setPicture] = useState(
-    localStorage.getItem("picture")
-  );
+  const [userName, setUserName] = useState(localStorage.getItem("userName"));
+  const [picture, setPicture] = useState(localStorage.getItem("picture"));
 
   return (
     <UserContext.Provider
@@ -33,6 +31,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/timeline" element={<Timeline />} />
           <Route path="/sign-up" element={<SignUp />} />
         </Routes>
       </BrowserRouter>

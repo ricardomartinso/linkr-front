@@ -17,9 +17,7 @@ export default function Login() {
     email: "",
     password: "",
   });
-  const { setToken,
-    setPicture,
-    setUserName } = useContext(UserContext);
+  const { setToken, setPicture, setUserName } = useContext(UserContext);
   const navigate = useNavigate();
 
   async function userLogin() {
@@ -43,22 +41,21 @@ export default function Login() {
         navigate("/timeline");
       }, 500);
     } else {
-      if (typeof resp.data === 'string') {
-        setError([resp.data])
+      if (typeof resp.data === "string") {
+        setError([resp.data]);
       } else {
-        setError(resp.data)
+        setError(resp.data);
       }
       setTimeout(() => {
         setSwap(false);
         setAlert(false);
       }, 500);
-
     }
   }
 
   function updateError(item) {
-    const newList = error.filter((elem) => elem !== item)
-    setError(newList)
+    const newList = error.filter((elem) => elem !== item);
+    setError(newList);
   }
 
   return (
@@ -67,17 +64,11 @@ export default function Login() {
     >
       <DivGlobal>
         <DivLeft>
-          <Logo>
-            linkr
-          </Logo>
-          <Text>
-            save, share and discover
-            the best links on the web
-          </Text>
+          <Logo>linkr</Logo>
+          <Text>save, share and discover the best links on the web</Text>
         </DivLeft>
 
         <DivLogin>
-
           <FormLogin />
 
           <Button onClick={userLogin} disabled={swap}>
@@ -87,16 +78,17 @@ export default function Login() {
               "Log In"
             )}
           </Button>
-          {error.length === 0 ? null :
-            error.map((item, index) => (
-              <ErrorMessage key={index}>
-                <h3>{item}</h3>
-                <h4 onClick={() => updateError(item)}>X</h4>
-              </ErrorMessage>
-            ))}
+          {error.length === 0
+            ? null
+            : error.map((item, index) => (
+                <ErrorMessage key={index}>
+                  <h3>{item}</h3>
+                  <h4 onClick={() => updateError(item)}>X</h4>
+                </ErrorMessage>
+              ))}
 
           <MyLink to="/sign-up">
-            <TextRegister>Frist time? Create an account</TextRegister>
+            <TextRegister>First time? Create an account</TextRegister>
           </MyLink>
         </DivLogin>
       </DivGlobal>
@@ -110,17 +102,17 @@ const Logo = styled.h2`
   font-style: normal;
   font-weight: 700;
   color: #ffffff;
-  letter-spacing: .5rem;
+  letter-spacing: 0.5rem;
   @media (max-width: 1100px) {
     font-size: 76px;
   }
 `;
 
 const Text = styled.p`
-  font-family: 'Oswald';
+  font-family: "Oswald";
   font-style: normal;
   line-height: 50px;
-  width:500px;
+  width: 500px;
   font-weight: 700;
   font-size: 43px;
   color: #ffffff;
@@ -132,10 +124,10 @@ const Text = styled.p`
 `;
 
 const ErrorMessage = styled.div`
- font-family: 'Lato';
+  font-family: "Lato";
   width: 429px;
   height: 45px;
-  background-color: #FF3642;
+  background-color: #ff3642;
   display: flex;
   margin-top: 30px;
   align-items: center;
@@ -177,7 +169,7 @@ const DivLeft = styled.div`
   padding-left: 6%;
   display: flex;
   padding-top: 16%;
-  background-color:#151515;
+  background-color: #151515;
   flex-direction: column;
   align-items: left;
   @media (max-width: 1100px) {
@@ -194,7 +186,7 @@ const DivGlobal = styled.div`
   width: 100%;
   height: 100vh;
   @media (min-width: 1100px) {
-    display:flex;
+    display: flex;
   }
 `;
 
@@ -207,15 +199,14 @@ const DivLogin = styled.div`
   justify-content: center;
   @media (max-width: 1100px) {
     width: 100%;
-    height:auto;
+    height: auto;
     margin-top: 20px;
   }
 `;
 
-
 const TextRegister = styled.h2`
   text-align: center;
-  font-family: 'Lato';
+  font-family: "Lato";
   font-style: normal;
   font-weight: 400;
   color: #ffffff;
@@ -231,17 +222,17 @@ const TextRegister = styled.h2`
 const Button = styled.button`
   width: 429px;
   height: 65px;
-  font-family:'Oswald';
+  font-family: "Oswald";
   color: #ffffff;
   font-size: 27px;
   font-weight: 400;
-  background: #1877F2;
+  background: #1877f2;
   display: flex;
   font-weight: 700;
   justify-content: center;
   align-items: center;
 
-  border: 1px solid #1877F2;
+  border: 1px solid #1877f2;
   border-radius: 6px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
 
