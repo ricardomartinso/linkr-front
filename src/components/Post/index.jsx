@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
+import { IoMdTrash as Trash } from "react-icons/io";
 
 
 export default function Post({ picture, description, link, username, likes }) {
@@ -41,6 +42,7 @@ export default function Post({ picture, description, link, username, likes }) {
           <p>{likes} likes</p>
         </div>
       </PictureLikes>
+      <Trash fontSize={"20px"} className="trash" />
       <PostInfo>
         <div className="username">{username}</div>
         <div className="description">
@@ -78,13 +80,19 @@ export default function Post({ picture, description, link, username, likes }) {
 
 const PostStyled = styled.div`
   display: flex;
-
+  position: relative;
   width: 100%;
   height: 232px;
   background-color: black;
   color: white;
   margin-bottom: 18px;
   font-family: "Lato";
+
+  .trash {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+  }
 
   @media (min-width: 800px) {
     height: 276px;

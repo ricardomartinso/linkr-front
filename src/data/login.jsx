@@ -14,4 +14,3 @@ export default async function login(form) {
     return { status: false, result };
   }
 }
-

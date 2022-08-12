@@ -5,17 +5,18 @@ import axios from "axios";
 import UserContext from "../../contexts/UserContext";
 import Post from "../../components/Post";
 import getPosts from "../../data/getPosts.jsx";
-
+import { useNavigate } from "react-router-dom";
+import Sidebar from "../../components/Sidebar";
 
 export default function Timeline() {
   const { token, userName, picture } = useContext(UserContext);
-
   const [description, setDescription] = useState("");
   const [link, setLink] = useState("");
   const [isSubmiting, setIsSubmiting] = useState(false);
   const [messageError, setMessageError] = useState("");
 
   const [posts, setPosts] = useState([]);
+
 
   useEffect(() => {
     async function pullPosts() {
@@ -24,6 +25,7 @@ export default function Timeline() {
     }
     pullPosts()
   }, [])
+
 
 
   async function submitPost(e) {
@@ -47,13 +49,6 @@ export default function Timeline() {
         post,
         auth
       );
-      const newPost = {
-        username: userName,
-        picture: picture,
-        description,
-        link,
-        likes: "0",
-      };
 
       setMessageError("");
       setDescription("");
@@ -70,9 +65,8 @@ export default function Timeline() {
     <>
       <Header></Header>
       <Container>
-        <h1>Timeline</h1>
-
         <Posts>
+          <h1>Timeline</h1>
           {messageError === "" ? (
             <></>
           ) : (
@@ -110,7 +104,6 @@ export default function Timeline() {
             </Form>
           </AddPost>
           {posts.map((post) => {
-            console.log(post)
             return (
               <Post key={post.id}
                 picture={post.user.picture}
@@ -122,6 +115,8 @@ export default function Timeline() {
             );
           })}
         </Posts>
+
+        <Sidebar />
       </Container>
     </>
   );
@@ -129,10 +124,9 @@ export default function Timeline() {
 
 const Container = styled.div`
   display: flex;
-  align-items: flex-start;
   justify-content: center;
-  flex-direction: column;
-  margin-top: 6.5rem;
+  margin: 6.5rem auto 0 auto;
+  height: 100%;
 
   h1 {
     font-family: "Passion One", sans-serif;
@@ -144,7 +138,6 @@ const Container = styled.div`
     h1 {
       font-size: 43px;
     }
-    align-items: center;
   }
 `;
 const Posts = styled.div`
@@ -157,9 +150,9 @@ const Posts = styled.div`
 
   @media (min-width: 800px) {
     width: 611px;
-    margin: 0 auto;
   }
 `;
+
 const AddPost = styled.div`
   display: flex;
   align-items: center;

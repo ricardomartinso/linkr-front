@@ -10,17 +10,17 @@ const TopBar = styled.nav`
   height: 4.5rem;
   left: 0;
   top: 0;
-  padding: 0 0.4375rem 0 1.75rem ;
+  padding: 0 0.4375rem 0 1.75rem;
   box-sizing: border-box;
   background: #151515;
 
-  .logo{
-    font-family: 'Passion One', sans-serif;
+  .logo {
+    font-family: "Passion One", sans-serif;
     font-weight: 700;
     font-size: 3.0625rem;
     line-height: 3.375rem;
     letter-spacing: 0.05em;
-    color: #FFFFFF;
+    color: #ffffff;
   }
 `;
 
@@ -30,7 +30,7 @@ const ProfileImg = styled.img`
   object-fit: cover;
   border-radius: 1.6563rem;
 
-  &:hover{
+  &:hover {
     cursor: pointer;
   }
 `;
@@ -43,21 +43,21 @@ const MenuContainer = styled.div`
   height: auto;
   gap: 0.75rem;
 
-  .menu-icon{
-    color: #FFFFFF;
+  .menu-icon {
+    color: #ffffff;
     font-size: 1.5625rem;
   }
 
-  .menu-icon:hover{
+  .menu-icon:hover {
     cursor: pointer;
   }
 
-  .menu-opened{
+  .menu-opened {
     transform: rotate(180deg);
     transition: transform 330ms ease-in-out;
   }
 
-  .menu-closed{
+  .menu-closed {
     transform: rotate(0deg);
     transition: transform 330ms ease-in-out;
   }
@@ -73,7 +73,7 @@ const PageContainer = styled.div`
   height: calc(100vh - 4.5rem);
   background-color: transparent;
 
-  &.menu-opened{
+  &.menu-opened {
     display: flex;
     justify-content: right;
   }
@@ -91,20 +91,20 @@ const LogoutButton = styled.div`
   background: #171717;
   border-radius: 0 0 0 20px;
 
-  p{
-    font-family: 'Lato';
+  p {
+    font-family: "Lato";
     font-style: normal;
     font-weight: 700;
     font-size: 17px;
     line-height: 20px;
     letter-spacing: 0.05em;
 
-    color: #FFFFFF;
+    color: #ffffff;
   }
 
-  p:hover{
+  p:hover {
     cursor: pointer;
   }
 `;
 
-export{ LogoutButton, MenuContainer, PageContainer, ProfileImg, TopBar };
+export { LogoutButton, MenuContainer, PageContainer, ProfileImg, TopBar };
