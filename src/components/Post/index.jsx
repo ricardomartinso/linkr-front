@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 
+
 export default function Post({ picture, description, link, username, likes }) {
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
@@ -13,6 +14,7 @@ export default function Post({ picture, description, link, username, likes }) {
     fontWeight: "bold",
     cursor: "pointer",
   };
+
   return (
     <PostStyled>
       <PictureLikes>
@@ -55,18 +57,16 @@ export default function Post({ picture, description, link, username, likes }) {
         <div className="link">
           <div className="url-metadata-info">
             <div className="link-title">
-              Um titulo informado pela url metadata title
+              {link.title}
             </div>
             <div className="link-description">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Quisquam, necessitatibus in similique et enim ex esse quaerat
-              omnis dicta.
+              {link.description}
             </div>
-            <div className="link-url">{link}</div>
+            <div className="link-url">{link.url}</div>
           </div>
           <div className="url-metadata-image">
             <img
-              src="https://i.pinimg.com/736x/82/d4/92/82d4926dcf09dd4c73eb1a6c0300c135--naruto-uzumaki-anime-naruto.jpg"
+              src={link.image}
               alt=""
             />
           </div>
@@ -149,10 +149,11 @@ const PostInfo = styled.div`
   }
   .link {
     display: flex;
-
+    border: 1px solid #ffffff49;
     margin-top: 10px;
     width: 95%;
-    height: 115px;
+    height: 66%;
+    border-radius: 10px;
 
     .url-metadata-info {
       display: flex;
@@ -182,6 +183,7 @@ const PostInfo = styled.div`
       img {
         width: 100%;
         height: 100%;
+        border-radius: 0px 10px 10px 0px;
         object-fit: cover;
       }
     }

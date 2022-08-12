@@ -1,9 +1,11 @@
 import styled from "styled-components";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect, useInsertionEffect } from "react";
 import Header from "../../components/Header";
 import axios from "axios";
 import UserContext from "../../contexts/UserContext";
 import Post from "../../components/Post";
+import getPosts from "../../data/getPosts.jsx";
+
 
 export default function Timeline() {
   const { token, userName, picture } = useContext(UserContext);
@@ -15,7 +17,17 @@ export default function Timeline() {
 
   const [posts, setPosts] = useState([]);
 
+  useEffect(() => {
+    async function pullPosts() {
+      const { resp: response } = await getPosts();
+      setPosts(response.data);
+    }
+    pullPosts()
+  }, [])
+
+
   async function submitPost(e) {
+    console.log('executou oo submit')
     e.preventDefault();
     setIsSubmiting(true);
 
@@ -46,7 +58,6 @@ export default function Timeline() {
       setMessageError("");
       setDescription("");
       setLink("");
-      setPosts((state) => [...state, newPost]);
       setIsSubmiting(false);
     } catch (error) {
       setMessageError("Houve um erro ao adicionar seu post!");
@@ -98,12 +109,13 @@ export default function Timeline() {
               </div>
             </Form>
           </AddPost>
-          {posts.reverse().map((post) => {
+          {posts.map((post) => {
+            console.log(post)
             return (
-              <Post
-                picture={post.picture}
-                likes={post.likes}
-                username={post.username}
+              <Post key={post.id}
+                picture={post.user.picture}
+                likes={post.postLikes.count}
+                username={post.user.username}
                 description={post.description}
                 link={post.link}
               />
