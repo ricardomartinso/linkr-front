@@ -1,8 +1,10 @@
 import axios from "axios";
+import { getApiUrl } from "../utils/apiUtils";
+
 export default async function login(form) {
   try {
     const response = await axios.post(
-      "https://linkr-backend-30.herokuapp.com/signin",
+      getApiUrl('signin'),
       form
     );
     const result = response;

@@ -1,9 +1,10 @@
 import styled from "styled-components";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect, useInsertionEffect } from "react";
 import Header from "../../components/Header";
 import axios from "axios";
 import UserContext from "../../contexts/UserContext";
 import Post from "../../components/Post";
+import getPosts from "../../data/getPosts.jsx";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import CreatePost from "../../components/FormSubmitPost";
@@ -11,6 +12,14 @@ import CreatePost from "../../components/FormSubmitPost";
 export default function Timeline() {
   const [messageError, setMessageError] = useState("");
   const [posts, setPosts] = useState([]);
+  
+  useEffect(() => {
+    async function pullPosts() {
+      const { resp: response } = await getPosts();
+      setPosts(response.data);
+    }
+    pullPosts()
+  }, [])
 
   return (
     <>
@@ -27,10 +36,10 @@ export default function Timeline() {
 
           {posts.map((post) => {
             return (
-              <Post
-                picture={post.picture}
-                likes={post.likes}
-                username={post.username}
+              <Post key={post.id}
+                picture={post.user.picture}
+                likes={post.postLikes.count}
+                username={post.user.username}
                 description={post.description}
                 link={post.link}
               />
