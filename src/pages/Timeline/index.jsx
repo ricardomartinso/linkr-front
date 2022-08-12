@@ -16,6 +16,45 @@ export default function Timeline() {
 
   const [posts, setPosts] = useState([]);
 
+  // const postData = [
+  //   {
+  //     username: "ricardomartins_",
+  //     picture:
+  //       "https://f.i.uol.com.br/fotografia/2021/02/18/1613671083602eaaabe3537_1613671083_3x2_md.jpg",
+  //     description:
+  //       "Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material",
+  //     link: "https://localhost.com/",
+  //     likes: "1520",
+  //   },
+  //   {
+  //     username: "juvenaljuvencio",
+  //     picture:
+  //       "https://f.i.uol.com.br/fotografia/2021/02/18/1613671083602eaaabe3537_1613671083_3x2_md.jpg",
+  //     description:
+  //       "Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material",
+  //     link: "https://localhost.com/",
+  //     likes: "1520",
+  //   },
+  //   {
+  //     username: "bntdetechies",
+  //     picture:
+  //       "https://f.i.uol.com.br/fotografia/2021/02/18/1613671083602eaaabe3537_1613671083_3x2_md.jpg",
+  //     description:
+  //       "Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material",
+  //     link: "https://localhost.com/",
+  //     likes: "1520",
+  //   },
+  //   {
+  //     username: "alexanderarnould",
+  //     picture:
+  //       "https://f.i.uol.com.br/fotografia/2021/02/18/1613671083602eaaabe3537_1613671083_3x2_md.jpg",
+  //     description:
+  //       "Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material",
+  //     link: "https://localhost.com/",
+  //     likes: "1520",
+  //   },
+  // ];
+
   async function submitPost(e) {
     e.preventDefault();
     setIsSubmiting(true);
@@ -98,7 +137,7 @@ export default function Timeline() {
               </div>
             </Form>
           </AddPost>
-          {posts.reverse().map((post) => {
+          {posts.map((post) => {
             return (
               <Post
                 picture={post.picture}
@@ -133,7 +172,6 @@ const Container = styled.div`
     h1 {
       font-size: 43px;
     }
-    align-items: center;
   }
 `;
 const Posts = styled.div`
