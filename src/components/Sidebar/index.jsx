@@ -10,8 +10,8 @@ export default function Sidebar() {
     "#google",
     "#google",
     "#google",
-    "#google",
-    "#google",
+    "#teste",
+    "#javascript",
     "#dota2",
   ];
   return (
