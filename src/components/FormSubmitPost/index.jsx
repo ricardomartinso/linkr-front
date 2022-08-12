@@ -1,18 +1,19 @@
 import styled from "styled-components";
 import { useState, useContext } from "react";
-import Header from "../../components/Header";
 import axios from "axios";
 import UserContext from "../../contexts/UserContext";
-import Post from "../../components/Post";
-import { useNavigate } from "react-router-dom";
-import Sidebar from "../../components/Sidebar";
+import getPosts from "../../data/getPosts.jsx";
 
-export default function CreatePost() {
+export default function CreatePost({ setPosts, setMessageError }) {
   const [description, setDescription] = useState("");
   const [link, setLink] = useState("");
   const [isSubmiting, setIsSubmiting] = useState(false);
-  const { token, userName, picture } = useContext(UserContext);
+  const { token } = useContext(UserContext);
 
+  async function pullPosts() {
+    const { resp: response } = await getPosts();
+    setPosts(response.data);
+  }
   async function submitPost(e) {
     e.preventDefault();
     setIsSubmiting(true);
@@ -28,7 +29,7 @@ export default function CreatePost() {
         },
       };
 
-      const promise = await axios.post(
+      await axios.post(
         "https://linkr-backend-30.herokuapp.com/post",
         post,
         auth
@@ -37,6 +38,7 @@ export default function CreatePost() {
       setMessageError("");
       setDescription("");
       setLink("");
+      pullPosts();
       setIsSubmiting(false);
     } catch (error) {
       setMessageError("Houve um erro ao adicionar seu post!");

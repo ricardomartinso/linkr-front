@@ -12,14 +12,14 @@ import CreatePost from "../../components/FormSubmitPost";
 export default function Timeline() {
   const [messageError, setMessageError] = useState("");
   const [posts, setPosts] = useState([]);
-  
+
   useEffect(() => {
     async function pullPosts() {
       const { resp: response } = await getPosts();
       setPosts(response.data);
     }
-    pullPosts()
-  }, [])
+    pullPosts();
+  }, []);
 
   return (
     <>
@@ -32,11 +32,13 @@ export default function Timeline() {
           ) : (
             <PopUpError>{messageError}</PopUpError>
           )}
-          <CreatePost />
+          <CreatePost setPosts={setPosts} setMessageError={setMessageError} />
 
           {posts.map((post) => {
+            console.log(post);
             return (
-              <Post key={post.id}
+              <Post
+                key={post.id}
                 picture={post.user.picture}
                 likes={post.postLikes.count}
                 username={post.user.username}
