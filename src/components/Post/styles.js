@@ -93,7 +93,7 @@ const PostInfo = styled.div`
     .url-metadata-info {
       display: flex;
       flex-direction: column;
-      padding: 5%;
+      padding: 2% 2% 2% 4%;
       width: 68%;
       border-right: 1px solid #ffffff49;
 
@@ -104,13 +104,25 @@ const PostInfo = styled.div`
       }
       .link-description {
         font-size: 13px;
+        max-height: 52.5px;
+        margin-top: 14px;
         color: #9b9595;
-        overflow: auto;
         margin-bottom: 10px;
+        overflow: hidden;
+        white-space: normal;
+        text-overflow: ellipsis;
+        word-wrap: normal;
       }
       .link-url {
+        max-width: 90%;
+        margin-top: 10px;
+        height: auto;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         font-size: 13px;
         color: #cecece;
+        height: 16px;
       }
     }
 
@@ -135,5 +147,67 @@ const PostInfo = styled.div`
     }
   }
 `;
+const ModalTitle = styled.h2`
+  font-size: 34px;
+  color: white;
+  font-family: "Lato";
+  font-weight: 700;
+  margin-bottom: 25px;
+  text-align: center;
+  width: 80%;
+`;
+const ButtonsDiv = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  height: 37px;
+  font-size: 18px;
 
-export { PostStyled, PictureLikes, PostInfo };
+  .no-button {
+    width: 137px;
+    height: 37px;
+    background-color: #fff;
+    border-radius: 5px;
+    border: none;
+    margin-right: 20px;
+    color: #1877f2;
+    font-family: "Lato";
+    font-weight: 700;
+  }
+  .yes-button {
+    width: 137px;
+    height: 37px;
+    background-color: #fff;
+    border-radius: 5px;
+    border: none;
+    background: #1877f2;
+    color: #fff;
+    font-family: "Lato";
+    font-weight: 700;
+  }
+`;
+const ErrorMessage = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 15px 0 22px 0;
+  width: 100%;
+  height: 2.5rem;
+  color: #fff;
+  background-color: #941a1a;
+  border: none;
+  border-radius: 10px;
+  font-size: 22px;
+  text-align: center;
+  padding: 5px;
+`;
+
+export {
+  PostStyled,
+  PictureLikes,
+  PostInfo,
+  ModalTitle,
+  ButtonsDiv,
+  ErrorMessage,
+};
