@@ -13,11 +13,12 @@ export default function Timeline() {
   const [messageError, setMessageError] = useState("");
   const [posts, setPosts] = useState([]);
 
+  async function pullPosts() {
+    const { resp: response } = await getPosts();
+    setPosts(response.data);
+  }
+
   useEffect(() => {
-    async function pullPosts() {
-      const { resp: response } = await getPosts();
-      setPosts(response.data);
-    }
     pullPosts();
   }, []);
 
@@ -39,11 +40,13 @@ export default function Timeline() {
             return (
               <Post
                 key={post.id}
+                postId={post.id}
                 picture={post.user.picture}
                 likes={post.postLikes.count}
                 username={post.user.username}
                 description={post.description}
                 link={post.link}
+                pullPosts={pullPosts}
               />
             );
           })}
