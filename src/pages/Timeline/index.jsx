@@ -12,20 +12,22 @@ export default function Timeline() {
   const [posts, setPosts] = useState([]);
   const [swap, setSwap] = useState(true);
   const [alert, setAlert] = useState(false);
-  const [text, setText] = useState("There are no posts yet")
+  const [text, setText] = useState("There are no posts yet");
 
   async function pullPosts() {
     const { resp: response, status } = await getPosts();
     if (status) {
       if (response.data.length === 0) {
-        setAlert(true)
+        setAlert(true);
       } else {
         setPosts(response.data);
       }
-      setSwap(false)
+      setSwap(false);
     } else {
-      setAlert(true)
-      setText("An error occured while trying to fetch the posts, please refresh the page")
+      setAlert(true);
+      setText(
+        "An error occured while trying to fetch the posts, please refresh the page"
+      );
     }
   }
 
@@ -49,16 +51,13 @@ export default function Timeline() {
             <Loader>
               <BallTriangle color="#ffffff" height={100} width={100} />
             </Loader>
-          ) :
+          ) : (
             <div>
-              {alert ?
-                <TextErr>
-                  {text}
-                </TextErr>
-                :
+              {alert ? (
+                <TextErr>{text}</TextErr>
+              ) : (
                 <div>
                   {posts.map((post) => {
-
                     return (
                       <Post
                         key={post.id}
@@ -69,13 +68,14 @@ export default function Timeline() {
                         description={post.description}
                         link={post.link}
                         pullPosts={pullPosts}
+                        setPosts={setPosts}
                       />
                     );
                   })}
                 </div>
-              }
+              )}
             </div>
-          }
+          )}
 
           {posts.map((post) => {
             return (
@@ -91,8 +91,6 @@ export default function Timeline() {
               />
             );
           })}
-
-
         </Posts>
 
         <Sidebar />
@@ -102,29 +100,28 @@ export default function Timeline() {
 }
 
 const TextErr = styled.div`
-     display:flex;
-     justify-content:center;
-     align-items:center;
-     margin-top:120px;
-     background-color: #151515;
-     border: 1px solid #151515;
-     border-radius: 6px;
-     color:#ffffff;
-     font-family: "Lato";
-     width:300px;
-     font-size:16px;
-     height:120px;
-     padding:0px 18px;
-     line-height:20px;
-     
-`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 120px;
+  background-color: #151515;
+  border: 1px solid #151515;
+  border-radius: 6px;
+  color: #ffffff;
+  font-family: "Lato";
+  width: 300px;
+  font-size: 16px;
+  height: 120px;
+  padding: 0px 18px;
+  line-height: 20px;
+`;
 
 const Loader = styled.div`
-     display:flex;
-     justify-content:center;
-     align-items:center;
-     margin-top:130px;
-`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 130px;
+`;
 
 const Container = styled.div`
   display: flex;

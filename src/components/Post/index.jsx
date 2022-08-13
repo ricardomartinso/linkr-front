@@ -82,7 +82,7 @@ export default function Post({
 
     try {
       const promise = await axios.delete(
-        `http://localhost:5020/posts/${postId}`,
+        `http://linkr-backend-30.herokuapp.com/posts/${postId}`,
         auth
       );
 
@@ -188,7 +188,18 @@ export default function Post({
             <p>{likes} likes</p>
           </div>
         </PictureLikes>
-        <Trash fontSize={"20px"} className="trash" />
+        {username === userName ? (
+          <Trash
+            fontSize={"20px"}
+            className="trash"
+            onClick={() => {
+              openModal();
+            }}
+          />
+        ) : (
+          <></>
+        )}
+
         <PostInfo>
           <div className="username">{username}</div>
           <div className="description">
