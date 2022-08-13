@@ -1,11 +1,8 @@
 import styled from "styled-components";
 import { useState, useContext, useEffect, useInsertionEffect } from "react";
 import Header from "../../components/Header";
-import axios from "axios";
-import UserContext from "../../contexts/UserContext";
 import Post from "../../components/Post";
 import getPosts from "../../data/getPosts.jsx";
-import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import CreatePost from "../../components/FormSubmitPost";
 import { BallTriangle } from "react-loader-spinner";
@@ -79,6 +76,22 @@ export default function Timeline() {
               }
             </div>
           }
+
+          {posts.map((post) => {
+            return (
+              <Post
+                key={post.id}
+                postId={post.id}
+                picture={post.user.picture}
+                likes={post.postLikes.count}
+                username={post.user.username}
+                description={post.description}
+                link={post.link}
+                setPosts={setPosts}
+              />
+            );
+          })}
+
 
         </Posts>
 

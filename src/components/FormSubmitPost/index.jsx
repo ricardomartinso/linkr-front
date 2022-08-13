@@ -35,10 +35,10 @@ export default function CreatePost({ setPosts, setMessageError }) {
         auth
       );
 
+      await pullPosts();
       setMessageError("");
       setDescription("");
       setLink("");
-      pullPosts();
       setIsSubmiting(false);
     } catch (error) {
       setMessageError("Houve um erro ao adicionar seu post!");
@@ -89,7 +89,7 @@ const AddPost = styled.div`
   flex-direction: column;
 
   width: 100%;
-  height: 164px;
+  height: 180px;
   background-color: white;
   margin-bottom: 18px;
 
