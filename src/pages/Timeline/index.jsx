@@ -41,6 +41,7 @@ export default function Timeline() {
                 username={post.user.username}
                 description={post.description}
                 link={post.link}
+                setPosts={setPosts}
               />
             );
           })}

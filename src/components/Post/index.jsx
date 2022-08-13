@@ -6,6 +6,30 @@ import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 import { IoMdTrash as Trash } from "react-icons/io";
 import UserContext from "../../contexts/UserContext";
+import Modal from "react-modal";
+import axios from "axios";
+import getPosts from "../../data/getPosts.jsx";
+
+Modal.setAppElement("#root");
+
+const customStyles = {
+  content: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    backgroundColor: "#333333",
+    width: "600px",
+    height: "262px",
+    borderRadius: "50px",
+  },
+};
 
 export default function Post({
   picture,
@@ -14,80 +38,146 @@ export default function Post({
   username,
   likes,
   postId,
+  setPosts,
 }) {
   const navigate = useNavigate();
+
   const [isLiked, setIsLiked] = useState(false);
-  const { userName } = useContext(UserContext);
+  const { userName, token } = useContext(UserContext);
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const tagStyle = {
     color: "white",
     fontWeight: "bold",
     cursor: "pointer",
   };
+  async function pullPosts() {
+    const { resp: response } = await getPosts();
+    setPosts(response.data);
+  }
+
+  function openModal() {
+    setIsOpen(true);
+  }
+  function closeModal() {
+    setIsOpen(false);
+  }
+  async function deletePost() {
+    setIsLoading(true);
+    const auth = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const promise = await axios.delete(
+        `http://localhost:5000/posts/${postId}`,
+        auth
+      );
+
+      await pullPosts();
+      setIsLoading(false);
+      setIsOpen(false);
+    } catch (error) {
+      setIsLoading(false);
+      alert("Falha ao deletar o seu post!");
+      console.log(error);
+    }
+  }
 
   return (
-    <PostStyled>
-      <PictureLikes>
-        <div className="picture">
-          <img src={picture} alt="IMG" />
-        </div>
-        <div className="likes">
-          {isLiked ? (
-            <IoHeart
-              fontSize={"20px"}
-              color={"red"}
-              onClick={() => {
-                setIsLiked(false);
-              }}
-            />
-          ) : (
-            <IoHeartOutline
-              fontSize={"20px"}
-              onClick={() => {
-                setIsLiked(true);
-              }}
-            />
-          )}
-          <p>{likes} likes</p>
-        </div>
-      </PictureLikes>
-      {userName === username ? (
-        <Trash
-          fontSize={"20px"}
-          className="trash"
-          onClick={() => {
-            console.log(postId);
-          }}
-        />
+    <>
+      {isLoading ? (
+        <Modal
+          isOpen={modalIsOpen}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+          <ModalTitle>Carregando. . .</ModalTitle>
+        </Modal>
       ) : (
-        ""
+        <Modal
+          isOpen={modalIsOpen}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+          <ModalTitle>Are you sure you want to delete this post?</ModalTitle>
+          <ButtonsDiv>
+            <button className="no-button" onClick={closeModal}>
+              No, go back
+            </button>
+            <button className="yes-button" onClick={deletePost}>
+              Yes, delete it
+            </button>
+          </ButtonsDiv>
+        </Modal>
       )}
 
-      <PostInfo>
-        <div className="username">{username}</div>
-        <div className="description">
-          <ReactTagify
-            tagStyle={tagStyle}
-            tagClicked={(e) => {
-              const hashtagWithoutHash = e.replace("#", "");
-              navigate(`/hashtag/${hashtagWithoutHash}`);
+      <PostStyled>
+        <PictureLikes>
+          <div className="picture">
+            <img src={picture} alt="IMG" />
+          </div>
+          <div className="likes">
+            {isLiked ? (
+              <IoHeart
+                fontSize={"20px"}
+                color={"red"}
+                onClick={() => {
+                  setIsLiked(false);
+                }}
+              />
+            ) : (
+              <IoHeartOutline
+                fontSize={"20px"}
+                onClick={() => {
+                  setIsLiked(true);
+                }}
+              />
+            )}
+            <p>{likes} likes</p>
+          </div>
+        </PictureLikes>
+        {userName === username ? (
+          <Trash
+            fontSize={"20px"}
+            className="trash"
+            onClick={() => {
+              openModal();
             }}
-          >
-            {description}
-          </ReactTagify>
-        </div>
-        <div className="link">
-          <div className="url-metadata-info">
-            <div className="link-title">{link.title}</div>
-            <div className="link-description">{link.description}</div>
-            <div className="link-url">{link.url}</div>
+          />
+        ) : (
+          ""
+        )}
+
+        <PostInfo>
+          <div className="username">{username}</div>
+          <div className="description">
+            <ReactTagify
+              tagStyle={tagStyle}
+              tagClicked={(e) => {
+                const hashtagWithoutHash = e.replace("#", "");
+                navigate(`/hashtag/${hashtagWithoutHash}`);
+              }}
+            >
+              {description}
+            </ReactTagify>
           </div>
-          <div className="url-metadata-image">
-            <img src={link.image} alt="" />
+          <div className="link">
+            <div className="url-metadata-info">
+              <div className="link-title">{link.title}</div>
+              <div className="link-description">{link.description}</div>
+              <div className="link-url">{link.url}</div>
+            </div>
+            <div className="url-metadata-image">
+              <img src={link.image} alt="" />
+            </div>
           </div>
-        </div>
-      </PostInfo>
-    </PostStyled>
+        </PostInfo>
+      </PostStyled>
+    </>
   );
 }
 
@@ -218,5 +308,45 @@ const PostInfo = styled.div`
       border-radius: 10px;
       height: 62%;
     }
+  }
+`;
+const ModalTitle = styled.h2`
+  font-size: 34px;
+  color: white;
+  font-family: "Lato";
+  font-weight: 700;
+  margin-bottom: 25px;
+  text-align: center;
+  width: 80%;
+`;
+const ButtonsDiv = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  height: 37px;
+  font-size: 18px;
+
+  .no-button {
+    width: 137px;
+    height: 37px;
+    background-color: #fff;
+    border-radius: 5px;
+    border: none;
+    margin-right: 20px;
+    color: #1877f2;
+    font-family: "Lato";
+    font-weight: 700;
+  }
+  .yes-button {
+    width: 137px;
+    height: 37px;
+    background-color: #fff;
+    border-radius: 5px;
+    border: none;
+    background: #1877f2;
+    color: #fff;
+    font-family: "Lato";
+    font-weight: 700;
   }
 `;

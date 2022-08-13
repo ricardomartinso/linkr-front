@@ -35,10 +35,10 @@ export default function CreatePost({ setPosts, setMessageError }) {
         auth
       );
 
+      await pullPosts();
       setMessageError("");
       setDescription("");
       setLink("");
-      pullPosts();
       setIsSubmiting(false);
     } catch (error) {
       setMessageError("Houve um erro ao adicionar seu post!");
