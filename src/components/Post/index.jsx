@@ -1,15 +1,24 @@
 import { IoHeart } from "react-icons/io5";
 import { IoHeartOutline } from "react-icons/io5";
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 import { IoMdTrash as Trash } from "react-icons/io";
+import UserContext from "../../contexts/UserContext";
 
-
-export default function Post({ picture, description, link, username, likes }) {
+export default function Post({
+  picture,
+  description,
+  link,
+  username,
+  likes,
+  postId,
+}) {
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
+  const { userName } = useContext(UserContext);
+
   const tagStyle = {
     color: "white",
     fontWeight: "bold",
@@ -42,7 +51,18 @@ export default function Post({ picture, description, link, username, likes }) {
           <p>{likes} likes</p>
         </div>
       </PictureLikes>
-      <Trash fontSize={"20px"} className="trash" />
+      {userName === username ? (
+        <Trash
+          fontSize={"20px"}
+          className="trash"
+          onClick={() => {
+            console.log(postId);
+          }}
+        />
+      ) : (
+        ""
+      )}
+
       <PostInfo>
         <div className="username">{username}</div>
         <div className="description">
@@ -58,19 +78,12 @@ export default function Post({ picture, description, link, username, likes }) {
         </div>
         <div className="link">
           <div className="url-metadata-info">
-            <div className="link-title">
-              {link.title}
-            </div>
-            <div className="link-description">
-              {link.description}
-            </div>
+            <div className="link-title">{link.title}</div>
+            <div className="link-description">{link.description}</div>
             <div className="link-url">{link.url}</div>
           </div>
           <div className="url-metadata-image">
-            <img
-              src={link.image}
-              alt=""
-            />
+            <img src={link.image} alt="" />
           </div>
         </div>
       </PostInfo>
