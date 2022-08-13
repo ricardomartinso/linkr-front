@@ -5,9 +5,9 @@ export default async function login(form) {
       "https://linkr-backend-30.herokuapp.com/posts",
       form
     );
-    return { resp };
+    return { resp, status: true };
   } catch (err) {
-    const { response: result } = err;
-    return { status: false };
+    const resp = err;
+    return { resp, status: false };
   }
 }

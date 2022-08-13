@@ -10,14 +10,14 @@ import { useNavigate } from "react-router-dom";
 
 export default function Header() {
   const { picture, setPicture, token, setUserName, setToken } = useContext(UserContext);
-  const [ menuState, setMenuState ] = useState("menu-closed");
+  const [menuState, setMenuState] = useState("menu-closed");
   const navigate = useNavigate();
 
   function toggleMenu() {
     if (menuState === "menu-closed") {
       setMenuState("menu-opened");
     }
-    else{
+    else {
       setMenuState("menu-closed");
     }
   }
@@ -39,12 +39,12 @@ export default function Header() {
   return (
     <>
       <TopBar>
-        <h1 className="logo">Linkr</h1>
+        <h1 className="logo">linkr</h1>
         <MenuContainer>
-          <MenuIcon className={`menu-icon ${menuState}`} onClick={toggleMenu}/>
-          { picture ? 
-            <ProfileImg src={picture} alt="imagem de perfil" onClick={toggleMenu}/> 
-            : <ProfileImg src={userProfile} alt="imagem de perfil" onClick={toggleMenu}/> // substituir por '' depois
+          <MenuIcon className={`menu-icon ${menuState}`} onClick={toggleMenu} />
+          {picture ?
+            <ProfileImg src={picture} alt="imagem de perfil" onClick={toggleMenu} />
+            : <ProfileImg src={userProfile} alt="imagem de perfil" onClick={toggleMenu} /> // substituir por '' depois
           }
         </MenuContainer>
       </TopBar>

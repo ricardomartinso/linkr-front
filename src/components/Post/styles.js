@@ -4,7 +4,7 @@ const PostStyled = styled.div`
   display: flex;
   position: relative;
   width: 100%;
-  height: 232px;
+  height: 250px;
   background-color: black;
   color: white;
   margin-bottom: 18px;
@@ -47,7 +47,7 @@ const PictureLikes = styled.div`
     }
   }
 
-  .like-icon:hover{
+  .like-icon:hover {
     cursor: pointer;
   }
 
@@ -105,6 +105,7 @@ const PostInfo = styled.div`
       .link-description {
         font-size: 13px;
         color: #9b9595;
+        overflow: auto;
         margin-bottom: 10px;
       }
       .link-url {
