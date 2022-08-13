@@ -20,10 +20,11 @@ export default function Sidebar() {
       <div className="border-sidebar"></div>
       <div>
         <div className="hashtags">
-          {hashtags.map((hashtag) => {
+          {hashtags.map((hashtag, index) => {
             const spacedHashtag = hashtag.replace("#", "");
             return (
               <p
+                key={index}
                 className="hashtag"
                 onClick={() => {
                   navigate(`/hashtag/${spacedHashtag}`);
@@ -38,6 +39,7 @@ export default function Sidebar() {
     </SidebarStyled>
   );
 }
+
 const SidebarStyled = styled.div`
   display: none;
   @media (min-width: 800px) {
