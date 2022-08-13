@@ -46,7 +46,7 @@ export default function Post({
   const { userName, token } = useContext(UserContext);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [hasError, setHasError] = useState(false);
   const tagStyle = {
     color: "white",
     fontWeight: "bold",
@@ -73,7 +73,7 @@ export default function Post({
 
     try {
       const promise = await axios.delete(
-        `http://localhost:5000/posts/${postId}`,
+        `http://localhost:5020/posts/${postId}`,
         auth
       );
 
@@ -81,8 +81,12 @@ export default function Post({
       setIsLoading(false);
       setIsOpen(false);
     } catch (error) {
+      setHasError(true);
+      setIsOpen(false);
       setIsLoading(false);
-      alert("Falha ao deletar o seu post!");
+      setTimeout(() => {
+        setHasError(false);
+      }, 8000);
       console.log(error);
     }
   }
@@ -113,6 +117,13 @@ export default function Post({
             </button>
           </ButtonsDiv>
         </Modal>
+      )}
+      {hasError ? (
+        <ErrorMessage>
+          An error has ocurred on deleting your post! Try again.
+        </ErrorMessage>
+      ) : (
+        <></>
       )}
 
       <PostStyled>
@@ -269,7 +280,7 @@ const PostInfo = styled.div`
     .url-metadata-info {
       display: flex;
       flex-direction: column;
-      padding: 5%;
+      padding: 2% 2% 2% 4%;
       width: 68%;
       border-right: 1px solid #ffffff49;
 
@@ -280,12 +291,25 @@ const PostInfo = styled.div`
       }
       .link-description {
         font-size: 13px;
+        max-height: 52.5px;
+        margin-top: 14px;
         color: #9b9595;
         margin-bottom: 10px;
+        overflow: hidden;
+        white-space: normal;
+        text-overflow: ellipsis;
+        word-wrap: normal;
       }
       .link-url {
+        max-width: 90%;
+        margin-top: 10px;
+        height: auto;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         font-size: 13px;
         color: #cecece;
+        height: 16px;
       }
     }
 
@@ -349,4 +373,19 @@ const ButtonsDiv = styled.div`
     font-family: "Lato";
     font-weight: 700;
   }
+`;
+const ErrorMessage = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 15px 0 22px 0;
+  width: 100%;
+  height: 2.5rem;
+  color: #fff;
+  background-color: #941a1a;
+  border: none;
+  border-radius: 10px;
+  font-size: 22px;
+  text-align: center;
+  padding: 5px;
 `;

@@ -89,7 +89,7 @@ const AddPost = styled.div`
   flex-direction: column;
 
   width: 100%;
-  height: 164px;
+  height: 180px;
   background-color: white;
   margin-bottom: 18px;
 
