@@ -49,7 +49,7 @@ export default function Post({
   likes,
   postId,
   setPosts,
-  pullPosts
+  pullPosts,
 }) {
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
@@ -65,15 +65,14 @@ export default function Post({
 
   useEffect(() => {
     if (userLiked && !isLiked) {
-      if(postId === 129){
+      if (postId === 129) {
         console.log("userLiked");
         console.log(userLiked);
         console.log("Entrou no if");
       }
       setIsLiked(true);
     }
-  }
-  , [userLiked]);
+  }, [userLiked]);
 
   /* async function pullPosts() {
     const { resp: response } = await getPosts();
@@ -182,7 +181,13 @@ export default function Post({
       <PostStyled>
         <PictureLikes>
           <div className="picture">
-            <img src={picture} alt="IMG" />
+            <img
+              src={picture}
+              alt="IMG"
+              onClick={() => {
+                navigate(`/user/${username}`);
+              }}
+            />
           </div>
           <div className="likes">
             {isLiked ? (
@@ -215,7 +220,14 @@ export default function Post({
         )}
 
         <PostInfo>
-          <div className="username">{username}</div>
+          <div
+            className="username"
+            onClick={() => {
+              navigate(`/user/${username}`);
+            }}
+          >
+            {username}
+          </div>
           <div className="description">
             <ReactTagify
               tagStyle={tagStyle}

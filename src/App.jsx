@@ -9,12 +9,12 @@ import UserContext from "./contexts/UserContext";
 import Timeline from "./pages/Timeline";
 import SignUp from "./pages/singUp";
 import Hashtag from "./pages/Hashtag";
+import UserPosts from "./pages/UserPosts";
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [userName, setUserName] = useState(localStorage.getItem("userName"));
   const [picture, setPicture] = useState(localStorage.getItem("picture"));
-
 
   return (
     <UserContext.Provider
@@ -35,6 +35,7 @@ export default function App() {
           <Route path="/timeline" element={<Timeline />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/hashtag/:tag" element={<Hashtag />} />
+          <Route path="/user/:username" element={<UserPosts />} />
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>

@@ -36,6 +36,9 @@ const PictureLikes = styled.div`
       height: 40px;
       border-radius: 50%;
     }
+    :hover {
+      cursor: pointer;
+    }
   }
   .likes {
     display: flex;
@@ -74,6 +77,9 @@ const PostInfo = styled.div`
   .username {
     font-size: 17px;
     margin-top: 15px;
+    :hover {
+      cursor: pointer;
+    }
   }
   .description {
     font-size: 17px;
