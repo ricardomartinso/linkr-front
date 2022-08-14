@@ -48,7 +48,7 @@ export default function Post({
   likes,
   postId,
   setPosts,
-  pullPosts,
+  pullPosts
 }) {
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);

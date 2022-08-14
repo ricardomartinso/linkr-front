@@ -1,20 +1,17 @@
 import styled from "styled-components";
-import { useState, useContext, useEffect, useInsertionEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import Header from "../../components/Header";
 import Post from "../../components/Post";
 import getPosts from "../../data/getPosts.jsx";
-import Sidebar from "../../components/Sidebar";
-import CreatePost from "../../components/FormSubmitPost";
 import { BallTriangle } from "react-loader-spinner";
 import UserContext from "../../contexts/UserContext";
 
-export default function Timeline() {
+export default function Hashtag() {
   const { token } = useContext(UserContext);
-  const [messageError, setMessageError] = useState("");
   const [posts, setPosts] = useState([]);
   const [swap, setSwap] = useState(true);
   const [alert, setAlert] = useState(false);
-  const [text, setText] = useState("There are no posts yet");
+  const [text, setText] = useState("");
 
   async function pullPosts() {
     const { resp: response, status } = await getPosts(token);
@@ -42,13 +39,7 @@ export default function Timeline() {
       <Header></Header>
       <Container>
         <Posts>
-          <h1>Timeline</h1>
-          {messageError === "" ? (
-            <></>
-          ) : (
-            <PopUpError>{messageError}</PopUpError>
-          )}
-          <CreatePost setPosts={setPosts} setMessageError={setMessageError} />
+
           {swap ? (
             <Loader>
               <BallTriangle color="#ffffff" height={100} width={100} />
@@ -80,7 +71,7 @@ export default function Timeline() {
           )}
         </Posts>
 
-        <Sidebar />
+
       </Container>
     </>
   );
@@ -143,20 +134,4 @@ const Posts = styled.div`
   @media (min-width: 800px) {
     width: 611px;
   }
-`;
-
-const PostError = styled.div`
-  display: flex;
-  align-items: center;
-`;
-const PopUpError = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-size: 17px;
-  width: 70%;
-  color: red;
-  padding: 5px 0;
-  margin-bottom: 10px;
 `;
