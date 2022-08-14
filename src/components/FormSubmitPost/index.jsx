@@ -11,7 +11,7 @@ export default function CreatePost({ setPosts, setMessageError }) {
   const { token } = useContext(UserContext);
 
   async function pullPosts() {
-    const { resp: response } = await getPosts();
+    const { resp: response } = await getPosts(token);
     setPosts(response.data);
   }
   async function submitPost(e) {
