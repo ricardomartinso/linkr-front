@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useState, useContext, useEffect } from "react";
 import Header from "../../components/Header";
 import Post from "../../components/Post";
-import getPosts from "../../data/getPosts.jsx";
+import getOneHashtag from "../../data/getOneHashtag";
 import { BallTriangle } from "react-loader-spinner";
 import UserContext from "../../contexts/UserContext";
 
@@ -14,7 +14,7 @@ export default function Hashtag() {
   const [text, setText] = useState("");
 
   async function pullPosts() {
-    const { resp: response, status } = await getPosts(token);
+    const { resp: response, status } = await getOneHashtag(token, hashtag);
     if (status) {
       if (response.data.length === 0) {
         setAlert(true);
