@@ -34,7 +34,7 @@ export default function App() {
           <Route path="/" element={<Login />} />
           <Route path="/timeline" element={<Timeline />} />
           <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/hashtag/:hashtag" element={<Hashtag />} />
+          <Route path="/hashtag/:tag" element={<Hashtag />} />
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>
