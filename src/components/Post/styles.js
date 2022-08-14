@@ -71,13 +71,16 @@ const PostInfo = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   width: 80%;
+  height: 250px;
+  padding-bottom: 10px;
   .username {
     font-size: 17px;
     margin-top: 15px;
   }
   .description {
-    font-size: 17px;
+    font-size: 15px;
     width: 95%;
+    height: 10%;
     word-break: normal;
     margin-top: 10px;
     color: #b7b7b7;
@@ -87,18 +90,19 @@ const PostInfo = styled.div`
     border: 1px solid #ffffff49;
     margin-top: 10px;
     width: 95%;
-    height: 66%;
+    height: 166px;
     border-radius: 10px;
 
     .url-metadata-info {
       display: flex;
+      justify-content: center;
       flex-direction: column;
       padding: 2% 2% 2% 4%;
       width: 68%;
       border-right: 1px solid #ffffff49;
 
       .link-title {
-        font-size: 18px;
+        font-size: 16px;
         color: #cecece;
         margin-bottom: 10px;
       }

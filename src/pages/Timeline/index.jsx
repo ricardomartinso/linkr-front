@@ -43,7 +43,7 @@ export default function Timeline() {
       <Header></Header>
       <Container>
         <Posts>
-          <h1>Timeline</h1>
+          <Title><h1>Timeline</h1></Title>
           {messageError === "" ? (
             <></>
           ) : (
@@ -130,6 +130,12 @@ const Container = styled.div`
     }
   }
 `;
+
+const Title = styled.div`
+  width:100%;
+  align-items: center;
+  display: flex;
+`
 const Posts = styled.div`
   display: flex;
   justify-content: center;
@@ -137,10 +143,7 @@ const Posts = styled.div`
   flex-direction: column;
   width: 100%;
   margin-bottom: 10px;
-  h1{
-    width: 100%;
-    align-items: left;
-  }
+  
 
   @media (min-width: 800px) {
     width: 611px;
