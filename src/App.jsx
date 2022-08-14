@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import UserContext from "./contexts/UserContext";
 import Timeline from "./pages/Timeline";
 import SignUp from "./pages/singUp";
+import Hashtag from "./pages/Hashtag";
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -33,6 +34,7 @@ export default function App() {
           <Route path="/" element={<Login />} />
           <Route path="/timeline" element={<Timeline />} />
           <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/hashtag/:hashtag" element={<Hashtag />} />
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>
