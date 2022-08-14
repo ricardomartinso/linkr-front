@@ -1,9 +1,10 @@
 import { IoHeart } from "react-icons/io5";
 import { IoHeartOutline } from "react-icons/io5";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 import { IoMdTrash as Trash } from "react-icons/io";
+import { VscEdit as Redact } from 'react-icons/vsc';
 import {
   PostStyled,
   PictureLikes,
@@ -56,11 +57,21 @@ export default function Post({
   const [modalIsOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [isEditDescription, setIsEditDescription] = useState(true);
+  const [editDescription, setEditDescription] = useState(description);
+  const [viewDescription, setViewDescription] = useState(description);
+
   const tagStyle = {
     color: "white",
     fontWeight: "bold",
     cursor: "pointer",
   };
+  const inputRef = useRef();
+
+  useEffect(()=>{
+    inputRef.editDescription.focus();
+  },[])
+
   async function pullPosts() {
     const { resp: response } = await getPosts();
     setPosts(response.data);
@@ -98,6 +109,34 @@ export default function Post({
       }, 8000);
       console.log(error);
     }
+  }
+
+  // async function updatePost() {
+
+  //   const auth = {
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   };
+
+  //   try {
+  //     const promise = await axios.put(
+  //       `http://linkr-backend-30.herokuapp.com/posts/${postId}`, auth
+  //     );
+
+  //   } catch (error) {
+
+  //   }
+
+  // }
+  function editText() {
+    console.log(description);
+    setIsEditDescription(!isEditDescription);
+    
+  }
+
+  function closeTextArea(e){
+    console.log(e);
   }
 
   function likePost() {
@@ -189,20 +228,33 @@ export default function Post({
           </div>
         </PictureLikes>
         {username === userName ? (
-          <Trash
-            fontSize={"20px"}
-            className="trash"
-            onClick={() => {
-              openModal();
-            }}
-          />
+          <>
+            <Redact
+              fontSize={"20px"}
+              className="redact"
+              onClick={() => {
+                editText();
+              }}
+            />
+
+            <Trash
+              fontSize={"20px"}
+              className="trash"
+              onClick={() => {
+                openModal();
+              }}
+            />
+          </>
+
         ) : (
           <></>
         )}
 
         <PostInfo>
           <div className="username">{username}</div>
-          <div className="description">
+          {/* coloca o text area aqui */}
+
+          {isEditDescription ? <div className="description">
             <ReactTagify
               tagStyle={tagStyle}
               tagClicked={(e) => {
@@ -210,9 +262,24 @@ export default function Post({
                 navigate(`/hashtag/${hashtagWithoutHash}`);
               }}
             >
-              {description}
+              {viewDescription}
             </ReactTagify>
-          </div>
+          </div> :
+
+            <textarea onKeyPress={e => closeTextArea(e)} ref={inputRef} className="description" onChange={(e)=>{setEditDescription(e.target.value)}} value={editDescription}>
+              <ReactTagify
+                tagStyle={tagStyle}
+                tagClicked={(e) => {
+                  const hashtagWithoutHash = e.replace("#", "");
+                  navigate(`/hashtag/${hashtagWithoutHash}`);
+                }}
+              >
+              </ReactTagify>
+            </textarea>
+
+          }
+
+
           <div className="link" onClick={() => routeChange(link.url)}>
             <div className="url-metadata-info">
               <div className="link-title">{link.title}</div>

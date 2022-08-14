@@ -14,6 +14,15 @@ const PostStyled = styled.div`
     position: absolute;
     right: 20px;
     top: 15px;
+    cursor: pointer;
+  }
+  .redact{
+    position: absolute;
+    right: 60px;
+    top: 15px;
+    color: white;
+    cursor: pointer;
+  
   }
 
   @media (min-width: 800px) {
