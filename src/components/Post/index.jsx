@@ -1,6 +1,6 @@
 import { IoHeart } from "react-icons/io5";
 import { IoHeartOutline } from "react-icons/io5";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 import { IoMdTrash as Trash } from "react-icons/io";
@@ -44,6 +44,7 @@ export default function Post({
   picture,
   description,
   link,
+  userLiked,
   username,
   likes,
   postId,
@@ -61,10 +62,23 @@ export default function Post({
     fontWeight: "bold",
     cursor: "pointer",
   };
-  async function pullPosts() {
+
+  useEffect(() => {
+    if (userLiked && !isLiked) {
+      if(postId === 129){
+        console.log("userLiked");
+        console.log(userLiked);
+        console.log("Entrou no if");
+      }
+      setIsLiked(true);
+    }
+  }
+  , [userLiked]);
+
+  /* async function pullPosts() {
     const { resp: response } = await getPosts();
     setPosts(response.data);
-  }
+  } */
 
   function openModal() {
     setIsOpen(true);
