@@ -5,21 +5,23 @@ import Post from "../../components/Post";
 import getOneHashtag from "../../data/getOneHashtag";
 import { BallTriangle } from "react-loader-spinner";
 import UserContext from "../../contexts/UserContext";
+import { useParams } from 'react-router-dom';
 
 export default function Hashtag() {
   const { token } = useContext(UserContext);
   const [posts, setPosts] = useState([]);
   const [swap, setSwap] = useState(true);
   const [alert, setAlert] = useState(false);
-  const [text, setText] = useState("");
+  const [text, setText] = useState("There are not posts yet");
+  const { tag } = useParams();
 
   async function pullPosts() {
-    const { resp: response, status } = await getOneHashtag(token, hashtag);
+    const { resp: response, status } = await getOneHashtag(token, tag);
     if (status) {
       if (response.data.length === 0) {
         setAlert(true);
       } else {
-        setPosts(response.data);
+        setPosts(response.data[0].postList);
       }
       setSwap(false);
     } else {
@@ -39,7 +41,7 @@ export default function Hashtag() {
       <Header></Header>
       <Container>
         <Posts>
-
+          <h1>{'#' + tag}</h1>
           {swap ? (
             <Loader>
               <BallTriangle color="#ffffff" height={100} width={100} />
