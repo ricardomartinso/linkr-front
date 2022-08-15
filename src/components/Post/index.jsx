@@ -17,7 +17,7 @@ import { getApiUrl, getConfig } from "../../utils/apiUtils";
 import UserContext from "../../contexts/UserContext";
 import linkr from "../../assets/images/linkr.png";
 import Modal from "react-modal";
-import getPosts from "../../data/getPosts.jsx";
+import ReactTooltip from 'react-tooltip';
 
 Modal.setAppElement("#root");
 
@@ -47,6 +47,7 @@ export default function Post({
   userLiked,
   username,
   likes,
+  latestLikes,
   postId,
   setPosts,
   pullPosts
@@ -74,11 +75,6 @@ export default function Post({
     }
   }
   , [userLiked]);
-
-  /* async function pullPosts() {
-    const { resp: response } = await getPosts();
-    setPosts(response.data);
-  } */
 
   function openModal() {
     setIsOpen(true);
@@ -140,6 +136,42 @@ export default function Post({
     });
   }
 
+  function renderLikesCount() {
+    if (latestLikes) {
+      const users = latestLikes.length === 2 ? 
+        `${[latestLikes]}`.replace(',', ' e ') 
+      : `${[latestLikes.slice(0,2)]}`.replace(',', ', ');
+      const latestUsersLikes = users.includes(userName) ? users.replace(userName, 'você'): users;
+      let otherUsers = latestLikes.length > 2 ? `e outras ${likes-2} pessoas` : '';
+      if (likes === 3) {
+        otherUsers = "e mais 1 pessoa"
+      }
+
+      return (
+        <p 
+          data-tip={`${latestUsersLikes} ${otherUsers}`} 
+          data-place="bottom"
+          data-type="light"
+          data-effect="solid"
+        >
+          {likes} {likes === 1 ? "like" : "likes"}
+        </p>
+      );
+    }
+    else{
+      return (
+        <p 
+          data-tip='' 
+          data-place="bottom"
+          data-type="light"
+          data-effect="solid"
+        >
+          {likes} {likes === 1 ? "like" : "likes"}
+        </p>
+      ); 
+    }
+  }
+
   const routeChange = (url) => {
     window.open(url, "_blank");
   };
@@ -199,7 +231,8 @@ export default function Post({
                 className="like-icon"
               />
             )}
-            <p>{likes} likes</p>
+            {renderLikesCount()}
+            <ReactTooltip />
           </div>
         </PictureLikes>
         {username === userName ? (
