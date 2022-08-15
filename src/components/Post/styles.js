@@ -14,6 +14,15 @@ const PostStyled = styled.div`
     position: absolute;
     right: 20px;
     top: 15px;
+    cursor: pointer;
+  }
+  .redact{
+    position: absolute;
+    right: 60px;
+    top: 15px;
+    color: white;
+    cursor: pointer;
+  
   }
 
   @media (min-width: 800px) {
@@ -35,9 +44,6 @@ const PictureLikes = styled.div`
       width: 40px;
       height: 40px;
       border-radius: 50%;
-    }
-    :hover {
-      cursor: pointer;
     }
   }
   .likes {
@@ -74,19 +80,13 @@ const PostInfo = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   width: 80%;
-  height: 250px;
-  padding-bottom: 10px;
   .username {
     font-size: 17px;
     margin-top: 15px;
-    :hover {
-      cursor: pointer;
-    }
   }
   .description {
-    font-size: 15px;
+    font-size: 17px;
     width: 95%;
-    height: 10%;
     word-break: normal;
     margin-top: 10px;
     color: #b7b7b7;
@@ -96,19 +96,18 @@ const PostInfo = styled.div`
     border: 1px solid #ffffff49;
     margin-top: 10px;
     width: 95%;
-    height: 166px;
+    height: 66%;
     border-radius: 10px;
 
     .url-metadata-info {
       display: flex;
-      justify-content: center;
       flex-direction: column;
       padding: 2% 2% 2% 4%;
       width: 68%;
       border-right: 1px solid #ffffff49;
 
       .link-title {
-        font-size: 16px;
+        font-size: 18px;
         color: #cecece;
         margin-bottom: 10px;
       }
