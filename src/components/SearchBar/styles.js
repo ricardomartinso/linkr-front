@@ -6,15 +6,15 @@ const InputBar = styled.input`
   width: 100%;
   height: 45px;
   padding: 0 17px;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 8px;
 
-  font-family: 'Lato';
+  font-family: "Lato";
   font-style: normal;
   font-weight: 400;
   font-size: 19px;
   line-height: 23px;
-  color: #C6C6C6;
+  color: #c6c6c6;
 `;
 
 const SearchContainer = styled.div`

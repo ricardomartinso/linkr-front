@@ -22,6 +22,12 @@ const TopBar = styled.nav`
     letter-spacing: 0.05em;
     color: #ffffff;
   }
+  .searchbar-desktop {
+    display: flex;
+    @media (max-width: 799px) {
+      display: none;
+    }
+  }
 `;
 
 const ProfileImg = styled.img`

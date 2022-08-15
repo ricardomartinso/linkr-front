@@ -5,8 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { getApiUrl } from '../../utils/apiUtils';
 import { InputBar, SearchContainer, SearchResult, SearchResultsPanel } from './styles';
 
-export default function SearchBar() {
-  const [search, setSearch] = useState('');
+
+export default function SearchBar({ className, placeholder }) {
+  const [search, setSearch] = useState("");
   const [usersData, setUsersData] = useState([]);
   const navigate = useNavigate();
 
@@ -15,9 +16,6 @@ export default function SearchBar() {
       return user.username.toLowerCase().includes(search.toLowerCase());
     }) 
   : [];
-
-  console.log("filteredSearch no início")
-  console.log(filteredSearch)
 
   useEffect(() => {
     const API_URL = getApiUrl("users");
@@ -29,9 +27,6 @@ export default function SearchBar() {
       console.log(error);
     });
   }, []);
-
-  console.log("usersData")
-  console.log(usersData)
 
   function goToUserPage(id) {
     navigate(`/user/${id}`)

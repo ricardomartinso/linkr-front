@@ -21,9 +21,7 @@ export default function Sidebar() {
       setSwap(false);
     } else {
       setAlert(true);
-      setText(
-        "There are not hashtags yet"
-      );
+      setText("There are not hashtags yet");
     }
   }
 
@@ -36,8 +34,9 @@ export default function Sidebar() {
       <div className="border-sidebar"></div>
       <div>
         <div className="hashtags">
-
-          {alert ? <Text>{text}</Text> :
+          {alert ? (
+            <Text>{text}</Text>
+          ) : (
             <div>
               {hashtags.map((item, index) => {
                 const spacedHashtag = item.hashtag;
@@ -46,16 +45,20 @@ export default function Sidebar() {
                     key={index}
                     className="hashtag"
                     onClick={() => {
-                      navigate(`/hashtag/${spacedHashtag.substr(1, spacedHashtag.length - 1)}`);
+                      navigate(
+                        `/hashtag/${spacedHashtag.substr(
+                          1,
+                          spacedHashtag.length - 1
+                        )}`
+                      );
                     }}
                   >
                     {spacedHashtag}
                   </p>
                 );
-              }
-              )}
+              })}
             </div>
-          }
+          )}
         </div>
       </div>
     </SidebarStyled>
@@ -63,10 +66,10 @@ export default function Sidebar() {
 }
 
 const Text = styled.div`
-  font-size:15px;
-  padding-top:20px;
-  color:#ffffff;
-`
+  font-size: 15px;
+  padding-top: 20px;
+  color: #ffffff;
+`;
 const SidebarStyled = styled.div`
   display: none;
   @media (min-width: 800px) {
