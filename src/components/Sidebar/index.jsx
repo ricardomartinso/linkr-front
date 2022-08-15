@@ -6,6 +6,7 @@ import getHashtags from "../../data/getHashtags";
 export default function Sidebar() {
   const navigate = useNavigate();
   const [hashtags, setHashtags] = useState([]);
+  const [swap, setSwap] = useState(true);
   const [text, setText] = useState("");
   const [alert, setAlert] = useState(false);
 

@@ -7,6 +7,7 @@ import { useState } from "react";
 import { getApiUrl, getConfig } from "../../utils/apiUtils";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import SearchBar from "../SearchBar";
 
 export default function Header() {
   const { picture, setPicture, token, setUserName, setToken } = useContext(UserContext);
@@ -40,6 +41,7 @@ export default function Header() {
     <>
       <TopBar>
         <h1 className="logo">linkr</h1>
+        <SearchBar />
         <MenuContainer>
           <MenuIcon className={`menu-icon ${menuState}`} onClick={toggleMenu} />
           {picture ?
