@@ -42,7 +42,9 @@ export default function Timeline() {
       <Header></Header>
       <Container>
         <Posts>
-          <Title><h1>Timeline</h1></Title>
+          <Title>
+            <h1>Timeline</h1>
+          </Title>
           {messageError === "" ? (
             <></>
           ) : (
@@ -58,7 +60,6 @@ export default function Timeline() {
               {alert ? (
                 <TextErr>{text}</TextErr>
               ) : (
-
                 <div>
                   {posts?.map((post) => {
                     return (
@@ -124,19 +125,21 @@ const Container = styled.div`
     color: white;
     font-size: 33px;
     margin: 0 0 1.5rem 1.75rem;
+    width: 80%;
   }
   @media (min-width: 800px) {
     h1 {
       font-size: 43px;
+      width: 80%;
     }
   }
 `;
 
 const Title = styled.div`
-  width:100%;
+  width: 90%;
   align-items: center;
   display: flex;
-`
+`;
 const Posts = styled.div`
   display: flex;
   justify-content: center;
@@ -144,7 +147,6 @@ const Posts = styled.div`
   flex-direction: column;
   width: 100%;
   margin-bottom: 10px;
-  
 
   @media (min-width: 800px) {
     width: 611px;

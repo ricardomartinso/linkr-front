@@ -29,11 +29,7 @@ export default function CreatePost({ setPosts, setMessageError }) {
         },
       };
 
-      await axios.post(
-        "https://linkr-backend-30.herokuapp.com/post",
-        post,
-        auth
-      );
+      await axios.post("http://localhost:5000/post", post, auth);
 
       await pullPosts();
       setMessageError("");

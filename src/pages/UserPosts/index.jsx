@@ -6,6 +6,8 @@ import { BallTriangle } from "react-loader-spinner";
 import UserContext from "../../contexts/UserContext";
 import { useParams } from "react-router-dom";
 import getPostsByUser from "../../data/getPostsByUser";
+import Sidebar from "../../components/Sidebar";
+
 export default function UserPosts() {
   const { token } = useContext(UserContext);
   const [posts, setPosts] = useState([]);
@@ -72,6 +74,7 @@ export default function UserPosts() {
             </div>
           )}
         </Posts>
+        <Sidebar />
       </Container>
     </>
   );
@@ -100,7 +103,6 @@ const Loader = styled.div`
   align-items: center;
   margin-top: 130px;
 `;
-
 const Container = styled.div`
   display: flex;
   justify-content: center;
@@ -112,10 +114,12 @@ const Container = styled.div`
     color: white;
     font-size: 33px;
     margin: 0 0 1.5rem 1.75rem;
+    width: 80%;
   }
   @media (min-width: 800px) {
     h1 {
       font-size: 43px;
+      width: 80%;
     }
   }
 `;
@@ -127,7 +131,7 @@ const Posts = styled.div`
   width: 100%;
   margin-bottom: 10px;
   h1 {
-    width: 100%;
+    width: 90%;
     align-items: left;
   }
 

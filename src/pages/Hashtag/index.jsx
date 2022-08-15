@@ -5,7 +5,7 @@ import Post from "../../components/Post";
 import getOneHashtag from "../../data/getOneHashtag";
 import { BallTriangle } from "react-loader-spinner";
 import UserContext from "../../contexts/UserContext";
-import { useParams } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 
 export default function Hashtag() {
   const { token } = useContext(UserContext);
@@ -41,7 +41,9 @@ export default function Hashtag() {
       <Header></Header>
       <Container>
         <Posts>
-          <Title><h1>{'#' + tag}</h1></Title>
+          <Title>
+            <h1>{"#" + tag}</h1>
+          </Title>
           {swap ? (
             <Loader>
               <BallTriangle color="#ffffff" height={100} width={100} />
@@ -72,20 +74,18 @@ export default function Hashtag() {
             </div>
           )}
         </Posts>
-
-
       </Container>
     </>
   );
 }
 
 const Title = styled.div`
-  width:100%;
+  width: 90%;
   align-items: center;
   display: flex;
-  margin-top:22px;
-  margin-bottom:30px;
-`
+  margin-top: 22px;
+  margin-bottom: 30px;
+`;
 
 const TextErr = styled.div`
   display: flex;
@@ -122,10 +122,12 @@ const Container = styled.div`
     color: white;
     font-size: 33px;
     margin: 0 0 1.5rem 1.75rem;
+    width: 80%;
   }
   @media (min-width: 800px) {
     h1 {
       font-size: 43px;
+      width: 80%;
     }
   }
 `;
@@ -136,7 +138,7 @@ const Posts = styled.div`
   flex-direction: column;
   width: 100%;
   margin-bottom: 10px;
-  h1{
+  h1 {
     width: 100%;
     align-items: left;
   }
