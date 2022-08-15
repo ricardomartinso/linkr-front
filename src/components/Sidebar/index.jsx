@@ -1,52 +1,78 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import getHashtags from "../../data/getHashtags";
 
 export default function Sidebar() {
   const navigate = useNavigate();
-  const hashtags = [
-    "#react",
-    "#google",
-    "#google",
-    "#google",
-    "#google",
-    "#google",
-    "#teste",
-    "#javascript",
-    "#dota2",
-  ];
+  const [hashtags, setHashtags] = useState([]);
+  const [text, setText] = useState("");
+  const [alert, setAlert] = useState(false);
+
+  async function pullHashtags() {
+    const { resp: response, status } = await getHashtags();
+    if (status) {
+      if (response.data.length === 0) {
+        setAlert(true);
+      } else {
+        setHashtags(response.data);
+      }
+      setSwap(false);
+    } else {
+      setAlert(true);
+      setText(
+        "There are not hashtags yet"
+      );
+    }
+  }
+
+  useEffect(() => {
+    pullHashtags();
+  }, []);
   return (
     <SidebarStyled>
       <h2>trending</h2>
       <div className="border-sidebar"></div>
       <div>
         <div className="hashtags">
-          {hashtags.map((hashtag, index) => {
-            const spacedHashtag = hashtag.replace("#", "");
-            return (
-              <p
-                key={index}
-                className="hashtag"
-                onClick={() => {
-                  navigate(`/hashtag/${spacedHashtag}`);
-                }}
-              >
-                # {spacedHashtag}
-              </p>
-            );
-          })}
+
+          {alert ? <Text>{text}</Text> :
+            <div>
+              {hashtags.map((item, index) => {
+                const spacedHashtag = item.hashtag;
+                return (
+                  <p
+                    key={index}
+                    className="hashtag"
+                    onClick={() => {
+                      navigate(`/hashtag/${spacedHashtag.substr(1, spacedHashtag.length - 1)}`);
+                    }}
+                  >
+                    {spacedHashtag}
+                  </p>
+                );
+              }
+              )}
+            </div>
+          }
         </div>
       </div>
     </SidebarStyled>
   );
 }
 
+const Text = styled.div`
+  font-size:15px;
+  padding-top:20px;
+  color:#ffffff;
+`
 const SidebarStyled = styled.div`
   display: none;
   @media (min-width: 800px) {
     display: flex;
     flex-direction: column;
     width: 301px;
-    height: 406px;
+    height: 440px;
     background-color: black;
     border-radius: 25px;
     margin-left: 20px;
