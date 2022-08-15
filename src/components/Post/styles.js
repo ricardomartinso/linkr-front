@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Modal from "react-modal";
 
 const PostStyled = styled.div`
   display: flex;
@@ -125,7 +126,7 @@ const PostInfo = styled.div`
         word-wrap: normal;
       }
       .link-url {
-        max-width: 90%;
+        width: 90%;
         margin-top: 10px;
         height: auto;
         white-space: nowrap;
@@ -134,6 +135,12 @@ const PostInfo = styled.div`
         font-size: 13px;
         color: #cecece;
         height: 16px;
+      }
+
+      @media (max-width: 390px) {
+        .link-url {
+          width: 135px;
+        }
       }
     }
 
@@ -167,6 +174,10 @@ const ModalTitle = styled.h2`
   margin-bottom: 25px;
   text-align: center;
   width: 80%;
+
+  @media (max-width: 800px) {
+    font-size: 29px;
+  }
 `;
 const ButtonsDiv = styled.div`
   display: flex;
@@ -186,6 +197,12 @@ const ButtonsDiv = styled.div`
     color: #1877f2;
     font-family: "Lato";
     font-weight: 700;
+    font-size: 16px;
+
+    @media (max-width: 500px) {
+      width: 35%;
+      font-size: 13px;
+    }
   }
   .yes-button {
     width: 137px;
@@ -197,6 +214,11 @@ const ButtonsDiv = styled.div`
     color: #fff;
     font-family: "Lato";
     font-weight: 700;
+    font-size: 16px;
+    @media (max-width: 500px) {
+      width: 35%;
+      font-size: 13px;
+    }
   }
 `;
 const ErrorMessage = styled.div`
@@ -214,6 +236,28 @@ const ErrorMessage = styled.div`
   text-align: center;
   padding: 5px;
 `;
+const ModalStyle = styled(Modal)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  background-color: #333333;
+  width: 94%;
+  border-radius: 30px;
+  height: 262px;
+
+  @media (min-width: 800px) {
+    width: 600px;
+    border-radius: 50px;
+  }
+`;
 
 export {
   PostStyled,
@@ -222,4 +266,5 @@ export {
   ModalTitle,
   ButtonsDiv,
   ErrorMessage,
+  ModalStyle,
 };
