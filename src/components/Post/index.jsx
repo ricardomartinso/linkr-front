@@ -1,9 +1,10 @@
 import { IoHeart } from "react-icons/io5";
 import { IoHeartOutline } from "react-icons/io5";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useCallback, useState } from "react";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 import { IoMdTrash as Trash } from "react-icons/io";
+import { VscEdit as Redact } from 'react-icons/vsc';
 import {
   PostStyled,
   PictureLikes,
@@ -58,6 +59,11 @@ export default function Post({
   const [modalIsOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [isEditDescription, setIsEditDescription] = useState(true);
+  const [editDescription, setEditDescription] = useState(description);
+  const [viewDescription, setViewDescription] = useState(description);
+  const [isAble, setIsAble] = useState(true);
+
   const tagStyle = {
     color: "white",
     fontWeight: "bold",
@@ -74,6 +80,12 @@ export default function Post({
       setIsLiked(true);
     }
   }, [userLiked]);
+
+  const callbackRef = useCallback(inputElement => {
+    if (inputElement) {
+      inputElement.focus();
+    }
+  }, []);
 
   function openModal() {
     setIsOpen(true);
@@ -107,6 +119,56 @@ export default function Post({
       }, 8000);
       console.log(error);
     }
+  }
+
+  async function updatePost() {
+
+    const auth = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const { resp: response, status } = await axios.put(
+        `http://linkr-backend-30.herokuapp.com/post/${postId}`, { description: editDescription }, auth
+      );
+
+      return status;
+
+    } catch (error) {
+      return error.response.status;
+    }
+
+  }
+  function editText() {
+    setEditDescription(viewDescription);
+    setIsEditDescription(!isEditDescription);
+
+  }
+
+  async function closeTextArea(e) {
+
+    if (e.keyCode === 27) {
+      setEditDescription(viewDescription);
+      setIsEditDescription(true);
+    }
+    else if (e.keyCode === 13) {
+        setIsAble(false)
+      if (await updatePost() === 200) {
+        setViewDescription(editDescription);
+        setIsAble(true);
+        setIsEditDescription(true);
+      } else {
+        alert("falha ao atualizar descrição");
+        setIsAble(true);
+      }
+
+    }
+  }
+
+  function focusEnd(e) {
+    e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)
   }
 
   function likePost() {
@@ -241,18 +303,30 @@ export default function Post({
           </div>
         </PictureLikes>
         {username === userName ? (
-          <Trash
-            fontSize={"20px"}
-            className="trash"
-            onClick={() => {
-              openModal();
-            }}
-          />
+          <>
+            <Redact
+              fontSize={"20px"}
+              className="redact"
+              onClick={() => {
+                editText();
+              }}
+            />
+
+            <Trash
+              fontSize={"20px"}
+              className="trash"
+              onClick={() => {
+                openModal();
+              }}
+            />
+          </>
+
         ) : (
           <></>
         )}
 
         <PostInfo>
+
           <div
             className="username"
             onClick={() => {
@@ -261,7 +335,8 @@ export default function Post({
           >
             {username}
           </div>
-          <div className="description">
+
+          {isEditDescription ? <div className="description">
             <ReactTagify
               tagStyle={tagStyle}
               tagClicked={(e) => {
@@ -269,9 +344,36 @@ export default function Post({
                 navigate(`/hashtag/${hashtagWithoutHash}`);
               }}
             >
-              {description}
+              {viewDescription}
             </ReactTagify>
-          </div>
+          </div> :
+
+            isAble ?
+              <textarea onFocus={e => focusEnd(e)} onKeyDown={e => closeTextArea(e)} ref={callbackRef} className="description" onChange={(e) => { setEditDescription(e.target.value) }} value={editDescription}>
+                <ReactTagify
+                  tagStyle={tagStyle}
+                  tagClicked={(e) => {
+                    const hashtagWithoutHash = e.replace("#", "");
+                    navigate(`/hashtag/${hashtagWithoutHash}`);
+                  }}
+                >
+                </ReactTagify>
+              </textarea>
+              :
+              <textarea disabled onFocus={e => focusEnd(e)} onKeyDown={e => closeTextArea(e)} ref={callbackRef} className="description" onChange={(e) => { setEditDescription(e.target.value) }} value={editDescription}>
+                <ReactTagify
+                  tagStyle={tagStyle}
+                  tagClicked={(e) => {
+                    const hashtagWithoutHash = e.replace("#", "");
+                    navigate(`/hashtag/${hashtagWithoutHash}`);
+                  }}
+                >
+                </ReactTagify>
+              </textarea>
+
+          }
+
+
           <div className="link" onClick={() => routeChange(link.url)}>
             <div className="url-metadata-info">
               <div className="link-title">{link.title}</div>
