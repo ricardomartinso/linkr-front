@@ -68,6 +68,7 @@ export default function Timeline() {
                         picture={post.user.picture}
                         likes={post.postLikes.count}
                         userLiked={post.postLikes.isLiked}
+                        latestLikes={post.postLikes.usernameList}
                         username={post.user.username}
                         description={post.description}
                         link={post.link}
