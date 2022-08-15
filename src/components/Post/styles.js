@@ -151,6 +151,7 @@ const PostInfo = styled.div`
   @media (min-width: 800px) {
     font-size: 20px;
     width: 562px;
+    height: 300px;
     .link {
       border: 1px solid #ffffff49;
       border-radius: 10px;
