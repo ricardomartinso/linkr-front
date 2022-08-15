@@ -17,7 +17,6 @@ export default function Timeline() {
   const [text, setText] = useState("There are no posts yet");
 
   async function pullPosts() {
-    console.log("carregou os posts");
     const { resp: response, status } = await getPosts(token);
     if (status) {
       if (response.data.length === 0) {
@@ -59,6 +58,7 @@ export default function Timeline() {
               {alert ? (
                 <TextErr>{text}</TextErr>
               ) : (
+
                 <div>
                   {posts?.map((post) => {
                     return (

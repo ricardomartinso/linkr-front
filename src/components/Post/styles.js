@@ -16,13 +16,12 @@ const PostStyled = styled.div`
     top: 15px;
     cursor: pointer;
   }
-  .redact{
+  .redact {
     position: absolute;
     right: 60px;
     top: 15px;
     color: white;
     cursor: pointer;
-  
   }
 
   @media (min-width: 800px) {
@@ -80,12 +79,14 @@ const PostInfo = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   width: 80%;
+  height: 250px;
+  padding-bottom: 10px;
   .username {
     font-size: 17px;
     margin-top: 15px;
   }
   .description {
-    font-size: 17px;
+    font-size: 15px;
     width: 95%;
     word-break: normal;
     margin-top: 10px;
@@ -96,18 +97,19 @@ const PostInfo = styled.div`
     border: 1px solid #ffffff49;
     margin-top: 10px;
     width: 95%;
-    height: 66%;
+    height: 166px;
     border-radius: 10px;
 
     .url-metadata-info {
       display: flex;
       flex-direction: column;
+      justify-content: center;
       padding: 2% 2% 2% 4%;
       width: 68%;
       border-right: 1px solid #ffffff49;
 
       .link-title {
-        font-size: 18px;
+        font-size: 16px;
         color: #cecece;
         margin-bottom: 10px;
       }
@@ -148,7 +150,7 @@ const PostInfo = styled.div`
 
   @media (min-width: 800px) {
     font-size: 20px;
-
+    width: 562px;
     .link {
       border: 1px solid #ffffff49;
       border-radius: 10px;

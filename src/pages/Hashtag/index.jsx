@@ -41,7 +41,7 @@ export default function Hashtag() {
       <Header></Header>
       <Container>
         <Posts>
-          <h1>{'#' + tag}</h1>
+          <Title><h1>{'#' + tag}</h1></Title>
           {swap ? (
             <Loader>
               <BallTriangle color="#ffffff" height={100} width={100} />
@@ -78,6 +78,14 @@ export default function Hashtag() {
     </>
   );
 }
+
+const Title = styled.div`
+  width:100%;
+  align-items: center;
+  display: flex;
+  margin-top:22px;
+  margin-bottom:30px;
+`
 
 const TextErr = styled.div`
   display: flex;
