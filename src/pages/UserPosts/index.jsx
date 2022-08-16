@@ -7,6 +7,7 @@ import UserContext from "../../contexts/UserContext";
 import { useParams } from "react-router-dom";
 import getPostsByUser from "../../data/getPostsByUser";
 import Sidebar from "../../components/Sidebar";
+import SearchBar from "../../components/SearchBar";
 
 export default function UserPosts() {
   const { token } = useContext(UserContext);
@@ -45,6 +46,10 @@ export default function UserPosts() {
       <Header></Header>
       <Container>
         <Posts>
+          <SearchBar
+            className="searchbar-mobile"
+            placeholder="Search for people and friends"
+          />
           <h1>{pageName} posts</h1>
           {swap ? (
             <Loader>
@@ -140,5 +145,13 @@ const Posts = styled.div`
 
   @media (min-width: 800px) {
     width: 611px;
+  }
+  .searchbar-mobile {
+    display: none;
+    @media (max-width: 799px) {
+      display: flex;
+      width: 90%;
+      margin: 5px 0 30px 0;
+    }
   }
 `;

@@ -6,6 +6,7 @@ import getOneHashtag from "../../data/getOneHashtag";
 import { BallTriangle } from "react-loader-spinner";
 import UserContext from "../../contexts/UserContext";
 import { useParams } from "react-router-dom";
+import SearchBar from "../../components/SearchBar";
 
 export default function Hashtag() {
   const { token } = useContext(UserContext);
@@ -41,6 +42,10 @@ export default function Hashtag() {
       <Header></Header>
       <Container>
         <Posts>
+          <SearchBar
+            className="searchbar-mobile"
+            placeholder="Search for people and friends"
+          />
           <Title>
             <h1>{"#" + tag}</h1>
           </Title>
@@ -145,5 +150,14 @@ const Posts = styled.div`
 
   @media (min-width: 800px) {
     width: 611px;
+  }
+
+  .searchbar-mobile {
+    display: none;
+    @media (max-width: 799px) {
+      display: flex;
+      width: 90%;
+      margin: 5px 0 30px 0;
+    }
   }
 `;
