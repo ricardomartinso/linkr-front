@@ -14,7 +14,7 @@ export default function Timeline() {
   const [posts, setPosts] = useState([]);
   const [swap, setSwap] = useState(true);
   const [alert, setAlert] = useState(false);
-  const [text, setText] = useState("There are no posts yet");
+  const [text, setText] = useState("No posts found from your friends");
 
   async function pullPosts() {
     const { resp: response, status } = await getPosts(token);
@@ -27,8 +27,9 @@ export default function Timeline() {
       setSwap(false);
     } else {
       setAlert(true);
+      setSwap(false);
       setText(
-        "An error occured while trying to fetch the posts, please refresh the page"
+        response.response.data
       );
     }
   }
@@ -62,7 +63,7 @@ export default function Timeline() {
           ) : (
             <div>
               {alert ? (
-                <TextErr>{text}</TextErr>
+                <TextErr><p>{text}</p></TextErr>
               ) : (
                 <div>
                   {posts?.map((post) => {
@@ -108,8 +109,17 @@ const TextErr = styled.div`
   width: 300px;
   font-size: 16px;
   height: 120px;
-  padding: 0px 18px;
+  padding: 10px;
   line-height: 20px;
+  p{
+    border: 1px solid #ffffff;
+    width: 100%;
+    display: flex;
+    height:100%;
+    justify-content:center;
+    align-items:center;
+    border-radius: 6px;
+  }
 `;
 
 const Loader = styled.div`
