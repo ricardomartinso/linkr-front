@@ -14,14 +14,16 @@ export default function UserPosts() {
   const [swap, setSwap] = useState(true);
   const [alert, setAlert] = useState(false);
   const [text, setText] = useState("There are not posts yet");
-  const { username } = useParams();
+  const [pageName, setPageName] = useState("");
+  const { id } = useParams();
 
   async function pullPosts() {
-    const { resp: response, status } = await getPostsByUser(username);
+    const { resp: response, status } = await getPostsByUser(id);
     if (status) {
       if (response.data.length === 0) {
         setAlert(true);
       } else {
+        setPageName(response.data[0].user.username);
         console.log(response.data);
         setPosts(response.data);
       }
@@ -43,7 +45,7 @@ export default function UserPosts() {
       <Header></Header>
       <Container>
         <Posts>
-          <h1>{username} posts</h1>
+          <h1>{pageName} posts</h1>
           {swap ? (
             <Loader>
               <BallTriangle color="#ffffff" height={100} width={100} />
@@ -59,6 +61,7 @@ export default function UserPosts() {
                       <Post
                         key={post.id}
                         postId={post.id}
+                        userId={post.user.id}
                         picture={post.user.picture}
                         likes={post.postLikes.count}
                         username={post.user.username}

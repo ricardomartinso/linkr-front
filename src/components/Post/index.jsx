@@ -54,6 +54,7 @@ export default function Post({
   postId,
   setPosts,
   pullPosts,
+  userId,
 }) {
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
@@ -332,7 +333,7 @@ export default function Post({
           <div
             className="username"
             onClick={() => {
-              navigate(`/user/${username}`);
+              navigate(`/user/${userId}`);
             }}
           >
             {username}

@@ -70,6 +70,7 @@ export default function Timeline() {
                       <Post
                         key={post.id}
                         postId={post.id}
+                        userId={post.user.id}
                         picture={post.user.picture}
                         likes={post.postLikes.count}
                         userLiked={post.postLikes.isLiked}
