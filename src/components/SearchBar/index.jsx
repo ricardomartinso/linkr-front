@@ -6,6 +6,7 @@ import { getApiUrl } from "../../utils/apiUtils";
 import {
   InputBar,
   SearchContainer,
+  DivOpac,
   SearchResult,
   SearchResultsPanel,
 } from "./styles";
@@ -18,8 +19,8 @@ export default function SearchBar({ className, placeholder }) {
   const filteredSearch =
     search.length >= 3
       ? usersData.filter((user) => {
-          return user.username.toLowerCase().includes(search.toLowerCase());
-        })
+        return user.username.toLowerCase().includes(search.toLowerCase());
+      })
       : [];
 
   useEffect(() => {
@@ -42,6 +43,7 @@ export default function SearchBar({ className, placeholder }) {
     console.log(filteredSearch);
     if (search.length >= 3) {
       return filteredSearch.length > 0 ? (
+
         <SearchResultsPanel>
           {filteredSearch.map((user, index) => {
             return (
@@ -52,6 +54,7 @@ export default function SearchBar({ className, placeholder }) {
             );
           })}
         </SearchResultsPanel>
+
       ) : (
         <SearchResultsPanel>
           <SearchResult>Nenhum usuário encontrado</SearchResult>

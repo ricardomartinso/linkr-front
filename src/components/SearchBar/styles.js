@@ -32,6 +32,20 @@ const SearchContainer = styled.div`
   background-color: transparent;
 `;
 
+const DivOpac = styled.div`
+  display: flex;
+  position: fixed;
+  top: 16px;
+  left: 30%;
+  z-index: 2;
+  flex-direction: column;
+  align-items: center;
+  width: 40%;
+  max-width: 600px;
+  height: 100vh;
+  background-color: transparent;
+`;
+
 const SearchResultsPanel = styled.div`
   display: flex;
   flex-direction: column;
