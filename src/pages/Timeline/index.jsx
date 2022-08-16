@@ -8,6 +8,7 @@ import CreatePost from "../../components/FormSubmitPost";
 import { BallTriangle } from "react-loader-spinner";
 import UserContext from "../../contexts/UserContext";
 import SearchBar from "../../components/SearchBar";
+import SearchBarMobile from "../../components/SearchBar/SearchBarMobile";
 export default function Timeline() {
   const { token } = useContext(UserContext);
   const [messageError, setMessageError] = useState("");
@@ -42,10 +43,7 @@ export default function Timeline() {
       <Header></Header>
       <Container>
         <Posts>
-          <SearchBar
-            className="searchbar-mobile"
-            placeholder="Search for people and friends"
-          />
+          <SearchBarMobile />
           <Title>
             <h1>Timeline</h1>
           </Title>
@@ -130,23 +128,24 @@ const Container = styled.div`
     color: white;
     font-size: 33px;
     margin: 0 0 1.5rem 1.75rem;
-    width: 80%;
+    width: 100%;
   }
 
   @media (min-width: 800px) {
     h1 {
       font-size: 43px;
-      width: 80%;
+      width: 100%;
     }
   }
 `;
 
 const Title = styled.div`
-  width: 90%;
+  width: 100%;
   margin-top: 60px;
   align-items: center;
   display: flex;
 `;
+
 const Posts = styled.div`
   display: flex;
   justify-content: center;
@@ -157,16 +156,6 @@ const Posts = styled.div`
 
   @media (min-width: 800px) {
     width: 611px;
-  }
-  .searchbar-mobile {
-    display: none;
-    @media (max-width: 799px) {
-      display: flex;
-      width:100%;
-      top:70px;
-      left:0px;
-      margin: 5px 0 30px 0;
-    }
   }
 `;
 
