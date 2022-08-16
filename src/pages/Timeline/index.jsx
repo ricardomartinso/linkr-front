@@ -143,6 +143,7 @@ const Container = styled.div`
 
 const Title = styled.div`
   width: 90%;
+  margin-top: 60px;
   align-items: center;
   display: flex;
 `;
@@ -161,7 +162,9 @@ const Posts = styled.div`
     display: none;
     @media (max-width: 799px) {
       display: flex;
-      width: 90%;
+      width:100%;
+      top:70px;
+      left:0px;
       margin: 5px 0 30px 0;
     }
   }
