@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useState, useContext, useEffect, useInsertionEffect } from "react";
+import useInterval from "use-interval";
 import Header from "../../components/Header";
 import Post from "../../components/Post";
 import getPosts from "../../data/getPosts.jsx";
@@ -8,6 +9,10 @@ import CreatePost from "../../components/FormSubmitPost";
 import { BallTriangle } from "react-loader-spinner";
 import UserContext from "../../contexts/UserContext";
 import SearchBar from "../../components/SearchBar";
+import axios from "axios";
+import { getApiUrl } from "../../utils/apiUtils";
+import ReloadPosts from "../../components/ReloadPosts";
+
 export default function Timeline() {
   const { token } = useContext(UserContext);
   const [messageError, setMessageError] = useState("");
@@ -15,6 +20,7 @@ export default function Timeline() {
   const [swap, setSwap] = useState(true);
   const [alert, setAlert] = useState(false);
   const [text, setText] = useState("There are no posts yet");
+  const [newPosts, setNewPosts] = useState(0);
 
   async function pullPosts() {
     const { resp: response, status } = await getPosts(token);
@@ -37,6 +43,21 @@ export default function Timeline() {
     pullPosts();
   }, []);
 
+  useInterval(() => {
+    console.log("rodou 15seg");
+    const API_URL = getApiUrl(`posts`);
+    const promise = axios.get(API_URL);
+    promise.then((res) => {
+      const updatedPosts = res.data;
+      const oldPosts = posts;
+      if (updatedPosts.length > oldPosts.length) {
+        const newPosts = updatedPosts.length - oldPosts.length;
+        setNewPosts(newPosts);
+        console.log(`Há ${newPosts} novos!`);
+      }
+    });
+  }, 15000);
+
   return (
     <>
       <Header></Header>
@@ -55,6 +76,7 @@ export default function Timeline() {
             <PopUpError>{messageError}</PopUpError>
           )}
           <CreatePost setPosts={setPosts} setMessageError={setMessageError} />
+          {newPosts >= 1 ? <ReloadPosts newPosts={newPosts} /> : <></>}
           {swap ? (
             <Loader>
               <BallTriangle color="#ffffff" height={100} width={100} />
