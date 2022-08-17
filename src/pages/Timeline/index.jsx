@@ -12,6 +12,7 @@ import SearchBar from "../../components/SearchBar";
 import axios from "axios";
 import { getApiUrl } from "../../utils/apiUtils";
 import ReloadPosts from "../../components/ReloadPosts";
+import SearchBarMobile from "../../components/SearchBar/SearchBarMobile";
 
 export default function Timeline() {
   const { token } = useContext(UserContext);
@@ -23,6 +24,8 @@ export default function Timeline() {
   const [reload, setReload] = useState(0);
   const [oldPosts, setOldPosts] = useState([]);
   const [newPosts, setNewPosts] = useState([]);
+  const [text, setText] = useState("No posts found from your friends");
+
 
   async function pullPosts() {
     const { resp: response, status } = await getPosts(token);
@@ -35,8 +38,9 @@ export default function Timeline() {
       setSwap(false);
     } else {
       setAlert(true);
+      setSwap(false);
       setText(
-        "An error occured while trying to fetch the posts, please refresh the page"
+        response.response.data
       );
     }
   }
@@ -85,10 +89,7 @@ export default function Timeline() {
       <Header></Header>
       <Container>
         <Posts>
-          <SearchBar
-            className="searchbar-mobile"
-            placeholder="Search for people and friends"
-          />
+          <SearchBarMobile />
           <Title>
             <h1>Timeline</h1>
           </Title>
@@ -114,7 +115,7 @@ export default function Timeline() {
           ) : (
             <div>
               {alert ? (
-                <TextErr>{text}</TextErr>
+                <TextErr><p>{text}</p></TextErr>
               ) : (
                 <div>
                   {posts?.map((post) => {
@@ -160,8 +161,17 @@ const TextErr = styled.div`
   width: 300px;
   font-size: 16px;
   height: 120px;
-  padding: 0px 18px;
+  padding: 10px;
   line-height: 20px;
+  p{
+    border: 1px solid #ffffff;
+    width: 100%;
+    display: flex;
+    height:100%;
+    justify-content:center;
+    align-items:center;
+    border-radius: 6px;
+  }
 `;
 
 const Loader = styled.div`
@@ -182,22 +192,24 @@ const Container = styled.div`
     color: white;
     font-size: 33px;
     margin: 0 0 1.5rem 1.75rem;
-    width: 80%;
+    width: 100%;
   }
 
   @media (min-width: 800px) {
     h1 {
       font-size: 43px;
-      width: 80%;
+      width: 100%;
     }
   }
 `;
 
 const Title = styled.div`
-  width: 90%;
+  width: 100%;
+  margin-top: 60px;
   align-items: center;
   display: flex;
 `;
+
 const Posts = styled.div`
   display: flex;
   justify-content: center;
@@ -208,14 +220,6 @@ const Posts = styled.div`
 
   @media (min-width: 800px) {
     width: 611px;
-  }
-  .searchbar-mobile {
-    display: none;
-    @media (max-width: 799px) {
-      display: flex;
-      width: 90%;
-      margin: 5px 0 30px 0;
-    }
   }
 `;
 

@@ -47,6 +47,7 @@ const MenuContainer = styled.div`
   justify-content: center;
   width: fit-content;
   height: auto;
+
   gap: 0.75rem;
 
   .menu-icon {

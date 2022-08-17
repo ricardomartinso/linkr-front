@@ -8,6 +8,7 @@ const InputBar = styled.input`
   padding: 0 17px;
   background: #ffffff;
   border-radius: 8px;
+  border: solid 1px #151515;
 
   font-family: "Lato";
   font-style: normal;
@@ -19,13 +20,24 @@ const InputBar = styled.input`
 
 const SearchContainer = styled.div`
   display: flex;
+  position: fixed;
+  top: 16px;
+  left: 30%;
+  z-index: 2;
   flex-direction: column;
   align-items: center;
   width: 40%;
-  max-width: 563px;
+  max-width: 600px;
   height: auto;
   max-height: 176px;
-  background-color: transparent;
+  background-color: #e7e7e7;
+  border-radius: 8px;
+
+  @media(max-width: 560px){
+    &.searchbar-mobile{
+      width: 80%;
+    }
+  }
 `;
 
 const SearchResultsPanel = styled.div`
@@ -39,7 +51,14 @@ const SearchResultsPanel = styled.div`
   max-width: 563px;
   height: auto;
   max-height: 131px;
-  background-color:  #E7E7E7;
+  background-color: #e7e7e7;
+  border: 1px solid #e7e7e7;
+  border-radius: 0px 0px 5px 5px;
+
+  @media (max-width: 799px) {
+    width: 100%;
+    max-width: none;
+  }
 `;
 
 const SearchResult = styled.div`
@@ -49,26 +68,26 @@ const SearchResult = styled.div`
   height: auto;
   gap: 12px;
   padding-left: 4px;
-  background-color:  #E7E7E7;
+  background-color: #e7e7e7;
 
-  font-family: 'Lato';
+  font-family: "Lato";
   font-style: normal;
   font-weight: 400;
   font-size: 19px;
   line-height: 23px;
   color: #515151;
 
-  img{
+  img {
     width: 39px;
     height: 39px;
     border-radius: 100%;
     object-fit: cover;
   }
 
-  &:hover{
+  &:hover {
     cursor: pointer;
     filter: brightness(0.6);
   }
 `;
 
-export {InputBar, SearchContainer, SearchResultsPanel, SearchResult}
+export { InputBar, SearchContainer, SearchResultsPanel, SearchResult };
