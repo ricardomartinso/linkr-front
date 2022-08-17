@@ -1,12 +1,11 @@
 import styled from "styled-components";
 import { IoReload } from "react-icons/io5";
 
-export default function ReloadPosts({ reload, reloadFunction, pullPosts }) {
+export default function ReloadPosts({ reload, reloadFunction }) {
   return (
     <Button
       onClick={() => {
-        reloadFunction;
-        pullPosts;
+        reloadFunction();
       }}
     >
       {reload} new posts, load more! <ReloadStyled />
