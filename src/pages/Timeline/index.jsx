@@ -24,8 +24,6 @@ export default function Timeline() {
   const [reload, setReload] = useState(0);
   const [oldPosts, setOldPosts] = useState([]);
   const [newPosts, setNewPosts] = useState([]);
-  const [text, setText] = useState("No posts found from your friends");
-
 
   async function pullPosts() {
     const { resp: response, status } = await getPosts(token);
@@ -39,9 +37,7 @@ export default function Timeline() {
     } else {
       setAlert(true);
       setSwap(false);
-      setText(
-        response.response.data
-      );
+      setText(response.response.data);
     }
   }
   async function postsToReload() {
@@ -115,7 +111,9 @@ export default function Timeline() {
           ) : (
             <div>
               {alert ? (
-                <TextErr><p>{text}</p></TextErr>
+                <TextErr>
+                  <p>{text}</p>
+                </TextErr>
               ) : (
                 <div>
                   {posts?.map((post) => {
@@ -163,13 +161,13 @@ const TextErr = styled.div`
   height: 120px;
   padding: 10px;
   line-height: 20px;
-  p{
+  p {
     border: 1px solid #ffffff;
     width: 100%;
     display: flex;
-    height:100%;
-    justify-content:center;
-    align-items:center;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
     border-radius: 6px;
   }
 `;
