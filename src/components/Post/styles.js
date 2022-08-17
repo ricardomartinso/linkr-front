@@ -3,31 +3,39 @@ import Modal from "react-modal";
 
 const PostStyled = styled.div`
   display: flex;
+  flex-direction: column;
   position: relative;
   width: 100%;
-  height: 250px;
-  background-color: black;
+  background: #1e1e1e;
+  border-radius: 10px;
   color: white;
-  margin-bottom: 18px;
   font-family: "Lato";
+  margin-bottom: 20px;
 
-  .trash {
-    position: absolute;
-    right: 20px;
-    top: 15px;
-    cursor: pointer;
-  }
-  .redact {
-    position: absolute;
-    right: 60px;
-    top: 15px;
-    color: white;
-    cursor: pointer;
+  .post-information {
+    display: flex;
+    border-radius: 10px;
+    background-color: black;
+
+    .trash {
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      cursor: pointer;
+    }
+    .redact {
+      position: absolute;
+      right: 60px;
+      top: 15px;
+      color: white;
+      cursor: pointer;
+    }
   }
 
   @media (min-width: 800px) {
-    height: 276px;
-    border-radius: 10px;
+    .post-information {
+      height: 276px;
+    }
   }
 `;
 const PictureLikes = styled.div`
@@ -59,6 +67,16 @@ const PictureLikes = styled.div`
   .like-icon:hover {
     cursor: pointer;
   }
+  .comments {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+
+    p {
+      margin-top: 4px;
+    }
+  }
 
   @media (min-width: 800px) {
     .picture {
@@ -81,7 +99,7 @@ const PostInfo = styled.div`
   justify-content: flex-start;
   width: 80%;
   height: 250px;
-  padding-bottom: 10px;
+
   .username {
     font-size: 17px;
     margin-top: 15px;
@@ -158,7 +176,7 @@ const PostInfo = styled.div`
   @media (min-width: 800px) {
     font-size: 20px;
     width: 562px;
-    height: 300px;
+    height: 276px;
     .link {
       border: 1px solid #ffffff49;
       border-radius: 10px;
@@ -258,6 +276,45 @@ const ModalStyle = styled(Modal)`
     border-radius: 50px;
   }
 `;
+const Comments = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  border-radius: 10px;
+  background: #1e1e1e;
+  color: white;
+  font-family: "Lato";
+`;
+const Comment = styled.div`
+  display: flex;
+  align-items: center;
+  width: 90%;
+  border-bottom: 1px solid #353535;
+  height: 70px;
+  .comment-picture {
+    img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+
+    margin-right: 20px;
+  }
+  .comment-info {
+    .comment-user {
+      font-size: 14px;
+      color: white;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+    .comment-text {
+      font-size: 14px;
+      font-weight: 400;
+      color: #acacac;
+    }
+  }
+`;
 
 export {
   PostStyled,
@@ -267,4 +324,6 @@ export {
   ButtonsDiv,
   ErrorMessage,
   ModalStyle,
+  Comments,
+  Comment,
 };

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState, useContext, useEffect, useInsertionEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import useInterval from "use-interval";
 import Header from "../../components/Header";
 import Post from "../../components/Post";
@@ -23,7 +23,6 @@ export default function Timeline() {
   const [text, setText] = useState("There are no posts yet");
   const [reload, setReload] = useState(0);
   const [oldPosts, setOldPosts] = useState([]);
-  const [newPosts, setNewPosts] = useState([]);
 
   async function pullPosts() {
     const { resp: response, status } = await getPosts(token);
