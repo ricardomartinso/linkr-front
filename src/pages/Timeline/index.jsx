@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useState, useContext, useEffect, useInsertionEffect } from "react";
+import useInterval from "use-interval";
 import Header from "../../components/Header";
 import Post from "../../components/Post";
 import getPosts from "../../data/getPosts.jsx";
@@ -8,14 +9,23 @@ import CreatePost from "../../components/FormSubmitPost";
 import { BallTriangle } from "react-loader-spinner";
 import UserContext from "../../contexts/UserContext";
 import SearchBar from "../../components/SearchBar";
+import axios from "axios";
+import { getApiUrl } from "../../utils/apiUtils";
+import ReloadPosts from "../../components/ReloadPosts";
 import SearchBarMobile from "../../components/SearchBar/SearchBarMobile";
+
 export default function Timeline() {
   const { token } = useContext(UserContext);
   const [messageError, setMessageError] = useState("");
   const [posts, setPosts] = useState([]);
   const [swap, setSwap] = useState(true);
   const [alert, setAlert] = useState(false);
+  const [text, setText] = useState("There are no posts yet");
+  const [reload, setReload] = useState(0);
+  const [oldPosts, setOldPosts] = useState([]);
+  const [newPosts, setNewPosts] = useState([]);
   const [text, setText] = useState("No posts found from your friends");
+
 
   async function pullPosts() {
     const { resp: response, status } = await getPosts(token);
@@ -34,10 +44,45 @@ export default function Timeline() {
       );
     }
   }
+  async function postsToReload() {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const API_URL = getApiUrl(`posts/reload`);
+    const promise = axios.get(API_URL, config);
+
+    promise.then((res) => {
+      setOldPosts(res.data);
+    });
+  }
 
   useEffect(() => {
     pullPosts();
+    postsToReload();
   }, []);
+
+  useInterval(() => {
+    console.log("rodou 15seg");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const API_URL = getApiUrl(`posts/reload`);
+    const promise = axios.get(API_URL, config);
+
+    promise.then((res) => {
+      const updatedPosts = res.data;
+
+      if (updatedPosts.length > oldPosts.length) {
+        const reload = updatedPosts.length - oldPosts.length;
+        setReload(reload);
+        console.log(`Há ${reload} novos!`);
+      }
+    });
+  }, 15000);
 
   return (
     <>
@@ -54,6 +99,15 @@ export default function Timeline() {
             <PopUpError>{messageError}</PopUpError>
           )}
           <CreatePost setPosts={setPosts} setMessageError={setMessageError} />
+          {reload >= 1 ? (
+            <ReloadPosts
+              reload={reload}
+              reloadFunction={postsToReload}
+              pullPosts={pullPosts}
+            />
+          ) : (
+            <></>
+          )}
           {swap ? (
             <Loader>
               <BallTriangle color="#ffffff" height={100} width={100} />
