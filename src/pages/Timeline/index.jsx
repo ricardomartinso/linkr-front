@@ -31,6 +31,8 @@ export default function Timeline() {
       if (response.data.length === 0) {
         setAlert(true);
       } else {
+        await postsToReload();
+        setReload(0);
         setPosts(response.data);
       }
       setSwap(false);
@@ -56,7 +58,6 @@ export default function Timeline() {
 
   useEffect(() => {
     pullPosts();
-    postsToReload();
   }, []);
 
   useInterval(() => {
@@ -98,8 +99,9 @@ export default function Timeline() {
           {reload >= 1 ? (
             <ReloadPosts
               reload={reload}
-              reloadFunction={postsToReload}
-              pullPosts={pullPosts}
+              reloadFunction={pullPosts}
+              //recarregar posts with pull posts
+              //setOldPosts(res.data)
             />
           ) : (
             <></>
