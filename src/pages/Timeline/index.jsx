@@ -8,7 +8,6 @@ import Sidebar from "../../components/Sidebar";
 import CreatePost from "../../components/FormSubmitPost";
 import { BallTriangle } from "react-loader-spinner";
 import UserContext from "../../contexts/UserContext";
-import SearchBar from "../../components/SearchBar";
 import axios from "axios";
 import { getApiUrl } from "../../utils/apiUtils";
 import ReloadPosts from "../../components/ReloadPosts";
@@ -66,6 +65,7 @@ export default function Timeline() {
         Authorization: `Bearer ${token}`,
       },
     };
+    
     const API_URL = getApiUrl(`posts/reload`);
     const promise = axios.get(API_URL, config);
 
