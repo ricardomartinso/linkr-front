@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useState, useContext, useEffect } from "react";
+import useInterval from "use-interval";
 import Header from "../../components/Header";
 import Post from "../../components/Post";
 import getPosts from "../../data/getPosts.jsx";
@@ -7,6 +8,9 @@ import Sidebar from "../../components/Sidebar";
 import CreatePost from "../../components/FormSubmitPost";
 import { BallTriangle } from "react-loader-spinner";
 import UserContext from "../../contexts/UserContext";
+import axios from "axios";
+import { getApiUrl } from "../../utils/apiUtils";
+import ReloadPosts from "../../components/ReloadPosts";
 import SearchBarMobile from "../../components/SearchBar/SearchBarMobile";
 
 export default function Timeline() {
@@ -15,7 +19,9 @@ export default function Timeline() {
   const [posts, setPosts] = useState([]);
   const [swap, setSwap] = useState(true);
   const [alert, setAlert] = useState(false);
-  const [text, setText] = useState("No posts found from your friends");
+  const [text, setText] = useState("There are no posts yet");
+  const [reload, setReload] = useState(0);
+  const [oldPosts, setOldPosts] = useState([]);
 
   async function pullPosts() {
     const { resp: response, status } = await getPosts(token);
@@ -23,21 +29,55 @@ export default function Timeline() {
       if (response.data.length === 0) {
         setAlert(true);
       } else {
+        await postsToReload();
+        setReload(0);
         setPosts(response.data);
       }
       setSwap(false);
     } else {
       setAlert(true);
       setSwap(false);
-      setText(
-        response.response.data
-      );
+      setText(response.response.data);
     }
+  }
+  async function postsToReload() {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const API_URL = getApiUrl(`posts/reload`);
+    const promise = axios.get(API_URL, config);
+
+    promise.then((res) => {
+      setOldPosts(res.data);
+    });
   }
 
   useEffect(() => {
     pullPosts();
   }, []);
+
+  useInterval(() => {
+    console.log("rodou 15seg");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const API_URL = getApiUrl(`posts/reload`);
+    const promise = axios.get(API_URL, config);
+
+    promise.then((res) => {
+      const updatedPosts = res.data;
+
+      if (updatedPosts.length > oldPosts.length) {
+        const reload = updatedPosts.length - oldPosts.length;
+        setReload(reload);
+        console.log(`Há ${reload} novos!`);
+      }
+    });
+  }, 15000);
 
   return (
     <>
@@ -54,6 +94,16 @@ export default function Timeline() {
             <PopUpError>{messageError}</PopUpError>
           )}
           <CreatePost setPosts={setPosts} setMessageError={setMessageError} />
+          {reload >= 1 ? (
+            <ReloadPosts
+              reload={reload}
+              reloadFunction={pullPosts}
+              //recarregar posts with pull posts
+              //setOldPosts(res.data)
+            />
+          ) : (
+            <></>
+          )}
           {swap ? (
             <Loader>
               <BallTriangle color="#ffffff" height={100} width={100} />
@@ -61,7 +111,9 @@ export default function Timeline() {
           ) : (
             <div>
               {alert ? (
-                <TextErr><p>{text}</p></TextErr>
+                <TextErr>
+                  <p>{text}</p>
+                </TextErr>
               ) : (
                 <div>
                   {posts?.map((post) => {
@@ -109,13 +161,13 @@ const TextErr = styled.div`
   height: 120px;
   padding: 10px;
   line-height: 20px;
-  p{
+  p {
     border: 1px solid #ffffff;
     width: 100%;
     display: flex;
-    height:100%;
-    justify-content:center;
-    align-items:center;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
     border-radius: 6px;
   }
 `;
