@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState, useContext, useEffect, useInsertionEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import useInterval from "use-interval";
 import Header from "../../components/Header";
 import Post from "../../components/Post";
@@ -8,7 +8,6 @@ import Sidebar from "../../components/Sidebar";
 import CreatePost from "../../components/FormSubmitPost";
 import { BallTriangle } from "react-loader-spinner";
 import UserContext from "../../contexts/UserContext";
-import SearchBar from "../../components/SearchBar";
 import axios from "axios";
 import { getApiUrl } from "../../utils/apiUtils";
 import ReloadPosts from "../../components/ReloadPosts";
@@ -23,7 +22,6 @@ export default function Timeline() {
   const [text, setText] = useState("There are no posts yet");
   const [reload, setReload] = useState(0);
   const [oldPosts, setOldPosts] = useState([]);
-  const [newPosts, setNewPosts] = useState([]);
 
   async function pullPosts() {
     const { resp: response, status } = await getPosts(token);
@@ -67,6 +65,7 @@ export default function Timeline() {
         Authorization: `Bearer ${token}`,
       },
     };
+    
     const API_URL = getApiUrl(`posts/reload`);
     const promise = axios.get(API_URL, config);
 
