@@ -1,10 +1,15 @@
 import styled from "styled-components";
 import { IoReload } from "react-icons/io5";
 
-export default function ReloadPosts({ newPosts }) {
+export default function ReloadPosts({ reload, reloadFunction, pullPosts }) {
   return (
-    <Button>
-      {newPosts} new posts, load more! <ReloadStyled />
+    <Button
+      onClick={() => {
+        reloadFunction;
+        pullPosts;
+      }}
+    >
+      {reload} new posts, load more! <ReloadStyled />
     </Button>
   );
 }
@@ -27,7 +32,7 @@ const Button = styled.button`
   font-family: "Lato";
   font-weight: 400;
 
-  margin: 20px 0 10px 0;
+  margin: 20px 0 20px 0;
 `;
 const ReloadStyled = styled(IoReload)`
   margin-left: 15px;

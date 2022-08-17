@@ -20,7 +20,9 @@ export default function Timeline() {
   const [swap, setSwap] = useState(true);
   const [alert, setAlert] = useState(false);
   const [text, setText] = useState("There are no posts yet");
-  const [newPosts, setNewPosts] = useState(0);
+  const [reload, setReload] = useState(0);
+  const [oldPosts, setOldPosts] = useState([]);
+  const [newPosts, setNewPosts] = useState([]);
 
   async function pullPosts() {
     const { resp: response, status } = await getPosts(token);
@@ -38,22 +40,42 @@ export default function Timeline() {
       );
     }
   }
+  async function postsToReload() {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const API_URL = getApiUrl(`posts/reload`);
+    const promise = axios.get(API_URL, config);
+
+    promise.then((res) => {
+      setOldPosts(res.data);
+    });
+  }
 
   useEffect(() => {
     pullPosts();
+    postsToReload();
   }, []);
 
   useInterval(() => {
     console.log("rodou 15seg");
-    const API_URL = getApiUrl(`posts`);
-    const promise = axios.get(API_URL);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const API_URL = getApiUrl(`posts/reload`);
+    const promise = axios.get(API_URL, config);
+
     promise.then((res) => {
       const updatedPosts = res.data;
-      const oldPosts = posts;
+
       if (updatedPosts.length > oldPosts.length) {
-        const newPosts = updatedPosts.length - oldPosts.length;
-        setNewPosts(newPosts);
-        console.log(`Há ${newPosts} novos!`);
+        const reload = updatedPosts.length - oldPosts.length;
+        setReload(reload);
+        console.log(`Há ${reload} novos!`);
       }
     });
   }, 15000);
@@ -76,7 +98,15 @@ export default function Timeline() {
             <PopUpError>{messageError}</PopUpError>
           )}
           <CreatePost setPosts={setPosts} setMessageError={setMessageError} />
-          {newPosts >= 1 ? <ReloadPosts newPosts={newPosts} /> : <></>}
+          {reload >= 1 ? (
+            <ReloadPosts
+              reload={reload}
+              reloadFunction={postsToReload}
+              pullPosts={pullPosts}
+            />
+          ) : (
+            <></>
+          )}
           {swap ? (
             <Loader>
               <BallTriangle color="#ffffff" height={100} width={100} />
