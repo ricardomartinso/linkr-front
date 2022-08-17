@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState, useContext, useEffect, useInsertionEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import Header from "../../components/Header";
 import Post from "../../components/Post";
 import getPosts from "../../data/getPosts.jsx";
@@ -7,8 +7,8 @@ import Sidebar from "../../components/Sidebar";
 import CreatePost from "../../components/FormSubmitPost";
 import { BallTriangle } from "react-loader-spinner";
 import UserContext from "../../contexts/UserContext";
-import SearchBar from "../../components/SearchBar";
 import SearchBarMobile from "../../components/SearchBar/SearchBarMobile";
+
 export default function Timeline() {
   const { token } = useContext(UserContext);
   const [messageError, setMessageError] = useState("");
