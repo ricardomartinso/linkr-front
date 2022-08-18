@@ -11,7 +11,6 @@ import {
   SearchResult,
   SearchResultsPanel,
 } from "./styles";
-import UserContext from "../../contexts/UserContext";
 
 export default function SearchBar({ className, placeholder }) {
   const { token } = useContext(UserContext);
