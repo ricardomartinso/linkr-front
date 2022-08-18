@@ -71,7 +71,7 @@ const Text = styled.div`
   color: #ffffff;
 `;
 const SidebarStyled = styled.div`
-  display: none;
+  display: flex;
   @media (min-width: 800px) {
     display: flex;
     flex-direction: column;
