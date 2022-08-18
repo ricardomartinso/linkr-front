@@ -47,7 +47,6 @@ const MenuContainer = styled.div`
   justify-content: center;
   width: fit-content;
   height: auto;
-
   gap: 0.75rem;
 
   .menu-icon {
@@ -75,7 +74,7 @@ const PageContainer = styled.div`
   position: fixed;
   right: 0;
   top: 4.5rem;
-  z-index: 1;
+  z-index: 2;
   width: 100%;
   height: calc(100vh - 4.5rem);
   background-color: transparent;

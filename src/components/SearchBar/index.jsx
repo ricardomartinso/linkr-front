@@ -35,7 +35,7 @@ export default function SearchBar({ className, placeholder }) {
   function renderResults() {
     console.log(usersData);
     if (usersData.length) {
-      return(
+      return (
         <SearchResultsPanel>
           {usersData.map((user) => {
             return (
@@ -46,12 +46,12 @@ export default function SearchBar({ className, placeholder }) {
             );
           })}
         </SearchResultsPanel>
-      ) 
+      )
     }
-    else{
+    else {
       return (
         <SearchResultsPanel>
-          <SearchResult style={{justifyContent: 'center'}}>Nenhum usuário encontrado</SearchResult>
+          <SearchResult style={{ justifyContent: 'center' }}>Nenhum usuário encontrado</SearchResult>
         </SearchResultsPanel>
       );
     }
@@ -69,7 +69,7 @@ export default function SearchBar({ className, placeholder }) {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
-      {search.length >= 3 ? renderResults() : ""}
+      {search.length >= 3 ? renderResults() : null}
     </SearchContainer>
   );
 }

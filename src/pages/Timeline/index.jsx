@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { useState, useContext, useEffect, useInsertionEffect } from "react";
+import { useState, useContext, useEffect } from "react";
+import useInterval from "use-interval";
 import Header from "../../components/Header";
 import Post from "../../components/Post";
 import getPosts from "../../data/getPosts.jsx";
@@ -7,37 +8,84 @@ import Sidebar from "../../components/Sidebar";
 import CreatePost from "../../components/FormSubmitPost";
 import { BallTriangle } from "react-loader-spinner";
 import UserContext from "../../contexts/UserContext";
-import SearchBar from "../../components/SearchBar";
+import axios from "axios";
+import { getApiUrl } from "../../utils/apiUtils";
+import ReloadPosts from "../../components/ReloadPosts";
 import SearchBarMobile from "../../components/SearchBar/SearchBarMobile";
+
 export default function Timeline() {
   const { token } = useContext(UserContext);
   const [messageError, setMessageError] = useState("");
   const [posts, setPosts] = useState([]);
   const [swap, setSwap] = useState(true);
   const [alert, setAlert] = useState(false);
-  const [text, setText] = useState("No posts found from your friends");
+  const [alertErrFollower, setAlertErrFollower] = useState(false);
+  const [textErrFollower, setTextErrFollower] = useState("");
+  const [text, setText] = useState("");
+  const [reload, setReload] = useState(0);
+  const [oldPosts, setOldPosts] = useState([]);
 
   async function pullPosts() {
     const { resp: response, status } = await getPosts(token);
+    console.log(response)
     if (status) {
-      if (response.data.length === 0) {
+      if (response.data.errFollower !== '') {
+        setAlertErrFollower(true)
+        setTextErrFollower(response.data.errFollower)
+      }
+      if (response.data.postList.length === 0) {
         setAlert(true);
       } else {
-        setPosts(response.data);
+        await postsToReload();
+        setReload(0);
+        setPosts(response.data.postList);
       }
       setSwap(false);
     } else {
       setAlert(true);
       setSwap(false);
-      setText(
-        response.response.data
-      );
+      setText("An error occured while trying to fetch the posts, please refresh the page");
     }
+  }
+  async function postsToReload() {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const API_URL = getApiUrl(`posts/reload`);
+    const promise = axios.get(API_URL, config);
+
+    promise.then((res) => {
+      setOldPosts(res.data);
+    });
   }
 
   useEffect(() => {
     pullPosts();
   }, []);
+
+  useInterval(() => {
+    console.log("rodou 15seg");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const API_URL = getApiUrl(`posts/reload`);
+    const promise = axios.get(API_URL, config);
+
+    promise.then((res) => {
+      const updatedPosts = res.data;
+
+      if (updatedPosts.length > oldPosts.length) {
+        const reload = updatedPosts.length - oldPosts.length;
+        setReload(reload);
+        console.log(`Há ${reload} novos!`);
+      }
+    });
+  }, 15000);
 
   return (
     <>
@@ -54,16 +102,34 @@ export default function Timeline() {
             <PopUpError>{messageError}</PopUpError>
           )}
           <CreatePost setPosts={setPosts} setMessageError={setMessageError} />
+          {reload >= 1 ? (
+            <ReloadPosts
+              reload={reload}
+              reloadFunction={pullPosts}
+            //recarregar posts with pull posts
+            //setOldPosts(res.data)
+            />
+          ) : (
+            <></>
+          )}
           {swap ? (
             <Loader>
               <BallTriangle color="#ffffff" height={100} width={100} />
             </Loader>
           ) : (
             <div>
+
               {alert ? (
-                <TextErr><p>{text}</p></TextErr>
+                <TextErr>
+                  <p>{text}</p>
+                </TextErr>
               ) : (
                 <div>
+                  {alertErrFollower ? (
+                    <TextErr>
+                      <p>{textErrFollower}</p>
+                    </TextErr>) : ''
+                  }
                   {posts?.map((post) => {
                     return (
                       <Post
@@ -98,24 +164,24 @@ const TextErr = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 120px;
-  background-color: #151515;
-  border: 1px solid #151515;
+  margin: 20px 0px;
+  background-color: #2a2a2a;
+  border: 1px solid #403f3f;
   border-radius: 6px;
   color: #ffffff;
   font-family: "Lato";
-  width: 300px;
+  width: 100%;
   font-size: 16px;
-  height: 120px;
+  height: 80px;
   padding: 10px;
   line-height: 20px;
-  p{
-    border: 1px solid #ffffff;
+  p {
+    border: 3px solid #e9c647;
     width: 100%;
     display: flex;
-    height:100%;
-    justify-content:center;
-    align-items:center;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
     border-radius: 6px;
   }
 `;
