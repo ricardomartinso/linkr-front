@@ -27,7 +27,6 @@ export default function Timeline() {
 
   async function pullPosts() {
     const { resp: response, status } = await getPosts(token);
-    console.log(response)
     if (status) {
       if (response.data.errFollower !== '') {
         setAlertErrFollower(true)

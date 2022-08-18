@@ -77,6 +77,12 @@ const SearchResult = styled.div`
   line-height: 23px;
   color: #515151;
 
+  p {
+    font-size: 18px;
+    text-align: center;
+    color: #c5c5c5;
+  }
+
   img {
     width: 39px;
     height: 39px;
