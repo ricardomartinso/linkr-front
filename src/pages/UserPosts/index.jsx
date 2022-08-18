@@ -10,13 +10,14 @@ import Sidebar from "../../components/Sidebar";
 import SearchBar from "../../components/SearchBar";
 import setFollow from "../../data/setFollow";
 import deleteFollow from "../../data/deleteFollow";
+import { getStatusFollow } from "../../data/getStatusFollow";
 
 export default function UserPosts() {
-  const { token} = useContext(UserContext);
+  const { token } = useContext(UserContext);
   const [posts, setPosts] = useState([]);
   const [swap, setSwap] = useState(true);
-  const [alert, setAlert] = useState(false);
-  const [follower, setFollower] = useState(true);
+  const [Alert, setAlert] = useState(false);
+  const [follower, setFollower] = useState(null);
   const [buttonIsDisabled, setButtonIsDisabled] = useState(false);
   const [picture, setPicture] = useState("");
   const [text, setText] = useState("There are not posts yet");
@@ -25,13 +26,13 @@ export default function UserPosts() {
 
   async function pullPosts() {
     const { resp: response, status } = await getPostsByUser(id);
-    
+
     if (status) {
       if (response.data.length === 0) {
         setAlert(true);
       } else {
         setPageName(response.data[0].user.username);
-        console.log(response.data);
+        setPicture(response.data[0].user.picture);
         setPosts(response.data);
       }
       setSwap(false);
@@ -43,11 +44,21 @@ export default function UserPosts() {
     }
   }
 
+  async function statusFollow(){
+    const status = await getStatusFollow(id, token);
+    setFollower(status.data);
+  }
+
   async function unfollow() {
     setButtonIsDisabled(true);
     const resp = await deleteFollow(id, token);
     setButtonIsDisabled(false);
-    setFollower(true);
+    if (resp.status === 200) {
+      setFollower(true);
+    }else{
+      alert("não foi possivel executar essa operação");
+    }
+
     return resp;
 
   }
@@ -56,12 +67,23 @@ export default function UserPosts() {
     setButtonIsDisabled(true);
     const resp = await setFollow(id, token);
     setButtonIsDisabled(false);
-    setFollower(false);
+    if (resp.status === 201) {
+      setFollower(false);
+    }else{
+      alert("não foi possivel executar essa operação");
+    }
     return resp;
+  }
+
+  function renderButton(){
+    return(
+      follower ? <Follow disabled={buttonIsDisabled} onClick={follow}>Follow</Follow> : <UnFollow disabled={buttonIsDisabled} onClick={unfollow}>Unfollow</UnFollow>
+    );
   }
 
   useEffect(() => {
     pullPosts();
+    statusFollow();
   }, []);
 
   return (
@@ -73,8 +95,8 @@ export default function UserPosts() {
             src={picture}
             alt="imagem de perfil"
           />
-          <h1>{pageName} posts</h1>
-          {follower ? <Follow disabled={buttonIsDisabled} onClick={follow}>Follow</Follow> : <UnFollow disabled={buttonIsDisabled} onClick={unfollow}>Unfollow</UnFollow>}
+          <h1>{pageName}'s posts</h1>
+          {follower === null ? null : renderButton()}
 
         </Title>
 
@@ -91,7 +113,7 @@ export default function UserPosts() {
               </Loader>
             ) : (
               <div>
-                {alert ? (
+                {Alert ? (
                   <TextErr>{text}</TextErr>
                 ) : (
                   <div>
@@ -128,6 +150,15 @@ const Title = styled.div`
   justify-content: space-between;
   width: 50rem;
   align-items: center;
+  margin-bottom: 1.5rem;
+
+  h1 {
+    font-family: "Passion One", sans-serif;
+    color: white;
+    font-size: 33px;
+    margin: 0 0 0 1.75rem;
+    width: 80%;
+  }
 
 `
 const Div = styled.div`
@@ -137,6 +168,12 @@ const Follow = styled.button`
   width: 112px;
   height: 31px;
   background: #1877F2;
+  color: #FFFFFF;
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 17px;
   border-radius: 5px;
   border: none;
   &:disabled{
@@ -148,6 +185,14 @@ const UnFollow = styled.button`
   width: 112px;
   height: 31px;
   background: #FFFFFF;
+  color: #1877F2;
+
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 17px;
+
   border-radius: 5px;
   border: none;
   &:disabled{
@@ -193,13 +238,7 @@ const Container = styled.div`
   margin: 6.5rem auto 0 auto;
   height: 100%;
 
-  h1 {
-    font-family: "Passion One", sans-serif;
-    color: white;
-    font-size: 33px;
-    margin: 0 0 1.5rem 1.75rem;
-    width: 80%;
-  }
+  
   @media (min-width: 800px) {
     h1 {
       font-size: 43px;
