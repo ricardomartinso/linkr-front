@@ -461,6 +461,7 @@ export default function Post({
               }
               return (
                 <Comment
+                  key={comment.commentId}
                   username={comment.commentUserInformation.username}
                   commentText={comment.comment}
                   commentPicture={comment.commentUserInformation.picture}
