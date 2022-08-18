@@ -1,10 +1,12 @@
-import { IoHeart } from "react-icons/io5";
+import { IoHeart, IoPaperPlane } from "react-icons/io5";
 import { IoHeartOutline } from "react-icons/io5";
 import { useContext, useEffect, useCallback, useState } from "react";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 import { IoMdTrash as Trash } from "react-icons/io";
+import { IoMdPaperPlane } from "react-icons/io";
 import { VscEdit as Redact } from "react-icons/vsc";
+import Comment from "../Comment";
 import {
   PostStyled,
   PictureLikes,
@@ -14,7 +16,8 @@ import {
   ErrorMessage,
   ModalStyle,
   Comments,
-  Comment,
+  WriteComment,
+  PaperPlane,
 } from "./styles";
 import axios from "axios";
 import { getApiUrl, getConfig } from "../../utils/apiUtils";
@@ -54,7 +57,6 @@ export default function Post({
   likes,
   latestLikes,
   postId,
-  setPosts,
   pullPosts,
   userId,
 }) {
@@ -68,7 +70,7 @@ export default function Post({
   const [editDescription, setEditDescription] = useState(description);
   const [viewDescription, setViewDescription] = useState(description);
   const [isAble, setIsAble] = useState(true);
-
+  const [openComment, setOpenComment] = useState(false);
   const tagStyle = {
     color: "white",
     fontWeight: "bold",
@@ -309,7 +311,16 @@ export default function Post({
               {renderLikesCount()}
               <ReactTooltip />
             </div>
-            <div className="comments">
+            <div
+              className="comments"
+              onClick={() => {
+                if (!openComment) {
+                  setOpenComment(true);
+                } else {
+                  setOpenComment(false);
+                }
+              }}
+            >
               <AiOutlineComment fontSize={"24px"} /> <p>3 comments</p>
             </div>
           </PictureLikes>
@@ -415,22 +426,37 @@ export default function Post({
             </div>
           </PostInfo>
         </div>
-        <Comments>
-          <Comment>
-            <div className="comment-picture">
+        {openComment ? (
+          <Comments>
+            <Comment
+              username={"João avatares"}
+              commentText={
+                "Adorei esse post, ajuda muito a usar Material UI com React!"
+              }
+              commentPicture={
+                "https://www.comboinfinito.com.br/principal/wp-content/uploads/2022/05/mob-psycho-100.jpg"
+              }
+              userComment={"post's author"}
+            />
+            <WriteComment>
               <img
                 src="https://www.comboinfinito.com.br/principal/wp-content/uploads/2022/05/mob-psycho-100.jpg"
-                alt="PIC"
+                alt=""
               />
-            </div>
-            <div className="comment-info">
-              <div className="comment-user">João Avatares</div>
-              <div className="comment-text">
-                Adorei esse post, ajuda muito a usar Material UI com React!
+              <input
+                type="text"
+                name=""
+                id=""
+                placeholder="write a comment..."
+              />
+              <div>
+                <PaperPlane />
               </div>
-            </div>
-          </Comment>
-        </Comments>
+            </WriteComment>
+          </Comments>
+        ) : (
+          <></>
+        )}
       </PostStyled>
     </>
   );

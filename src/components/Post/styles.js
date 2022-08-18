@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Modal from "react-modal";
+import { IoMdPaperPlane } from "react-icons/io";
 
 const PostStyled = styled.div`
   display: flex;
@@ -43,6 +44,7 @@ const PictureLikes = styled.div`
   align-items: center;
   flex-direction: column;
   width: 20%;
+  font-size: 0.8125rem;
 
   .picture {
     margin-top: 14px;
@@ -71,6 +73,7 @@ const PictureLikes = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center;
     margin-top: 10px;
 
     p {
@@ -278,7 +281,8 @@ const ModalStyle = styled(Modal)`
 `;
 const Comments = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   width: 100%;
   border-radius: 10px;
@@ -286,36 +290,37 @@ const Comments = styled.div`
   color: white;
   font-family: "Lato";
 `;
-const Comment = styled.div`
+
+const WriteComment = styled.div`
   display: flex;
   align-items: center;
   width: 90%;
-  border-bottom: 1px solid #353535;
-  height: 70px;
-  .comment-picture {
-    img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-    }
 
-    margin-right: 20px;
+  margin: 1rem 0;
+  position: relative;
+  img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 1.25rem;
   }
-  .comment-info {
-    .comment-user {
-      font-size: 14px;
-      color: white;
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-    .comment-text {
-      font-size: 14px;
-      font-weight: 400;
-      color: #acacac;
-    }
+  input {
+    width: 88%;
+    height: 2.44rem;
+    border: none;
+    background-color: #252525;
+    border-radius: 8px;
+    padding-left: 1rem;
+    color: white;
+    font-size: 0.92rem;
   }
 `;
-
+const PaperPlane = styled(IoMdPaperPlane)`
+  position: absolute;
+  font-size: 20px;
+  right: 25px;
+  bottom: 10px;
+`;
 export {
   PostStyled,
   PictureLikes,
@@ -325,5 +330,6 @@ export {
   ErrorMessage,
   ModalStyle,
   Comments,
-  Comment,
+  WriteComment,
+  PaperPlane,
 };

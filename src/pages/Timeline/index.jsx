@@ -65,7 +65,7 @@ export default function Timeline() {
         Authorization: `Bearer ${token}`,
       },
     };
-    
+
     const API_URL = getApiUrl(`posts/reload`);
     const promise = axios.get(API_URL, config);
 
