@@ -71,6 +71,7 @@ export default function Post({
   const [viewDescription, setViewDescription] = useState(description);
   const [isAble, setIsAble] = useState(true);
   const [openComment, setOpenComment] = useState(false);
+  const [comments, setComments] = useState([]);
   const tagStyle = {
     color: "white",
     fontWeight: "bold",
@@ -78,6 +79,7 @@ export default function Post({
   };
 
   useEffect(() => {
+    getComments();
     if (userLiked && !isLiked) {
       if (postId === 129) {
         console.log("userLiked");
@@ -94,6 +96,23 @@ export default function Post({
     }
   }, []);
 
+  async function getComments() {
+    const auth = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    try {
+      const promise = await axios.get(
+        `http://localhost:5000/posts/${postId}/comments`,
+        auth
+      );
+
+      setComments(promise.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   function openModal() {
     setIsOpen(true);
   }
@@ -321,7 +340,8 @@ export default function Post({
                 }
               }}
             >
-              <AiOutlineComment fontSize={"24px"} /> <p>3 comments</p>
+              <AiOutlineComment fontSize={"24px"} />{" "}
+              <p>{comments.qtdOfComments} comments</p>
             </div>
           </PictureLikes>
           {username === userName ? (
@@ -428,16 +448,27 @@ export default function Post({
         </div>
         {openComment ? (
           <Comments>
-            <Comment
-              username={"João avatares"}
-              commentText={
-                "Adorei esse post, ajuda muito a usar Material UI com React!"
+            {comments.comments.map((comment) => {
+              let userComment;
+              if (comment.isFollower) {
+                userComment = "following";
+              } else if (
+                comment.postAuthor === comment.commentUserInformation.userId
+              ) {
+                userComment = "post's author";
+              } else {
+                userComment = "";
               }
-              commentPicture={
-                "https://www.comboinfinito.com.br/principal/wp-content/uploads/2022/05/mob-psycho-100.jpg"
-              }
-              userComment={"post's author"}
-            />
+              return (
+                <Comment
+                  username={comment.commentUserInformation.username}
+                  commentText={comment.comment}
+                  commentPicture={comment.commentUserInformation.picture}
+                  userComment={userComment}
+                />
+              );
+            })}
+
             <WriteComment>
               <img
                 src="https://www.comboinfinito.com.br/principal/wp-content/uploads/2022/05/mob-psycho-100.jpg"

@@ -31,7 +31,7 @@ export default function Timeline() {
       } else {
         await postsToReload();
         setReload(0);
-        setPosts(response.data);
+        setPosts(response.data.postList);
       }
       setSwap(false);
     } else {

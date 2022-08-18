@@ -14,7 +14,7 @@ export default function Comment({
       <div className="comment-info">
         <div className="comment-user">
           <p> {username} </p>
-          <span>• {userComment}</span>
+          <span>{userComment !== "" ? `• ${userComment}` : ""}</span>
         </div>
         <div className="comment-text">{commentText}</div>
       </div>
