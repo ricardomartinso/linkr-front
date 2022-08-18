@@ -8,6 +8,7 @@ const InputBar = styled.input`
   padding: 0 17px;
   background: #ffffff;
   border-radius: 8px;
+  border: solid 1px #151515;
 
   font-family: "Lato";
   font-style: normal;
@@ -29,21 +30,14 @@ const SearchContainer = styled.div`
   max-width: 600px;
   height: auto;
   max-height: 176px;
-  background-color: transparent;
-`;
+  background-color: #e7e7e7;
+  border-radius: 8px;
 
-const DivOpac = styled.div`
-  display: flex;
-  position: fixed;
-  top: 16px;
-  left: 30%;
-  z-index: 2;
-  flex-direction: column;
-  align-items: center;
-  width: 40%;
-  max-width: 600px;
-  height: 100vh;
-  background-color: transparent;
+  @media (max-width: 560px) {
+    &.searchbar-mobile {
+      width: 80%;
+    }
+  }
 `;
 
 const SearchResultsPanel = styled.div`
@@ -60,6 +54,11 @@ const SearchResultsPanel = styled.div`
   background-color: #e7e7e7;
   border: 1px solid #e7e7e7;
   border-radius: 0px 0px 5px 5px;
+
+  @media (max-width: 799px) {
+    width: 100%;
+    max-width: none;
+  }
 `;
 
 const SearchResult = styled.div`

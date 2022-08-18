@@ -6,7 +6,6 @@ import { getApiUrl } from "../../utils/apiUtils";
 import {
   InputBar,
   SearchContainer,
-  DivOpac,
   SearchResult,
   SearchResultsPanel,
 } from "./styles";
@@ -16,52 +15,46 @@ export default function SearchBar({ className, placeholder }) {
   const [usersData, setUsersData] = useState([]);
   const navigate = useNavigate();
 
-  const filteredSearch =
-    search.length >= 3
-      ? usersData.filter((user) => {
-        return user.username.toLowerCase().includes(search.toLowerCase());
-      })
-      : [];
-
   useEffect(() => {
-    const API_URL = getApiUrl("users");
-    const promise = axios.get(API_URL);
-    promise.then((res) => {
-      setUsersData(res.data);
-    });
-    promise.catch((error) => {
-      console.log(error);
-    });
-  }, []);
+    if (search.length >= 3) {
+      const API_URL = getApiUrl(`users/${search}`);
+      const promise = axios.get(API_URL);
+      promise.then((res) => {
+        setUsersData(res.data);
+      });
+      promise.catch((error) => {
+        console.log(error);
+      });
+    }
+  }, [search]);
 
   function goToUserPage(id) {
     navigate(`/user/${id}`);
   }
 
   function renderResults() {
-    console.log("filteredSearch");
-    console.log(filteredSearch);
-    if (search.length >= 3) {
-      return filteredSearch.length > 0 ? (
-
+    console.log(usersData);
+    if (usersData.length) {
+      return (
         <SearchResultsPanel>
-          {filteredSearch.map((user, index) => {
+          {usersData.map((user) => {
             return (
-              <SearchResult key={index} onClick={() => goToUserPage(user.id)}>
+              <SearchResult key={user.id} onClick={() => goToUserPage(user.id)}>
                 <img src={user.picture} alt="profile image" />
                 {user.username}
               </SearchResult>
             );
           })}
         </SearchResultsPanel>
-
-      ) : (
+      )
+    }
+    else {
+      return (
         <SearchResultsPanel>
-          <SearchResult>Nenhum usuário encontrado</SearchResult>
+          <SearchResult style={{ justifyContent: 'center' }}>Nenhum usuário encontrado</SearchResult>
         </SearchResultsPanel>
       );
     }
-    return;
   }
 
   return (
@@ -71,11 +64,12 @@ export default function SearchBar({ className, placeholder }) {
         placeholder={placeholder}
         minLength={3}
         debounceTimeout={300}
+        autoComplete="false"
         element={InputBar}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
-      {usersData ? renderResults() : ""}
+      {search.length >= 3 ? renderResults() : ""}
     </SearchContainer>
   );
 }
