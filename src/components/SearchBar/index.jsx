@@ -69,7 +69,7 @@ export default function SearchBar({ className, placeholder }) {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
-      {search.length >= 3 ? renderResults() : ""}
+      {search.length >= 3 ? renderResults() : null}
     </SearchContainer>
   );
 }
