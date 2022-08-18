@@ -1,5 +1,7 @@
 import axios from "axios";
+import { IoEllipse } from "react-icons/io5";
 import { useContext, useEffect, useState } from "react";
+import UserContext from "../../contexts/UserContext";
 import { DebounceInput } from "react-debounce-input";
 import { useNavigate } from "react-router-dom";
 import { getApiUrl, getConfig } from "../../utils/apiUtils";
@@ -20,9 +22,11 @@ export default function SearchBar({ className, placeholder }) {
   useEffect(() => {
     const config = getConfig(token);
     if (search.length >= 3) {
+      const config = getConfig(token);
       const API_URL = getApiUrl(`users/${search}`);
       const promise = axios.get(API_URL, config);
       promise.then((res) => {
+        console.log(res.data);
         setUsersData(res.data);
       });
       promise.catch((error) => {
@@ -45,6 +49,12 @@ export default function SearchBar({ className, placeholder }) {
               <SearchResult key={user.id} onClick={() => goToUserPage(user.id)}>
                 <img src={user.picture} alt="profile image" />
                 {user.username}
+                {user.isFollowing ? (
+                  <>
+                    <IoEllipse fontSize={"9px"} color={"#C5C5C5"} />
+                    <p>following</p>
+                  </>
+                ) : null}
               </SearchResult>
             );
           })}
