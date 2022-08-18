@@ -19,25 +19,32 @@ export default function Timeline() {
   const [posts, setPosts] = useState([]);
   const [swap, setSwap] = useState(true);
   const [alert, setAlert] = useState(false);
-  const [text, setText] = useState("There are no posts yet");
+  const [alertErrFollower, setAlertErrFollower] = useState(false);
+  const [textErrFollower, setTextErrFollower] = useState("");
+  const [text, setText] = useState("");
   const [reload, setReload] = useState(0);
   const [oldPosts, setOldPosts] = useState([]);
 
   async function pullPosts() {
     const { resp: response, status } = await getPosts(token);
+    console.log(response)
     if (status) {
-      if (response.data.length === 0) {
+      if (response.data.errFollower !== '') {
+        setAlertErrFollower(true)
+        setTextErrFollower(response.data.errFollower)
+      }
+      if (response.data.postList.length === 0) {
         setAlert(true);
       } else {
         await postsToReload();
         setReload(0);
-        setPosts(response.data);
+        setPosts(response.data.postList);
       }
       setSwap(false);
     } else {
       setAlert(true);
       setSwap(false);
-      setText(response.response.data);
+      setText("An error occured while trying to fetch the posts, please refresh the page");
     }
   }
   async function postsToReload() {
@@ -65,7 +72,7 @@ export default function Timeline() {
         Authorization: `Bearer ${token}`,
       },
     };
-    
+
     const API_URL = getApiUrl(`posts/reload`);
     const promise = axios.get(API_URL, config);
 
@@ -99,8 +106,8 @@ export default function Timeline() {
             <ReloadPosts
               reload={reload}
               reloadFunction={pullPosts}
-              //recarregar posts with pull posts
-              //setOldPosts(res.data)
+            //recarregar posts with pull posts
+            //setOldPosts(res.data)
             />
           ) : (
             <></>
@@ -111,12 +118,18 @@ export default function Timeline() {
             </Loader>
           ) : (
             <div>
+
               {alert ? (
                 <TextErr>
                   <p>{text}</p>
                 </TextErr>
               ) : (
                 <div>
+                  {alertErrFollower ? (
+                    <TextErr>
+                      <p>{textErrFollower}</p>
+                    </TextErr>) : ''
+                  }
                   {posts?.map((post) => {
                     return (
                       <Post
@@ -151,19 +164,19 @@ const TextErr = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 120px;
-  background-color: #151515;
-  border: 1px solid #151515;
+  margin: 20px 0px;
+  background-color: #2a2a2a;
+  border: 1px solid #403f3f;
   border-radius: 6px;
   color: #ffffff;
   font-family: "Lato";
-  width: 300px;
+  width: 100%;
   font-size: 16px;
-  height: 120px;
+  height: 80px;
   padding: 10px;
   line-height: 20px;
   p {
-    border: 1px solid #ffffff;
+    border: 3px solid #e9c647;
     width: 100%;
     display: flex;
     height: 100%;

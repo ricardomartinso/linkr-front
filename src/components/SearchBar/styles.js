@@ -33,8 +33,8 @@ const SearchContainer = styled.div`
   background-color: #e7e7e7;
   border-radius: 8px;
 
-  @media(max-width: 560px){
-    &.searchbar-mobile{
+  @media (max-width: 560px) {
+    &.searchbar-mobile {
       width: 80%;
     }
   }
