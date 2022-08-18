@@ -54,6 +54,7 @@ const PictureLikes = styled.div`
       width: 40px;
       height: 40px;
       border-radius: 50%;
+      object-fit: cover;
     }
   }
   .likes {
@@ -303,6 +304,7 @@ const WriteComment = styled.div`
     height: 40px;
     border-radius: 50%;
     margin-right: 1.25rem;
+    object-fit: cover;
   }
   input {
     width: 88%;

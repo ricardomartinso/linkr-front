@@ -1,24 +1,27 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
 import { useNavigate } from "react-router-dom";
-import { getApiUrl } from "../../utils/apiUtils";
+import { getApiUrl, getConfig } from "../../utils/apiUtils";
 import {
   InputBar,
   SearchContainer,
   SearchResult,
   SearchResultsPanel,
 } from "./styles";
+import UserContext from "../../contexts/UserContext";
 
 export default function SearchBar({ className, placeholder }) {
+  const { token } = useContext(UserContext);
   const [search, setSearch] = useState("");
   const [usersData, setUsersData] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
+    const config = getConfig(token);
     if (search.length >= 3) {
       const API_URL = getApiUrl(`users/${search}`);
-      const promise = axios.get(API_URL);
+      const promise = axios.get(API_URL, config);
       promise.then((res) => {
         setUsersData(res.data);
       });
@@ -46,12 +49,13 @@ export default function SearchBar({ className, placeholder }) {
             );
           })}
         </SearchResultsPanel>
-      )
-    }
-    else {
+      );
+    } else {
       return (
         <SearchResultsPanel>
-          <SearchResult style={{ justifyContent: 'center' }}>Nenhum usuário encontrado</SearchResult>
+          <SearchResult style={{ justifyContent: "center" }}>
+            Nenhum usuário encontrado
+          </SearchResult>
         </SearchResultsPanel>
       );
     }
