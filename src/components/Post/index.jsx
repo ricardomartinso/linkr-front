@@ -82,9 +82,7 @@ export default function Post({
     getComments();
     if (userLiked && !isLiked) {
       if (postId === 129) {
-        console.log("userLiked");
         console.log(userLiked);
-        console.log("Entrou no if");
       }
       setIsLiked(true);
     }
@@ -308,7 +306,7 @@ export default function Post({
                 src={picture}
                 alt="IMG"
                 onClick={() => {
-                  navigate(`/user/${username}`);
+                  navigate(`/user/${userId}`);
                 }}
               />
             </div>

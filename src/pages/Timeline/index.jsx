@@ -68,7 +68,6 @@ export default function Timeline() {
   }, []);
 
   useInterval(() => {
-    console.log("rodou 15seg");
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
