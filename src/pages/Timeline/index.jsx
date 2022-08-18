@@ -36,7 +36,8 @@ export default function Timeline() {
       } else {
         await postsToReload();
         setReload(0);
-        setPosts([...posts, response.data]);
+        const newPosts = [...posts, response.data]
+        setPosts(...newPosts);
       }
       setSwap(false);
     } else {
@@ -47,31 +48,32 @@ export default function Timeline() {
   }
 
   function renderPosts() {
+    console.log(posts);
     return (
-    posts?.map((post) => {
-      return (
-        <Post
-          key={post.id}
-          postId={post.id}
-          userId={post.user.id}
-          picture={post.user.picture}
-          likes={post.postLikes.count}
-          userLiked={post.postLikes.isLiked}
-          latestLikes={post.postLikes.usernameList}
-          username={post.user.username}
-          description={post.description}
-          link={post.link}
-          pullPosts={pullPosts}
-          setPosts={setPosts}
-        />
-      );
+      posts.map((post) => {
+        return (
+          <Post
+            key={post.id}
+            postId={post.id}
+            userId={post.user.id}
+            picture={post.user.picture}
+            likes={post.postLikes.count}
+            userLiked={post.postLikes.isLiked}
+            latestLikes={post.postLikes.usernameList}
+            username={post.user.username}
+            description={post.description}
+            link={post.link}
+            pullPosts={pullPosts}
+            setPosts={setPosts}
+          />
+        );
     }))
   }
 
   async function loadMore(page) {
     console.log(page);
-    console.log(posts);
     await pullPosts(page);
+    //console.log(posts);
     setHasMore(false);
     renderPosts();
     setHasMore(true);
@@ -148,8 +150,8 @@ export default function Timeline() {
                   <InfiniteScroll
                     className="infinite"
                     pageStart={0}
-                    loadMore={loadMore}
-                    hasMore={hasMore}
+                    loadMore={(page) => loadMore(page)}
+                    hasMore={true}
                     loader={
                       <Loader key={2}>
                         <BallTriangle color="#ffffff" height={100} width={100} />
@@ -157,7 +159,7 @@ export default function Timeline() {
                     }
                   >
                   <div>
-                    {posts ? renderPosts() : null}
+                    {posts.length ? renderPosts() : null}
                   </div>
                  </InfiniteScroll>
                 )}
