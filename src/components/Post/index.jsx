@@ -104,7 +104,7 @@ export default function Post({
     };
     try {
       const promise = await axios.get(
-        `https://linkr-backend-30.herokuapp.com/${postId}/comments/`,
+        `http://linkr-backend-30.herokuapp.com/posts/${postId}/comments`,
         auth
       );
 
