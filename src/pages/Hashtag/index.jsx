@@ -39,7 +39,7 @@ export default function Hashtag() {
 
   return (
     <>
-      <Header></Header>
+     
       <Container>
         <Posts>
           <SearchBar

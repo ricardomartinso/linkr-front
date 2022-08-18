@@ -8,18 +8,24 @@ import { useParams } from "react-router-dom";
 import getPostsByUser from "../../data/getPostsByUser";
 import Sidebar from "../../components/Sidebar";
 import SearchBar from "../../components/SearchBar";
+import setFollow from "../../data/setFollow";
+import deleteFollow from "../../data/deleteFollow";
 
 export default function UserPosts() {
-  const { token } = useContext(UserContext);
+  const { token} = useContext(UserContext);
   const [posts, setPosts] = useState([]);
   const [swap, setSwap] = useState(true);
   const [alert, setAlert] = useState(false);
+  const [follower, setFollower] = useState(true);
+  const [buttonIsDisabled, setButtonIsDisabled] = useState(false);
+  const [picture, setPicture] = useState("");
   const [text, setText] = useState("There are not posts yet");
   const [pageName, setPageName] = useState("");
   const { id } = useParams();
 
   async function pullPosts() {
     const { resp: response, status } = await getPostsByUser(id);
+    
     if (status) {
       if (response.data.length === 0) {
         setAlert(true);
@@ -37,6 +43,23 @@ export default function UserPosts() {
     }
   }
 
+  async function unfollow() {
+    setButtonIsDisabled(true);
+    const resp = await deleteFollow(id, token);
+    setButtonIsDisabled(false);
+    setFollower(true);
+    return resp;
+
+  }
+
+  async function follow() {
+    setButtonIsDisabled(true);
+    const resp = await setFollow(id, token);
+    setButtonIsDisabled(false);
+    setFollower(false);
+    return resp;
+  }
+
   useEffect(() => {
     pullPosts();
   }, []);
@@ -45,48 +68,99 @@ export default function UserPosts() {
     <>
       <Header></Header>
       <Container>
-        <Posts>
-          <SearchBar
-            className="searchbar-mobile"
-            placeholder="Search for people and friends"
+        <Title>
+          <ProfileImg
+            src={picture}
+            alt="imagem de perfil"
           />
           <h1>{pageName} posts</h1>
-          {swap ? (
-            <Loader>
-              <BallTriangle color="#ffffff" height={100} width={100} />
-            </Loader>
-          ) : (
-            <div>
-              {alert ? (
-                <TextErr>{text}</TextErr>
-              ) : (
-                <div>
-                  {posts.map((post) => {
-                    return (
-                      <Post
-                        key={post.id}
-                        postId={post.id}
-                        userId={post.user.id}
-                        picture={post.user.picture}
-                        likes={post.postLikes.count}
-                        username={post.user.username}
-                        description={post.description}
-                        link={post.link}
-                        pullPosts={pullPosts}
-                        setPosts={setPosts}
-                      />
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          )}
-        </Posts>
-        <Sidebar />
+          {follower ? <Follow disabled={buttonIsDisabled} onClick={follow}>Follow</Follow> : <UnFollow disabled={buttonIsDisabled} onClick={unfollow}>Unfollow</UnFollow>}
+
+        </Title>
+
+        <Div>
+          <Posts>
+            <SearchBar
+              className="searchbar-mobile"
+              placeholder="Search for people and friends"
+            />
+
+            {swap ? (
+              <Loader>
+                <BallTriangle color="#ffffff" height={100} width={100} />
+              </Loader>
+            ) : (
+              <div>
+                {alert ? (
+                  <TextErr>{text}</TextErr>
+                ) : (
+                  <div>
+                    {posts.map((post) => {
+                      return (
+                        <Post
+                          key={post.id}
+                          postId={post.id}
+                          userId={post.user.id}
+                          picture={post.user.picture}
+                          likes={post.postLikes.count}
+                          username={post.user.username}
+                          description={post.description}
+                          link={post.link}
+                          pullPosts={pullPosts}
+                          setPosts={setPosts}
+                        />
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+          </Posts>
+          <Sidebar />
+        </Div>
       </Container>
     </>
   );
 }
+const Title = styled.div`
+  
+  display: flex;
+  justify-content: space-between;
+  width: 50rem;
+  align-items: center;
+
+`
+const Div = styled.div`
+  display: flex;
+`
+const Follow = styled.button`
+  width: 112px;
+  height: 31px;
+  background: #1877F2;
+  border-radius: 5px;
+  border: none;
+  &:disabled{
+    filter: brightness(1.5);
+  }
+`
+
+const UnFollow = styled.button`
+  width: 112px;
+  height: 31px;
+  background: #FFFFFF;
+  border-radius: 5px;
+  border: none;
+  &:disabled{
+    filter: brightness(0.5);
+  }
+`
+const ProfileImg = styled.img`
+  width: 3.3125rem;
+  height: 3.3125rem;
+  object-fit: cover;
+  border-radius: 1.6563rem;
+
+`;
 
 const TextErr = styled.div`
   display: flex;
@@ -114,6 +188,8 @@ const Loader = styled.div`
 const Container = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-direction: column;
   margin: 6.5rem auto 0 auto;
   height: 100%;
 
