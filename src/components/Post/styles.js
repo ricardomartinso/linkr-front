@@ -201,7 +201,7 @@ const ModalTitle = styled.h2`
   width: 80%;
 
   @media (max-width: 800px) {
-    font-size: 29px;
+    font-size: 20px;
   }
 `;
 const ButtonsDiv = styled.div`
@@ -225,7 +225,7 @@ const ButtonsDiv = styled.div`
     font-size: 16px;
 
     @media (max-width: 500px) {
-      width: 35%;
+      width: 40%;
       font-size: 13px;
     }
   }
@@ -274,15 +274,35 @@ const ModalStyle = styled(Modal)`
   margin-right: -50%;
   transform: translate(-50%, -50%);
   background-color: #333333;
-  width: 94%;
+  width: 60%;
   border-radius: 30px;
-  height: 262px;
+  height: 23%;
 
   @media (min-width: 800px) {
     width: 600px;
     border-radius: 50px;
   }
 `;
+
+const Repost = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 35px;
+  border-radius: 10px;
+  background: #1e1e1e;
+  color: white;
+  font-family: "Lato";
+  padding-left: 10px;
+  h2 {
+    font-size: 14px;
+    margin-left: 10px;
+    b {
+      font-weight: bold;
+    }
+  }
+`;
+
 const Comments = styled.div`
   display: flex;
   flex-direction: column;
@@ -337,4 +357,5 @@ export {
   Comments,
   WriteComment,
   PaperPlane,
+  Repost,
 };

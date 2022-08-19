@@ -7,14 +7,14 @@ import UserContext from "../../contexts/UserContext";
 import { useParams } from "react-router-dom";
 import getPostsByUser from "../../data/getPostsByUser";
 import Sidebar from "../../components/Sidebar";
-import SearchBar from "../../components/SearchBar";
+import SearchBarMobile from "../../components/SearchBar/SearchBarMobile";
 import setFollow from "../../data/setFollow";
 import deleteFollow from "../../data/deleteFollow";
 import { getStatusFollow } from "../../data/getStatusFollow";
 import InfiniteScroll from "react-infinite-scroller";
 
 export default function UserPosts() {
-  const { token } = useContext(UserContext);
+  const { token, userName } = useContext(UserContext);
   const [posts, setPosts] = useState([]);
   const [swap, setSwap] = useState(true);
   const [follower, setFollower] = useState(null);
@@ -138,15 +138,12 @@ export default function UserPosts() {
         <Title>
           <ProfileImg src={picture} alt="imagem de perfil" />
           <h1>{pageName}'s posts</h1>
-          {follower === null ? null : renderButton()}
+          {follower === null || pageName === userName ? null : renderButton()}
         </Title>
 
         <Div>
           <Posts>
-            <SearchBar
-              className="searchbar-mobile"
-              placeholder="Search for people and friends"
-            />
+            <SearchBarMobile />
 
             {swap ? (
               <Loader>
@@ -190,6 +187,11 @@ const Title = styled.div`
   width: 50rem;
   align-items: center;
   margin-bottom: 1.5rem;
+  box-sizing: border-box;
+  @media (max-width: 799px) {
+      width:100%;
+      padding:50px 12px 0px 12px;
+    }
 
   h1 {
     font-family: "Passion One", sans-serif;
@@ -226,6 +228,7 @@ const Follow = styled.button`
   &:disabled {
     filter: brightness(1.5);
   }
+
 `;
 
 const UnFollow = styled.button`

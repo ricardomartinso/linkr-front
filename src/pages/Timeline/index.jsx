@@ -151,7 +151,9 @@ export default function Timeline() {
             getPostsToReload={getPostsToReload}
           />
           {reload >= 1 ? (
+
             <ReloadPosts reload={reload} reloadFunction={getPostsToReload} />
+
           ) : (
             <></>
           )}
@@ -181,7 +183,11 @@ export default function Timeline() {
                 </InfiniteScroll>
               )}
             </div>
-          )}
+            )}
+                 
+            
+
+        
         </Posts>
 
         <Sidebar />
