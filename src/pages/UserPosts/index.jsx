@@ -7,14 +7,14 @@ import UserContext from "../../contexts/UserContext";
 import { useParams } from "react-router-dom";
 import getPostsByUser from "../../data/getPostsByUser";
 import Sidebar from "../../components/Sidebar";
-import SearchBarMobile from "../../components/SearchBar/SearchBarMobile";
+import SearchBar from "../../components/SearchBar";
 import setFollow from "../../data/setFollow";
 import deleteFollow from "../../data/deleteFollow";
 import { getStatusFollow } from "../../data/getStatusFollow";
 import InfiniteScroll from "react-infinite-scroller";
 
 export default function UserPosts() {
-  const { token, userName } = useContext(UserContext);
+  const { token } = useContext(UserContext);
   const [posts, setPosts] = useState([]);
   const [swap, setSwap] = useState(true);
   const [follower, setFollower] = useState(null);
@@ -25,24 +25,31 @@ export default function UserPosts() {
   const [pageName, setPageName] = useState("");
   const [hasMore, setHasMore] = useState(true);
   const { id } = useParams();
+  const [idUser, setIdUser] = useState(id);
 
   async function pullPosts(startId) {
     const { resp: response, status } = await getPostsByUser(id, startId);
-
+    console.log(response.data.postList);
     if (status) {
       setPageName(response.data.userInfo.username);
       setPicture(response.data.userInfo.picture);
+
       if (response.data.postList.length === 0) {
         setPosts([]);
         setAlert(true);
       } else {
-        const newPosts = [...posts, ...response.data.postList];
-        const { length } = response.data;
-        if (newPosts.length === length) {
-          setHasMore(false);
+        if (posts[0]?.user.id != response.data.postList[0].user.id) {
+          setPosts(response.data.postList);
+        } else {
+          const newPosts = [...posts, ...response.data.postList];
+          const { length } = response.data;
+          if (newPosts.length === length) {
+            setHasMore(false);
+          }
+
+          setPosts(newPosts);
+          setAlert(false);
         }
-        setPosts(newPosts);
-        setAlert(false);
       }
       setSwap(false);
     } else {
@@ -138,12 +145,15 @@ export default function UserPosts() {
         <Title>
           <ProfileImg src={picture} alt="imagem de perfil" />
           <h1>{pageName}'s posts</h1>
-          {follower === null || pageName === userName ? null : renderButton()}
+          {follower === null ? null : renderButton()}
         </Title>
 
         <Div>
           <Posts>
-            <SearchBarMobile />
+            <SearchBar
+              className="searchbar-mobile"
+              placeholder="Search for people and friends"
+            />
 
             {swap ? (
               <Loader>
@@ -187,11 +197,6 @@ const Title = styled.div`
   width: 50rem;
   align-items: center;
   margin-bottom: 1.5rem;
-  box-sizing: border-box;
-  @media (max-width: 799px) {
-      width:100%;
-      padding:50px 12px 0px 12px;
-    }
 
   h1 {
     font-family: "Passion One", sans-serif;
@@ -228,7 +233,6 @@ const Follow = styled.button`
   &:disabled {
     filter: brightness(1.5);
   }
-
 `;
 
 const UnFollow = styled.button`
