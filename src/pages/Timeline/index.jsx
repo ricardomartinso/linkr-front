@@ -198,6 +198,7 @@ export default function Timeline() {
                     );
                   })}
                 </div>
+            
 
                 <InfiniteScroll
                   className="infinite"
@@ -214,7 +215,7 @@ export default function Timeline() {
                 </InfiniteScroll>
 
               )}
-            </div>
+          
           )}
         </Posts>
 
