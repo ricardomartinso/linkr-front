@@ -84,8 +84,15 @@ const Posts = styled.div`
     display: none;
   }
 
-  .searchbar-mobile{
+  .searchbar-mobile {
     display: none;
+    @media (max-width: 799px) {
+      display: flex;
+      width: 80%;
+      top: 70px;
+      left: 10%;
+      margin: 16px 0 20px 0;
+    }
   }
 
   @media (min-width: 800px) {

@@ -10,8 +10,6 @@ const ContainerMobile = styled.div`
   top: 70px;
   left: 0;
   z-index: 1;
-  margin: 0px 0 30px 0;
-  padding: 5px 12px;
   box-sizing: border-box;
   background-color: #333333;
 ;
