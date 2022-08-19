@@ -72,11 +72,28 @@ export default function Post({
   const [isAble, setIsAble] = useState(true);
   const [openComment, setOpenComment] = useState(false);
   const [comments, setComments] = useState([]);
+  const [commentText, setCommentText] = useState("");
   const tagStyle = {
     color: "white",
     fontWeight: "bold",
     cursor: "pointer",
   };
+
+  async function submitComment(commentText) {
+    const config = getConfig(token);
+    const API_URL = getApiUrl(`posts/${postId}/comments`);
+    const body = {
+      comment: commentText,
+    };
+
+    try {
+      const promise = await axios.post(API_URL, body, config);
+      await getComments();
+      setCommentText("");
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   useEffect(() => {
     getComments();
@@ -475,11 +492,17 @@ export default function Post({
               />
               <input
                 type="text"
-                name=""
-                id=""
+                value={commentText}
+                onChange={(e) => {
+                  setCommentText(e.target.value);
+                }}
                 placeholder="write a comment..."
               />
-              <div>
+              <div
+                onClick={() => {
+                  submitComment(commentText);
+                }}
+              >
                 <PaperPlane />
               </div>
             </WriteComment>
