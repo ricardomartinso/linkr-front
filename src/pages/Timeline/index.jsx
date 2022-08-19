@@ -40,8 +40,8 @@ export default function Timeline() {
         await postsToReload();
         setReload(0);
 
-        const newPosts = [...posts, ...response.data.postList]
-        const { length } = response.data.length;
+        const newPosts = [...posts, ...response.data.postList];
+        const { length } = response.data.postList.length;
         if (posts.length === length) {
           setHasMore(false);
         }
@@ -58,25 +58,24 @@ export default function Timeline() {
   }
 
   function renderPosts() {
-    return (
-      posts.map((post, index) => {
-        return (
-          <Post
-            key={index}
-            postId={post.id}
-            userId={post.user.id}
-            picture={post.user.picture}
-            likes={post.postLikes.count}
-            userLiked={post.postLikes.isLiked}
-            latestLikes={post.postLikes.usernameList}
-            username={post.user.username}
-            description={post.description}
-            link={post.link}
-            pullPosts={pullPosts}
-            setPosts={setPosts}
-          />
-        );
-    }))
+    return posts.map((post, index) => {
+      return (
+        <Post
+          key={index}
+          postId={post.id}
+          userId={post.user.id}
+          picture={post.user.picture}
+          likes={post.postLikes.count}
+          userLiked={post.postLikes.isLiked}
+          latestLikes={post.postLikes.usernameList}
+          username={post.user.username}
+          description={post.description}
+          link={post.link}
+          pullPosts={pullPosts}
+          setPosts={setPosts}
+        />
+      );
+    });
   }
 
   async function loadMore(page) {
@@ -96,6 +95,19 @@ export default function Timeline() {
     promise.then((res) => {
       setOldPosts(res.data);
     });
+  }
+  async function getPostsToReload() {
+    const config = getConfig(token);
+    const API_URL = getApiUrl(`posts`);
+    try {
+      const promise = await axios.get(API_URL, config);
+
+      setPosts(promise.data.postList);
+      console.log(promise.data.postList);
+      await postsToReload();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   useEffect(() => {
