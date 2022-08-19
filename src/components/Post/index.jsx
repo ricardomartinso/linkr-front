@@ -27,6 +27,7 @@ import Modal from "react-modal";
 import ReactTooltip from "react-tooltip";
 import { AiOutlineComment } from "react-icons/ai";
 
+
 Modal.setAppElement("#root");
 
 const customStyles = {
@@ -48,18 +49,22 @@ const customStyles = {
   },
 };
 
-export default function Post({
-  picture,
-  description,
-  link,
-  userLiked,
-  username,
-  likes,
-  latestLikes,
-  postId,
-  pullPosts,
-  userId,
-}) {
+
+export default function Post(props) {
+  const {
+    picture,
+    description,
+    link,
+    userLiked,
+    username,
+    likes,
+    latestLikes,
+    postId,
+    setPosts,
+    pullPosts,
+    userId,
+  } = props;
+
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
   const { userName, token } = useContext(UserContext);
@@ -143,7 +148,7 @@ export default function Post({
     };
 
     try {
-      const promise = await axios.delete(
+      await axios.delete(
         `http://linkr-backend-30.herokuapp.com/posts/${postId}`,
         auth
       );
