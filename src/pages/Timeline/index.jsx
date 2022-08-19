@@ -41,7 +41,7 @@ export default function Timeline() {
         setReload(0);
 
         const newPosts = [...posts, ...response.data.postList];
-        const { length } = response.data.postList.length;
+        const { length } = response.data.length;
         if (posts.length === length) {
           setHasMore(false);
         }
