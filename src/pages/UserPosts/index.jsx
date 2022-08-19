@@ -11,6 +11,7 @@ import SearchBar from "../../components/SearchBar";
 import setFollow from "../../data/setFollow";
 import deleteFollow from "../../data/deleteFollow";
 import { getStatusFollow } from "../../data/getStatusFollow";
+import InfiniteScroll from "react-infinite-scroller";
 
 export default function UserPosts() {
   const { token } = useContext(UserContext);
@@ -22,27 +23,26 @@ export default function UserPosts() {
   const [Alert, setAlert] = useState(false);
   const [text, setText] = useState("There are not posts yet");
   const [pageName, setPageName] = useState("");
+  const [hasMore, setHasMore] = useState(true);
   const { id } = useParams();
 
-  async function getUserInformation() {
-    try {
-      const { resp: response, status } = await getPostsByUser(id);
-      setPageName(response.data.userInfo.username);
-      setPicture(response.data.userInfo.picture);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  async function pullPosts() {
-    const { resp: response, status } = await getPostsByUser(id);
+  async function pullPosts(startId) {
+    const { resp: response, status } = await getPostsByUser(id, startId);
 
     if (status) {
+      setPageName(response.data.userInfo.username);
+      setPicture(response.data.userInfo.picture);
       if (response.data.postList.length === 0) {
         setPosts([]);
         setAlert(true);
       } else {
+        const newPosts = [...posts, ...response.data.postList];
+        const { length } = response.data;
+        if (newPosts.length === length) {
+          setHasMore(false);
+        }
+        setPosts(newPosts);
         setAlert(false);
-        setPosts(response.data.postList);
       }
       setSwap(false);
     } else {
@@ -101,6 +101,38 @@ export default function UserPosts() {
     statusFollow();
   }, [id]);
 
+  function renderPosts() {
+    return posts.map((post) => {
+      return (
+        <Post
+          key={post.id}
+          postId={post.id}
+          userId={post.user.id}
+          picture={post.user.picture}
+          likes={post.postLikes.count}
+          userLiked={post.postLikes.isLiked}
+          latestLikes={post.postLikes.usernameList}
+          username={post.user.username}
+          description={post.description}
+          link={post.link}
+          pullPosts={pullPosts}
+          setPosts={setPosts}
+        />
+      );
+    });
+  }
+
+  async function loadMore(page) {
+    if (page > 1) {
+      const startId = posts[posts.length-1].id;
+      await pullPosts(startId);
+    }
+    else{
+      await pullPosts();
+    }
+    renderPosts();
+  }
+
   return (
     <>
       <Header></Header>
@@ -127,24 +159,19 @@ export default function UserPosts() {
                 {Alert ? (
                   <TextErr>{text}</TextErr>
                 ) : (
-                  <div>
-                    {posts.map((post) => {
-                      return (
-                        <Post
-                          key={post.id}
-                          postId={post.id}
-                          userId={post.user.id}
-                          picture={post.user.picture}
-                          likes={post.postLikes.count}
-                          username={post.user.username}
-                          description={post.description}
-                          link={post.link}
-                          pullPosts={pullPosts}
-                          setPosts={setPosts}
-                        />
-                      );
-                    })}
-                  </div>
+                  <InfiniteScroll
+                  className="infinite"
+                  pageStart={1}
+                  loadMore={loadMore}
+                  hasMore={hasMore}
+                  loader={
+                    <Loader key={2}>
+                      <BallTriangle color="#ffffff" height={100} width={100} />
+                    </Loader>
+                  }
+                >
+                  <>{posts.length ? renderPosts() : null}</>
+                </InfiniteScroll>
                 )}
               </div>
             )}
