@@ -28,9 +28,9 @@ export default function Timeline() {
   async function pullPosts() {
     const { resp: response, status } = await getPosts(token);
     if (status) {
-      if (response.data.errFollower !== '') {
-        setAlertErrFollower(true)
-        setTextErrFollower(response.data.errFollower)
+      if (response.data.errFollower !== "") {
+        setAlertErrFollower(true);
+        setTextErrFollower(response.data.errFollower);
       }
       if (response.data.postList.length === 0) {
         setAlert(true);
@@ -43,7 +43,9 @@ export default function Timeline() {
     } else {
       setAlert(true);
       setSwap(false);
-      setText("An error occured while trying to fetch the posts, please refresh the page");
+      setText(
+        "An error occured while trying to fetch the posts, please refresh the page"
+      );
     }
   }
   async function postsToReload() {
@@ -61,11 +63,11 @@ export default function Timeline() {
   }
 
   useEffect(() => {
+    postsToReload();
     pullPosts();
   }, []);
 
   useInterval(() => {
-    console.log("rodou 15seg");
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -117,7 +119,6 @@ export default function Timeline() {
             </Loader>
           ) : (
             <div>
-
               {alert ? (
                 <TextErr>
                   <p>{text}</p>
@@ -127,9 +128,12 @@ export default function Timeline() {
                   {alertErrFollower ? (
                     <TextErr>
                       <p>{textErrFollower}</p>
-                    </TextErr>) : ''
-                  }
+                    </TextErr>
+                  ) : (
+                    ""
+                  )}
                   {posts?.map((post) => {
+
                     return (
                       <Post
                         key={post.id}
@@ -144,6 +148,7 @@ export default function Timeline() {
                         link={post.link}
                         pullPosts={pullPosts}
                         setPosts={setPosts}
+                        isRePost={post.isRepost}
                       />
                     );
                   })}

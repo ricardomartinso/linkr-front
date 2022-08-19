@@ -1,10 +1,9 @@
-import { IoHeart, IoPaperPlane } from "react-icons/io5";
+import { IoHeart, IoPaperPlane, IoRepeatSharp } from "react-icons/io5";
 import { IoHeartOutline } from "react-icons/io5";
 import { useContext, useEffect, useCallback, useState } from "react";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 import { IoMdTrash as Trash } from "react-icons/io";
-import { IoMdPaperPlane } from "react-icons/io";
 import { VscEdit as Redact } from "react-icons/vsc";
 import Comment from "../Comment";
 import {
@@ -18,6 +17,7 @@ import {
   Comments,
   WriteComment,
   PaperPlane,
+  Repost
 } from "./styles";
 import axios from "axios";
 import { getApiUrl, getConfig } from "../../utils/apiUtils";
@@ -26,6 +26,8 @@ import linkr from "../../assets/images/linkr.png";
 import Modal from "react-modal";
 import ReactTooltip from "react-tooltip";
 import { AiOutlineComment } from "react-icons/ai";
+import getRePosts from "../../data/getRePost";
+import postRePost from "../../data/postRePost";
 
 Modal.setAppElement("#root");
 
@@ -59,6 +61,7 @@ export default function Post({
   postId,
   pullPosts,
   userId,
+  isRePost
 }) {
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
@@ -71,20 +74,61 @@ export default function Post({
   const [viewDescription, setViewDescription] = useState(description);
   const [isAble, setIsAble] = useState(true);
   const [openComment, setOpenComment] = useState(false);
+  const [qtdRepost, setQtdRepost] = useState(0)
+  const [repostId, setRepostId] = useState(0)
+  const [usernameRepost, setUsernameRepost] = useState("");
+  const [textModal, setTextModal] = useState({})
   const [comments, setComments] = useState([]);
+  const [commentText, setCommentText] = useState("");
   const tagStyle = {
     color: "white",
     fontWeight: "bold",
     cursor: "pointer",
   };
 
+  async function rePost() {
+    setIsLoading(true);
+    await postRePost(postId, token)
+    setIsLoading(false);
+    setIsOpen(false);
+  }
+
+  async function rePosts(postId) {
+    const res = await getRePosts(postId)
+    setQtdRepost(res.resp.data.count)
+    if (res.resp.data.username === userName) {
+      setUsernameRepost("you")
+    } else {
+      setUsernameRepost(res.resp.data.username)
+    }
+    setRepostId(res.resp.data.postId)
+    getComments(res.resp.data.postId)
+  }
+
+  async function submitComment(commentText) {
+    const config = getConfig(token);
+    const API_URL = getApiUrl(`posts/${postId}/comments`);
+    const body = {
+      comment: commentText,
+    };
+
+    try {
+      const promise = await axios.post(API_URL, body, config);
+      await getComments();
+      setCommentText("");
+    } catch (error) {
+    }
+  }
+
   useEffect(() => {
-    getComments();
+    if (isRePost) {
+      rePosts(isRePost)
+      console.log('ola')
+    } else {
+      getComments(postId);
+    }
     if (userLiked && !isLiked) {
       if (postId === 129) {
-        console.log("userLiked");
-        console.log(userLiked);
-        console.log("Entrou no if");
       }
       setIsLiked(true);
     }
@@ -96,25 +140,51 @@ export default function Post({
     }
   }, []);
 
-  async function getComments() {
+  async function getComments(id) {
     const auth = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     };
+    let newPostId = postId
+    if (isRePost) {
+      newPostId = repostId
+    }
+    console.log(newPostId)
+
     try {
       const promise = await axios.get(
-        `http://linkr-backend-30.herokuapp.com/posts/${postId}/comments`,
+        `http://linkr-backend-30.herokuapp.com/posts/${id}/comments`,
         auth
       );
-
+      console.log(promise.data)
       setComments(promise.data);
     } catch (error) {
-      console.log(error);
     }
   }
-  function openModal() {
-    setIsOpen(true);
+  function openModal(type) {
+    if (type === 'trash') {
+      setTextModal({
+        one: "Are you sure you want to delete this post?",
+        two: "No, go back",
+        three: "Yes, delete it",
+        four: closeModal,
+        five: deletePost
+      })
+      setIsOpen(true);
+    } else {
+      setTextModal({
+        one: "Do you want to re-post this link?",
+        two: "No, cancel",
+        three: "Yes, share!",
+        four: closeModal,
+        five: rePost
+      })
+      if (!isRePost) {
+        setIsOpen(true);
+      }
+    }
+
   }
   function closeModal() {
     setIsOpen(false);
@@ -143,7 +213,6 @@ export default function Post({
       setTimeout(() => {
         setHasError(false);
       }, 8000);
-      console.log(error);
     }
   }
 
@@ -196,32 +265,38 @@ export default function Post({
   }
 
   function likePost() {
-    const API_URL = getApiUrl(`post/like/${postId}`);
-    const config = getConfig(token);
-    const promise = axios.post(API_URL, {}, config);
-    promise.then(() => {
-      setIsLiked(true);
-      pullPosts();
-    });
-    promise.catch((error) => {
-      console.log(error);
-    });
+
+    if (!isRePost) {
+      const API_URL = getApiUrl(`post/like/${postId}`);
+      const config = getConfig(token);
+      const promise = axios.post(API_URL, {}, config);
+      promise.then(() => {
+        setIsLiked(true);
+        pullPosts();
+      });
+      promise.catch((error) => {
+        console.log(error);
+      });
+    }
   }
 
   function unlikePost() {
-    const API_URL = getApiUrl(`post/like/${postId}`);
-    const config = getConfig(token);
-    const promise = axios.delete(API_URL, config);
-    promise.then(() => {
-      setIsLiked(false);
-      pullPosts();
-    });
-    promise.catch((error) => {
-      console.log(error);
-    });
+    if (!isRePost) {
+      const API_URL = getApiUrl(`post/like/${postId}`);
+      const config = getConfig(token);
+      const promise = axios.delete(API_URL, config);
+      promise.then(() => {
+        setIsLiked(false);
+        pullPosts();
+      });
+      promise.catch((error) => {
+        console.log(error);
+      });
+    }
   }
 
   function renderLikesCount() {
+
     if (latestLikes) {
       const users =
         latestLikes.length === 2
@@ -264,6 +339,8 @@ export default function Post({
     window.open(url, "_blank");
   };
 
+
+
   return (
     <>
       {isLoading ? (
@@ -281,13 +358,13 @@ export default function Post({
           className="modal-responsive"
           contentLabel="Example Modal"
         >
-          <ModalTitle>Are you sure you want to delete this post?</ModalTitle>
+          <ModalTitle>{textModal.one}</ModalTitle>
           <ButtonsDiv>
-            <button className="no-button" onClick={closeModal}>
-              No, go back
+            <button className="no-button" onClick={textModal.four}>
+              {textModal.two}
             </button>
-            <button className="yes-button" onClick={deletePost}>
-              Yes, delete it
+            <button className="yes-button" onClick={textModal.five}>
+              {textModal.three}
             </button>
           </ButtonsDiv>
         </ModalStyle>
@@ -301,6 +378,10 @@ export default function Post({
       )}
 
       <PostStyled>
+        {isRePost ?
+          <Repost> <IoRepeatSharp fontSize={"21px"} /> <h2>Re-posted by <b>{usernameRepost}</b></h2> </Repost> :
+          null}
+
         <div className="post-information">
           <PictureLikes>
             <div className="picture">
@@ -308,11 +389,11 @@ export default function Post({
                 src={picture}
                 alt="IMG"
                 onClick={() => {
-                  navigate(`/user/${username}`);
+                  navigate(`/user/${userId}`);
                 }}
               />
             </div>
-            <div className="likes">
+            <div className="likes" >
               {isLiked ? (
                 <IoHeart
                   fontSize={"24px"}
@@ -342,7 +423,12 @@ export default function Post({
             >
               <AiOutlineComment fontSize={"24px"} />{" "}
               <p>{comments.qtdOfComments} comments</p>
+
             </div>
+            <>
+              <IoRepeatSharp onClick={() => openModal('rePost')} fontSize={"24px"} />{" "}
+              <p>{qtdRepost} re-posts</p>
+            </>
           </PictureLikes>
           {username === userName ? (
             <>
@@ -358,7 +444,7 @@ export default function Post({
                 fontSize={"20px"}
                 className="trash"
                 onClick={() => {
-                  openModal();
+                  openModal('trash');
                 }}
               />
             </>
@@ -470,21 +556,31 @@ export default function Post({
               );
             })}
 
-            <WriteComment>
-              <img
-                src="https://www.comboinfinito.com.br/principal/wp-content/uploads/2022/05/mob-psycho-100.jpg"
-                alt=""
-              />
-              <input
-                type="text"
-                name=""
-                id=""
-                placeholder="write a comment..."
-              />
-              <div>
-                <PaperPlane />
-              </div>
-            </WriteComment>
+            {!isRePost ?
+
+              <WriteComment>
+                <img
+                  src="https://www.comboinfinito.com.br/principal/wp-content/uploads/2022/05/mob-psycho-100.jpg"
+                  alt=""
+                />
+                <input
+                  type="text"
+                  value={commentText}
+                  onChange={(e) => {
+                    setCommentText(e.target.value);
+                  }}
+                  placeholder="write a comment..."
+                />
+                <div
+                  onClick={() => {
+                    submitComment(commentText);
+                  }}
+                >
+                  <PaperPlane />
+                </div>
+              </WriteComment>
+              : null
+            }
           </Comments>
         ) : (
           <></>

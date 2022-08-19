@@ -11,6 +11,7 @@ const CommentStyled = styled.div`
       width: 40px;
       height: 40px;
       border-radius: 50%;
+      object-fit: cover;
     }
 
     margin-right: 1.25rem;

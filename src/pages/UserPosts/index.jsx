@@ -7,13 +7,13 @@ import UserContext from "../../contexts/UserContext";
 import { useParams } from "react-router-dom";
 import getPostsByUser from "../../data/getPostsByUser";
 import Sidebar from "../../components/Sidebar";
-import SearchBar from "../../components/SearchBar";
+import SearchBarMobile from "../../components/SearchBar/SearchBarMobile";
 import setFollow from "../../data/setFollow";
 import deleteFollow from "../../data/deleteFollow";
 import { getStatusFollow } from "../../data/getStatusFollow";
 
 export default function UserPosts() {
-  const { token } = useContext(UserContext);
+  const { token, userName } = useContext(UserContext);
   const [posts, setPosts] = useState([]);
   const [swap, setSwap] = useState(true);
   const [Alert, setAlert] = useState(false);
@@ -44,7 +44,7 @@ export default function UserPosts() {
     }
   }
 
-  async function statusFollow(){
+  async function statusFollow() {
     const status = await getStatusFollow(id, token);
     setFollower(status.data);
   }
@@ -55,12 +55,11 @@ export default function UserPosts() {
     setButtonIsDisabled(false);
     if (resp.status === 200) {
       setFollower(true);
-    }else{
+    } else {
       alert("não foi possivel executar essa operação");
     }
 
     return resp;
-
   }
 
   async function follow() {
@@ -69,15 +68,21 @@ export default function UserPosts() {
     setButtonIsDisabled(false);
     if (resp.status === 201) {
       setFollower(false);
-    }else{
+    } else {
       alert("não foi possivel executar essa operação");
     }
     return resp;
   }
 
-  function renderButton(){
-    return(
-      follower ? <Follow disabled={buttonIsDisabled} onClick={follow}>Follow</Follow> : <UnFollow disabled={buttonIsDisabled} onClick={unfollow}>Unfollow</UnFollow>
+  function renderButton() {
+    return follower ? (
+      <Follow disabled={buttonIsDisabled} onClick={follow}>
+        Follow
+      </Follow>
+    ) : (
+      <UnFollow disabled={buttonIsDisabled} onClick={unfollow}>
+        Unfollow
+      </UnFollow>
     );
   }
 
@@ -91,21 +96,14 @@ export default function UserPosts() {
       <Header></Header>
       <Container>
         <Title>
-          <ProfileImg
-            src={picture}
-            alt="imagem de perfil"
-          />
+          <ProfileImg src={picture} alt="imagem de perfil" />
           <h1>{pageName}'s posts</h1>
-          {follower === null ? null : renderButton()}
-
+          {follower === null || pageName === userName ? null : renderButton()}
         </Title>
 
         <Div>
           <Posts>
-            <SearchBar
-              className="searchbar-mobile"
-              placeholder="Search for people and friends"
-            />
+            <SearchBarMobile />
 
             {swap ? (
               <Loader>
@@ -145,12 +143,16 @@ export default function UserPosts() {
   );
 }
 const Title = styled.div`
-  
   display: flex;
   justify-content: space-between;
   width: 50rem;
   align-items: center;
   margin-bottom: 1.5rem;
+  box-sizing: border-box;
+  @media (max-width: 799px) {
+      width:100%;
+      padding:50px 12px 0px 12px;
+    }
 
   h1 {
     font-family: "Passion One", sans-serif;
@@ -159,35 +161,35 @@ const Title = styled.div`
     margin: 0 0 0 1.75rem;
     width: 80%;
   }
-
-`
+`;
 const Div = styled.div`
   display: flex;
-`
+`;
 const Follow = styled.button`
   width: 112px;
   height: 31px;
-  background: #1877F2;
-  color: #FFFFFF;
-  font-family: 'Lato';
+  background: #1877f2;
+  color: #ffffff;
+  font-family: "Lato";
   font-style: normal;
   font-weight: 700;
   font-size: 14px;
   line-height: 17px;
   border-radius: 5px;
   border: none;
-  &:disabled{
+  &:disabled {
     filter: brightness(1.5);
   }
-`
+
+`;
 
 const UnFollow = styled.button`
   width: 112px;
   height: 31px;
-  background: #FFFFFF;
-  color: #1877F2;
+  background: #ffffff;
+  color: #1877f2;
 
-  font-family: 'Lato';
+  font-family: "Lato";
   font-style: normal;
   font-weight: 700;
   font-size: 14px;
@@ -195,16 +197,15 @@ const UnFollow = styled.button`
 
   border-radius: 5px;
   border: none;
-  &:disabled{
+  &:disabled {
     filter: brightness(0.5);
   }
-`
+`;
 const ProfileImg = styled.img`
   width: 3.3125rem;
   height: 3.3125rem;
   object-fit: cover;
   border-radius: 1.6563rem;
-
 `;
 
 const TextErr = styled.div`
@@ -238,7 +239,6 @@ const Container = styled.div`
   margin: 6.5rem auto 0 auto;
   height: 100%;
 
-  
   @media (min-width: 800px) {
     h1 {
       font-size: 43px;
@@ -265,9 +265,9 @@ const Posts = styled.div`
     display: none;
     @media (max-width: 799px) {
       display: flex;
-      width:100%;
-      top:70px;
-      left:0px;
+      width: 100%;
+      top: 70px;
+      left: 0px;
       margin: 5px 0 30px 0;
     }
   }

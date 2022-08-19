@@ -13,19 +13,19 @@ import {
 } from "./styles";
 
 export default function SearchBar({ className, placeholder }) {
-  const [search, setSearch] = useState("");
   const { token } = useContext(UserContext);
+  const [search, setSearch] = useState("");
   const [usersData, setUsersData] = useState([]);
   const navigate = useNavigate();
 
-
   useEffect(() => {
+    const config = getConfig(token);
     if (search.length >= 3) {
       const config = getConfig(token);
       const API_URL = getApiUrl(`users/${search}`);
       const promise = axios.get(API_URL, config);
       promise.then((res) => {
-        console.log(res.data)
+        console.log(res.data);
         setUsersData(res.data);
       });
       promise.catch((error) => {
@@ -48,25 +48,23 @@ export default function SearchBar({ className, placeholder }) {
               <SearchResult key={user.id} onClick={() => goToUserPage(user.id)}>
                 <img src={user.picture} alt="profile image" />
                 {user.username}
-                {user.isFollowing ?
+                {user.isFollowing ? (
                   <>
-                    <IoEllipse
-                      fontSize={"9px"}
-                      color={"#C5C5C5"}
-                    />
+                    <IoEllipse fontSize={"9px"} color={"#C5C5C5"} />
                     <p>following</p>
-                  </> : null}
-
+                  </>
+                ) : null}
               </SearchResult>
             );
           })}
         </SearchResultsPanel>
-      )
-    }
-    else {
+      );
+    } else {
       return (
         <SearchResultsPanel>
-          <SearchResult style={{ justifyContent: 'center' }}>Nenhum usuário encontrado</SearchResult>
+          <SearchResult style={{ justifyContent: "center" }}>
+            Nenhum usuário encontrado
+          </SearchResult>
         </SearchResultsPanel>
       );
     }
