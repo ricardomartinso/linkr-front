@@ -12,7 +12,7 @@ import { getApiUrl, getConfig } from "../../utils/apiUtils";
 import ReloadPosts from "../../components/ReloadPosts";
 import SearchBarMobile from "../../components/SearchBar/SearchBarMobile";
 import { Container, Loader, PopUpError, Posts, TextErr, Title } from "./styles";
-import InfiniteScroll from 'react-infinite-scroller';
+import InfiniteScroll from "react-infinite-scroller";
 
 export default function Timeline() {
   const { token } = useContext(UserContext);
@@ -40,14 +40,14 @@ export default function Timeline() {
         await postsToReload();
         setReload(0);
 
-        const newPosts = [...posts, ...response.data.postList]
-        const { length } = response.data[response.data.length-1];
+        const newPosts = [...posts, ...response.data.postList];
+        const { length } =
+          response.data.postList[response.data.postList.length - 1];
         if (posts.length === length) {
           setHasMore(false);
         }
         newPosts.pop();
         setPosts(newPosts);
-
       }
       setSwap(false);
     } else {
@@ -61,26 +61,25 @@ export default function Timeline() {
 
   function renderPosts() {
     //console.log(posts);
-    return (
-      posts.map((post, index) => {
-        //console.log(post);
-        return (
-          <Post
-            key={index}
-            postId={post.id}
-            userId={post.user.id}
-            picture={post.user.picture}
-            likes={post.postLikes.count}
-            userLiked={post.postLikes.isLiked}
-            latestLikes={post.postLikes.usernameList}
-            username={post.user.username}
-            description={post.description}
-            link={post.link}
-            pullPosts={pullPosts}
-            setPosts={setPosts}
-          />
-        );
-    }))
+    return posts.map((post, index) => {
+      //console.log(post);
+      return (
+        <Post
+          key={index}
+          postId={post.id}
+          userId={post.user.id}
+          picture={post.user.picture}
+          likes={post.postLikes.count}
+          userLiked={post.postLikes.isLiked}
+          latestLikes={post.postLikes.usernameList}
+          username={post.user.username}
+          description={post.description}
+          link={post.link}
+          pullPosts={pullPosts}
+          setPosts={setPosts}
+        />
+      );
+    });
   }
 
   async function loadMore(page) {
@@ -108,8 +107,7 @@ export default function Timeline() {
   }, []);
 
   useInterval(() => {
-
-    const config = getConfig(token)
+    const config = getConfig(token);
 
     const API_URL = getApiUrl(`posts/reload`);
     const promise = axios.get(API_URL, config);
@@ -140,43 +138,38 @@ export default function Timeline() {
             <PopUpError>{messageError}</PopUpError>
           )}
           <CreatePost setPosts={setPosts} setMessageError={setMessageError} />
-            {reload >= 1 ? (
-              <ReloadPosts
-                reload={reload}
-                reloadFunction={pullPosts}
-              />
-            ) : (
-              <></>
-            )}
-            {swap ? (
-              <Loader>
-                <BallTriangle color="#ffffff" height={100} width={100} />
-              </Loader>
-            ) : (
-              <div>
-                {alert ? (
-                  <TextErr>
-                    <p>{text}</p>
-                  </TextErr>
-                ) : ( 
-                  <InfiniteScroll
-                    className="infinite"
-                    pageStart={1}
-                    loadMore={loadMore}
-                    hasMore={hasMore}
-                    loader={
-                      <Loader key={2}>
-                        <BallTriangle color="#ffffff" height={100} width={100} />
-                      </Loader>
-                    }
-                  >
-                  <>
-                    {posts.length ? renderPosts() : null}
-                  </>
-                 </InfiniteScroll>
-                )}
-              </div>
-            )}
+          {reload >= 1 ? (
+            <ReloadPosts reload={reload} reloadFunction={pullPosts} />
+          ) : (
+            <></>
+          )}
+          {swap ? (
+            <Loader>
+              <BallTriangle color="#ffffff" height={100} width={100} />
+            </Loader>
+          ) : (
+            <div>
+              {alert ? (
+                <TextErr>
+                  <p>{text}</p>
+                </TextErr>
+              ) : (
+                <InfiniteScroll
+                  className="infinite"
+                  pageStart={1}
+                  loadMore={loadMore}
+                  hasMore={hasMore}
+                  loader={
+                    <Loader key={2}>
+                      <BallTriangle color="#ffffff" height={100} width={100} />
+                    </Loader>
+                  }
+                >
+                  <>{posts.length ? renderPosts() : null}</>
+                </InfiniteScroll>
+              )}
+            </div>
+          )}
         </Posts>
 
         <Sidebar />
@@ -184,4 +177,3 @@ export default function Timeline() {
     </>
   );
 }
-
