@@ -25,19 +25,21 @@ export default function Timeline() {
   const [oldPosts, setOldPosts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
 
-  async function pullPosts(page) {
-    const { resp: response, status } = await getPosts(token);
-    
+  async function pullPosts(page = 1) {
+    const { resp: response, status } = await getPosts(token, page);
     if (status) {
-      console.log("entrou no if")
       if (response.data.length === 0) {
-        console.log("entrou no segundo if")
         setAlert(true);
       } else {
         await postsToReload();
         setReload(0);
-        const newPosts = [...posts, response.data]
-        setPosts(...newPosts);
+        const newPosts = [...posts, ...response.data]
+        const { length } = response.data[response.data.length-1];
+        if (posts.length === length) {
+          setHasMore(false);
+        }
+        newPosts.pop();
+        setPosts(newPosts);
       }
       setSwap(false);
     } else {
@@ -48,12 +50,13 @@ export default function Timeline() {
   }
 
   function renderPosts() {
-    console.log(posts);
+    //console.log(posts);
     return (
-      posts.map((post) => {
+      posts.map((post, index) => {
+        //console.log(post);
         return (
           <Post
-            key={post.id}
+            key={index}
             postId={post.id}
             userId={post.user.id}
             picture={post.user.picture}
@@ -73,10 +76,10 @@ export default function Timeline() {
   async function loadMore(page) {
     console.log(page);
     await pullPosts(page);
-    //console.log(posts);
-    setHasMore(false);
+    console.log(posts);
+    //setHasMore(false);
     renderPosts();
-    setHasMore(true);
+    //setHasMore(true);
   }
 
   async function postsToReload() {
@@ -90,6 +93,7 @@ export default function Timeline() {
   }
 
   useEffect(() => {
+    postsToReload();
     pullPosts();
   }, []);
 
@@ -149,18 +153,18 @@ export default function Timeline() {
                 ) : ( 
                   <InfiniteScroll
                     className="infinite"
-                    pageStart={0}
-                    loadMore={(page) => loadMore(page)}
-                    hasMore={true}
+                    pageStart={1}
+                    loadMore={loadMore}
+                    hasMore={hasMore}
                     loader={
                       <Loader key={2}>
                         <BallTriangle color="#ffffff" height={100} width={100} />
                       </Loader>
                     }
                   >
-                  <div>
+                  <>
                     {posts.length ? renderPosts() : null}
-                  </div>
+                  </>
                  </InfiniteScroll>
                 )}
               </div>

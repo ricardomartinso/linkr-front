@@ -70,6 +70,19 @@ const Posts = styled.div`
   width: 100%;
   margin-bottom: 10px;
   overflow: auto;
+
+  .infinite{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .infinite::-webkit-scrollbar{
+    display: none;
+  }
+
   .searchbar-mobile{
     display: none;
   }

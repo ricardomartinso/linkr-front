@@ -20,7 +20,6 @@ import UserContext from "../../contexts/UserContext";
 import linkr from "../../assets/images/linkr.png";
 import Modal from "react-modal";
 import ReactTooltip from "react-tooltip";
-import styled from "styled-components";
 
 Modal.setAppElement("#root");
 
@@ -43,19 +42,22 @@ const customStyles = {
   },
 };
 
-export default function Post({
-  picture,
-  description,
-  link,
-  userLiked,
-  username,
-  likes,
-  latestLikes,
-  postId,
-  setPosts,
-  pullPosts,
-  userId,
-}) {
+export default function Post(props) {
+  // console.log("props");
+  // console.log(props);
+  const {
+    picture,
+    description,
+    link,
+    userLiked,
+    username,
+    likes,
+    latestLikes,
+    postId,
+    setPosts,
+    pullPosts,
+    userId,
+  } = props;
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
   const { userName, token } = useContext(UserContext);
@@ -105,7 +107,7 @@ export default function Post({
     };
 
     try {
-      const promise = await axios.delete(
+      await axios.delete(
         `http://linkr-backend-30.herokuapp.com/posts/${postId}`,
         auth
       );
