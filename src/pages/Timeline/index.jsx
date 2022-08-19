@@ -12,7 +12,7 @@ import { getApiUrl, getConfig } from "../../utils/apiUtils";
 import ReloadPosts from "../../components/ReloadPosts";
 import SearchBarMobile from "../../components/SearchBar/SearchBarMobile";
 import { Container, Loader, PopUpError, Posts, TextErr, Title } from "./styles";
-import InfiniteScroll from 'react-infinite-scroller';
+import InfiniteScroll from "react-infinite-scroller";
 
 export default function Timeline() {
   const { token } = useContext(UserContext);
@@ -45,8 +45,6 @@ export default function Timeline() {
         if (posts.length === length) {
           setHasMore(false);
         }
-        newPosts.shift();
-        newPosts.pop();
         setPosts(newPosts);
       }
       setSwap(false);
@@ -106,8 +104,7 @@ export default function Timeline() {
   }, []);
 
   useInterval(() => {
-
-    const config = getConfig(token)
+    const config = getConfig(token);
 
     const API_URL = getApiUrl(`posts/reload`);
     const promise = axios.get(API_URL, config);
@@ -138,43 +135,38 @@ export default function Timeline() {
             <PopUpError>{messageError}</PopUpError>
           )}
           <CreatePost setPosts={setPosts} setMessageError={setMessageError} />
-            {reload >= 1 ? (
-              <ReloadPosts
-                reload={reload}
-                reloadFunction={pullPosts}
-              />
-            ) : (
-              <></>
-            )}
-            {swap ? (
-              <Loader>
-                <BallTriangle color="#ffffff" height={100} width={100} />
-              </Loader>
-            ) : (
-              <div>
-                {alert ? (
-                  <TextErr>
-                    <p>{text}</p>
-                  </TextErr>
-                ) : ( 
-                  <InfiniteScroll
-                    className="infinite"
-                    pageStart={1}
-                    loadMore={loadMore}
-                    hasMore={hasMore}
-                    loader={
-                      <Loader key={2}>
-                        <BallTriangle color="#ffffff" height={100} width={100} />
-                      </Loader>
-                    }
-                  >
-                  <>
-                    {posts.length ? renderPosts() : null}
-                  </>
-                 </InfiniteScroll>
-                )}
-              </div>
-            )}
+          {reload >= 1 ? (
+            <ReloadPosts reload={reload} reloadFunction={pullPosts} />
+          ) : (
+            <></>
+          )}
+          {swap ? (
+            <Loader>
+              <BallTriangle color="#ffffff" height={100} width={100} />
+            </Loader>
+          ) : (
+            <div>
+              {alert ? (
+                <TextErr>
+                  <p>{text}</p>
+                </TextErr>
+              ) : (
+                <InfiniteScroll
+                  className="infinite"
+                  pageStart={1}
+                  loadMore={loadMore}
+                  hasMore={hasMore}
+                  loader={
+                    <Loader key={2}>
+                      <BallTriangle color="#ffffff" height={100} width={100} />
+                    </Loader>
+                  }
+                >
+                  <>{posts.length ? renderPosts() : null}</>
+                </InfiniteScroll>
+              )}
+            </div>
+          )}
         </Posts>
 
         <Sidebar />
@@ -182,4 +174,3 @@ export default function Timeline() {
     </>
   );
 }
-
