@@ -168,36 +168,23 @@ export default function Timeline() {
                   <p>{text}</p>
                 </TextErr>
               ) : (
-
-                <div>
-                  {alertErrFollower ? (
-                    <TextErr>
-                      <p>{textErrFollower}</p>
-                    </TextErr>
-                  ) : (
-                    ""
-                  )}
-                  {posts?.map((post) => {
-
-                    return (
-                      <Post
-                        key={post.id}
-                        postId={post.id}
-                        userId={post.user.id}
-                        picture={post.user.picture}
-                        likes={post.postLikes.count}
-                        userLiked={post.postLikes.isLiked}
-                        latestLikes={post.postLikes.usernameList}
-                        username={post.user.username}
-                        description={post.description}
-                        link={post.link}
-                        pullPosts={pullPosts}
-                        setPosts={setPosts}
-                        isRePost={post.isRepost}
-                      />
-                    );
-                  })}
-                </div>
+                <InfiniteScroll
+                  className="infinite"
+                  pageStart={1}
+                  loadMore={loadMore}
+                  hasMore={hasMore}
+                  loader={
+                    <Loader key={2}>
+                      <BallTriangle color="#ffffff" height={100} width={100} />
+                    </Loader>
+                  }
+                >
+                  <>{posts.length ? renderPosts() : null}</>
+                </InfiniteScroll>
+              )}
+            </div>
+            )}
+                 
             
 
                 <InfiniteScroll
@@ -213,9 +200,10 @@ export default function Timeline() {
                 >
                   <>{posts.length ? renderPosts() : null}</>
                 </InfiniteScroll>
+                
 
               )}
-          
+          </div>
           )}
         </Posts>
 
