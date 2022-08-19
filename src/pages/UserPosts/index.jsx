@@ -96,7 +96,6 @@ export default function UserPosts() {
   }
 
   useEffect(() => {
-    getUserInformation();
     pullPosts();
     statusFollow();
   }, [id]);
@@ -124,10 +123,9 @@ export default function UserPosts() {
 
   async function loadMore(page) {
     if (page > 1) {
-      const startId = posts[posts.length-1].id;
+      const startId = posts[posts.length - 1].id;
       await pullPosts(startId);
-    }
-    else{
+    } else {
       await pullPosts();
     }
     renderPosts();
@@ -160,18 +158,22 @@ export default function UserPosts() {
                   <TextErr>{text}</TextErr>
                 ) : (
                   <InfiniteScroll
-                  className="infinite"
-                  pageStart={1}
-                  loadMore={loadMore}
-                  hasMore={hasMore}
-                  loader={
-                    <Loader key={2}>
-                      <BallTriangle color="#ffffff" height={100} width={100} />
-                    </Loader>
-                  }
-                >
-                  <>{posts.length ? renderPosts() : null}</>
-                </InfiniteScroll>
+                    className="infinite"
+                    pageStart={1}
+                    loadMore={loadMore}
+                    hasMore={hasMore}
+                    loader={
+                      <Loader key={2}>
+                        <BallTriangle
+                          color="#ffffff"
+                          height={100}
+                          width={100}
+                        />
+                      </Loader>
+                    }
+                  >
+                    <>{posts.length ? renderPosts() : null}</>
+                  </InfiniteScroll>
                 )}
               </div>
             )}
@@ -196,9 +198,18 @@ const Title = styled.div`
     margin: 0 0 0 1.75rem;
     width: 80%;
   }
+
+  @media (max-width: 815px) {
+    width: 100%;
+    padding: 0 12px;
+    margin-top: 2.75rem;
+  }
 `;
 const Div = styled.div`
   display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto;
 `;
 const Follow = styled.button`
   width: 112px;
@@ -299,10 +310,10 @@ const Posts = styled.div`
     display: none;
     @media (max-width: 799px) {
       display: flex;
-      width: 100%;
+      width: 80%;
       top: 70px;
-      left: 0px;
-      margin: 5px 0 30px 0;
+      left: 10%;
+      margin: 16px 0 30px 0;
     }
   }
 `;
