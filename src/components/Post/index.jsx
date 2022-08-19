@@ -65,6 +65,7 @@ export default function Post(props) {
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
   const { userName, token } = useContext(UserContext);
+  const user = useContext(UserContext);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -488,10 +489,7 @@ export default function Post(props) {
             })}
 
             <WriteComment>
-              <img
-                src="https://www.comboinfinito.com.br/principal/wp-content/uploads/2022/05/mob-psycho-100.jpg"
-                alt=""
-              />
+              <img src={user.picture} alt="" />
               <input
                 type="text"
                 value={commentText}
