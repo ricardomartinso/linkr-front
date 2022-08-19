@@ -3,17 +3,15 @@ import { useState, useContext } from "react";
 import axios from "axios";
 import UserContext from "../../contexts/UserContext";
 import getPosts from "../../data/getPosts.jsx";
+import { getConfig } from "../../utils/apiUtils";
+import { getApiUrl } from "../../utils/apiUtils";
 
-export default function CreatePost({ setPosts, setMessageError }) {
+export default function CreatePost({ setMessageError, getPostsToReload }) {
   const [description, setDescription] = useState("");
   const [link, setLink] = useState("");
   const [isSubmiting, setIsSubmiting] = useState(false);
   const { token } = useContext(UserContext);
 
-  async function pullPosts() {
-    const { resp: response } = await getPosts(token);
-    setPosts(response.data.postList);
-  }
   async function submitPost(e) {
     e.preventDefault();
     setIsSubmiting(true);
@@ -30,12 +28,12 @@ export default function CreatePost({ setPosts, setMessageError }) {
       };
 
       await axios.post(
-        "http://linkr-backend-30.herokuapp.com/post",
+        "https://linkr-backend-30.herokuapp.com/post",
         post,
         auth
       );
 
-      await pullPosts();
+      await getPostsToReload();
       setMessageError("");
       setDescription("");
       setLink("");
