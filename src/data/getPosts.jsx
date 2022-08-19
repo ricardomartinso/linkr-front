@@ -10,7 +10,7 @@ export default async function getPosts(token, page) {
       getApiUrl("posts"), config
     ); */
     const resp = await axios.get(
-      `http://localhost:5000/posts?page=${page}`, config
+      `https://linkr-backend-30.herokuapp.com/posts?page=${page}`, config
     );
     return { resp, status: true };
   } catch (err) {
