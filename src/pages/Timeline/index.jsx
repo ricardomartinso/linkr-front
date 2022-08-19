@@ -94,6 +94,7 @@ export default function Timeline() {
 
     promise.then((res) => {
       setOldPosts(res.data);
+      setReload(0);
     });
   }
   async function getPostsToReload() {
@@ -102,9 +103,9 @@ export default function Timeline() {
     try {
       const promise = await axios.get(API_URL, config);
 
-      setPosts(promise.data.postList);
-      console.log(promise.data.postList);
+      await setPosts(promise.data.postList);
       await postsToReload();
+      renderPosts();
     } catch (error) {
       console.log(error);
     }
@@ -148,7 +149,7 @@ export default function Timeline() {
           )}
           <CreatePost setPosts={setPosts} setMessageError={setMessageError} />
           {reload >= 1 ? (
-            <ReloadPosts reload={reload} reloadFunction={pullPosts} />
+            <ReloadPosts reload={reload} reloadFunction={getPostsToReload} />
           ) : (
             <></>
           )}

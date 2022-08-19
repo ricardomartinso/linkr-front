@@ -27,7 +27,6 @@ import Modal from "react-modal";
 import ReactTooltip from "react-tooltip";
 import { AiOutlineComment } from "react-icons/ai";
 
-
 Modal.setAppElement("#root");
 
 const customStyles = {
@@ -49,7 +48,6 @@ const customStyles = {
   },
 };
 
-
 export default function Post(props) {
   const {
     picture,
@@ -60,7 +58,6 @@ export default function Post(props) {
     likes,
     latestLikes,
     postId,
-    setPosts,
     pullPosts,
     userId,
   } = props;
@@ -405,7 +402,7 @@ export default function Post(props) {
                     navigate(`/hashtag/${hashtagWithoutHash}`);
                   }}
                 >
-                  {viewDescription}
+                  {description}
                 </ReactTagify>
               </div>
             ) : isAble ? (
