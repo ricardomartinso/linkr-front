@@ -16,24 +16,33 @@ export default function UserPosts() {
   const { token } = useContext(UserContext);
   const [posts, setPosts] = useState([]);
   const [swap, setSwap] = useState(true);
-  const [Alert, setAlert] = useState(false);
   const [follower, setFollower] = useState(null);
   const [buttonIsDisabled, setButtonIsDisabled] = useState(false);
   const [picture, setPicture] = useState("");
+  const [Alert, setAlert] = useState(false);
   const [text, setText] = useState("There are not posts yet");
   const [pageName, setPageName] = useState("");
   const { id } = useParams();
 
+  async function getUserInformation() {
+    try {
+      const { resp: response, status } = await getPostsByUser(id);
+      setPageName(response.data.userInfo.username);
+      setPicture(response.data.userInfo.picture);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   async function pullPosts() {
     const { resp: response, status } = await getPostsByUser(id);
 
     if (status) {
-      if (response.data.length === 0) {
+      if (response.data.postList.length === 0) {
+        setPosts([]);
         setAlert(true);
       } else {
-        setPageName(response.data[0].user.username);
-        setPicture(response.data[0].user.picture);
-        setPosts(response.data);
+        setAlert(false);
+        setPosts(response.data.postList);
       }
       setSwap(false);
     } else {
@@ -87,9 +96,10 @@ export default function UserPosts() {
   }
 
   useEffect(() => {
+    getUserInformation();
     pullPosts();
     statusFollow();
-  }, []);
+  }, [id]);
 
   return (
     <>
