@@ -28,8 +28,6 @@ export default function Timeline() {
   const [hasMore, setHasMore] = useState(true);
 
   async function pullPosts(startId) {
-    console.log("startId");
-    console.log(startId);
     const { resp: response, status } = await getPosts(token, startId);
     if (status) {
       if (response.data.errFollower !== "") {
@@ -42,19 +40,11 @@ export default function Timeline() {
         await postsToReload();
         setReload(0);
         const newPosts = [...posts, ...response.data.postList];
-        //console.log(newPosts)
         const { length } = response.data;
-        console.log("newPosts.length");
-        console.log(newPosts.length);
-        console.log("length");
-        console.log(length);
         if (newPosts.length === length) {
-          console.log("entrou no if");
           setHasMore(false);
         }
         setPosts(newPosts);
-        console.log("posts.length");
-        console.log(posts.length);
       }
       setSwap(false);
     } else {
@@ -95,11 +85,7 @@ export default function Timeline() {
     else{
       await pullPosts();
     }
-    console.log(page);
-    //console.log(posts);
-    //setHasMore(false);
     renderPosts();
-    //setHasMore(true);
   }
 
   async function postsToReload() {
@@ -117,8 +103,7 @@ export default function Timeline() {
     const API_URL = getApiUrl(`posts`);
     try {
       const promise = await axios.get(API_URL, config);
-
-      await setPosts(promise.data.postList);
+      setPosts(promise.data.postList);
       await postsToReload();
       renderPosts();
     } catch (error) {
