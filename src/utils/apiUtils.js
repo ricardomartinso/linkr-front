@@ -1,6 +1,5 @@
 function getApiUrl(route) {
-
-  const url = `http://localhost:4001/${route}`;
+  const url = `https://linkr-backend-30.herokuapp.com/${route}`;
   return url;
 }
 
