@@ -27,8 +27,8 @@ export default function Timeline() {
   const [oldPosts, setOldPosts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
 
-  async function pullPosts(page = 1) {
-    const { resp: response, status } = await getPosts(token, page);
+  async function pullPosts() {
+    const { resp: response, status } = await getPosts(token);
     if (status) {
       if (response.data.errFollower !== "") {
         setAlertErrFollower(true);
@@ -41,13 +41,13 @@ export default function Timeline() {
         setReload(0);
 
         const newPosts = [...posts, ...response.data.postList]
-        const { length } = response.data[response.data.length-1];
+        const { length } = response.data.length;
         if (posts.length === length) {
           setHasMore(false);
         }
+        newPosts.shift();
         newPosts.pop();
         setPosts(newPosts);
-
       }
       setSwap(false);
     } else {
@@ -60,10 +60,8 @@ export default function Timeline() {
   }
 
   function renderPosts() {
-    //console.log(posts);
     return (
       posts.map((post, index) => {
-        //console.log(post);
         return (
           <Post
             key={index}
@@ -85,7 +83,7 @@ export default function Timeline() {
 
   async function loadMore(page) {
     console.log(page);
-    await pullPosts(page);
+    await pullPosts();
     console.log(posts);
     //setHasMore(false);
     renderPosts();
