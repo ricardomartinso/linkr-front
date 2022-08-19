@@ -11,29 +11,38 @@ import SearchBarMobile from "../../components/SearchBar/SearchBarMobile";
 import setFollow from "../../data/setFollow";
 import deleteFollow from "../../data/deleteFollow";
 import { getStatusFollow } from "../../data/getStatusFollow";
+import InfiniteScroll from "react-infinite-scroller";
 
 export default function UserPosts() {
   const { token, userName } = useContext(UserContext);
   const [posts, setPosts] = useState([]);
   const [swap, setSwap] = useState(true);
-  const [Alert, setAlert] = useState(false);
   const [follower, setFollower] = useState(null);
   const [buttonIsDisabled, setButtonIsDisabled] = useState(false);
   const [picture, setPicture] = useState("");
+  const [Alert, setAlert] = useState(false);
   const [text, setText] = useState("There are not posts yet");
   const [pageName, setPageName] = useState("");
+  const [hasMore, setHasMore] = useState(true);
   const { id } = useParams();
 
-  async function pullPosts() {
-    const { resp: response, status } = await getPostsByUser(id);
+  async function pullPosts(startId) {
+    const { resp: response, status } = await getPostsByUser(id, startId);
 
     if (status) {
-      if (response.data.length === 0) {
+      setPageName(response.data.userInfo.username);
+      setPicture(response.data.userInfo.picture);
+      if (response.data.postList.length === 0) {
+        setPosts([]);
         setAlert(true);
       } else {
-        setPageName(response.data[0].user.username);
-        setPicture(response.data[0].user.picture);
-        setPosts(response.data);
+        const newPosts = [...posts, ...response.data.postList];
+        const { length } = response.data;
+        if (newPosts.length === length) {
+          setHasMore(false);
+        }
+        setPosts(newPosts);
+        setAlert(false);
       }
       setSwap(false);
     } else {
@@ -89,7 +98,38 @@ export default function UserPosts() {
   useEffect(() => {
     pullPosts();
     statusFollow();
-  }, []);
+  }, [id]);
+
+  function renderPosts() {
+    return posts.map((post) => {
+      return (
+        <Post
+          key={post.id}
+          postId={post.id}
+          userId={post.user.id}
+          picture={post.user.picture}
+          likes={post.postLikes.count}
+          userLiked={post.postLikes.isLiked}
+          latestLikes={post.postLikes.usernameList}
+          username={post.user.username}
+          description={post.description}
+          link={post.link}
+          pullPosts={pullPosts}
+          setPosts={setPosts}
+        />
+      );
+    });
+  }
+
+  async function loadMore(page) {
+    if (page > 1) {
+      const startId = posts[posts.length - 1].id;
+      await pullPosts(startId);
+    } else {
+      await pullPosts();
+    }
+    renderPosts();
+  }
 
   return (
     <>
@@ -114,24 +154,23 @@ export default function UserPosts() {
                 {Alert ? (
                   <TextErr>{text}</TextErr>
                 ) : (
-                  <div>
-                    {posts.map((post) => {
-                      return (
-                        <Post
-                          key={post.id}
-                          postId={post.id}
-                          userId={post.user.id}
-                          picture={post.user.picture}
-                          likes={post.postLikes.count}
-                          username={post.user.username}
-                          description={post.description}
-                          link={post.link}
-                          pullPosts={pullPosts}
-                          setPosts={setPosts}
+                  <InfiniteScroll
+                    className="infinite"
+                    pageStart={1}
+                    loadMore={loadMore}
+                    hasMore={hasMore}
+                    loader={
+                      <Loader key={2}>
+                        <BallTriangle
+                          color="#ffffff"
+                          height={100}
+                          width={100}
                         />
-                      );
-                    })}
-                  </div>
+                      </Loader>
+                    }
+                  >
+                    <>{posts.length ? renderPosts() : null}</>
+                  </InfiniteScroll>
                 )}
               </div>
             )}
@@ -161,9 +200,18 @@ const Title = styled.div`
     margin: 0 0 0 1.75rem;
     width: 80%;
   }
+
+  @media (max-width: 815px) {
+    width: 100%;
+    padding: 0 12px;
+    margin-top: 2.75rem;
+  }
 `;
 const Div = styled.div`
   display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto;
 `;
 const Follow = styled.button`
   width: 112px;
@@ -265,10 +313,10 @@ const Posts = styled.div`
     display: none;
     @media (max-width: 799px) {
       display: flex;
-      width: 100%;
+      width: 80%;
       top: 70px;
-      left: 0px;
-      margin: 5px 0 30px 0;
+      left: 10%;
+      margin: 16px 0 30px 0;
     }
   }
 `;

@@ -66,6 +66,7 @@ export default function Post({
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
   const { userName, token } = useContext(UserContext);
+  const user = useContext(UserContext);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -198,7 +199,7 @@ export default function Post({
     };
 
     try {
-      const promise = await axios.delete(
+      await axios.delete(
         `http://linkr-backend-30.herokuapp.com/posts/${postId}`,
         auth
       );
@@ -556,31 +557,30 @@ export default function Post({
               );
             })}
 
+
             {!isRePost ?
 
               <WriteComment>
-                <img
-                  src="https://www.comboinfinito.com.br/principal/wp-content/uploads/2022/05/mob-psycho-100.jpg"
-                  alt=""
-                />
-                <input
-                  type="text"
-                  value={commentText}
-                  onChange={(e) => {
-                    setCommentText(e.target.value);
-                  }}
-                  placeholder="write a comment..."
-                />
-                <div
-                  onClick={() => {
-                    submitComment(commentText);
-                  }}
-                >
-                  <PaperPlane />
-                </div>
-              </WriteComment>
+              <img src={user.picture} alt="" />
+              <input
+                type="text"
+                value={commentText}
+                onChange={(e) => {
+                  setCommentText(e.target.value);
+                }}
+                placeholder="write a comment..."
+              />
+              <div
+                onClick={() => {
+                  submitComment(commentText);
+                }}
+              >
+                <PaperPlane />
+              </div>
+            </WriteComment>
               : null
             }
+
           </Comments>
         ) : (
           <></>

@@ -7,6 +7,7 @@ import { BallTriangle } from "react-loader-spinner";
 import UserContext from "../../contexts/UserContext";
 import { useParams } from "react-router-dom";
 import SearchBar from "../../components/SearchBar";
+import Sidebar from "../../components/Sidebar";
 
 export default function Hashtag() {
   const { token } = useContext(UserContext);
@@ -39,7 +40,7 @@ export default function Hashtag() {
 
   return (
     <>
-     
+      <Header />
       <Container>
         <Posts>
           <SearchBar
@@ -79,6 +80,7 @@ export default function Hashtag() {
             </div>
           )}
         </Posts>
+        <Sidebar />
       </Container>
     </>
   );

@@ -12,10 +12,10 @@ const PostStyled = styled.div`
   color: white;
   font-family: "Lato";
   margin-bottom: 20px;
+  box-sizing: border-box;
 
   .post-information {
     display: flex;
-    border-radius: 10px;
     background-color: black;
 
     .trash {
@@ -35,6 +35,7 @@ const PostStyled = styled.div`
 
   @media (min-width: 800px) {
     .post-information {
+      border-radius: 10px;
       height: 276px;
     }
   }
@@ -45,6 +46,7 @@ const PictureLikes = styled.div`
   flex-direction: column;
   width: 20%;
   font-size: 0.8125rem;
+  box-sizing: border-box;
 
   .picture {
     margin-top: 14px;
@@ -108,6 +110,7 @@ const PostInfo = styled.div`
     font-size: 17px;
     margin-top: 15px;
   }
+
   .description {
     font-size: 15px;
     width: 95%;
@@ -179,11 +182,11 @@ const PostInfo = styled.div`
 
   @media (min-width: 800px) {
     font-size: 20px;
-    width: 562px;
+    width: 80%;
     height: 276px;
+    border-radius: 10px;
     .link {
       border: 1px solid #ffffff49;
-      border-radius: 10px;
       height: 62%;
     }
   }
