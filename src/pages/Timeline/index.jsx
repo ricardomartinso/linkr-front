@@ -27,8 +27,10 @@ export default function Timeline() {
   const [oldPosts, setOldPosts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
 
-  async function pullPosts() {
-    const { resp: response, status } = await getPosts(token);
+  async function pullPosts(startId) {
+    console.log("startId");
+    console.log(startId);
+    const { resp: response, status } = await getPosts(token, startId);
     if (status) {
       if (response.data.errFollower !== "") {
         setAlertErrFollower(true);
@@ -39,13 +41,20 @@ export default function Timeline() {
       } else {
         await postsToReload();
         setReload(0);
-
         const newPosts = [...posts, ...response.data.postList];
-        const { length } = response.data.length;
-        if (posts.length === length) {
+        //console.log(newPosts)
+        const { length } = response.data;
+        console.log("newPosts.length");
+        console.log(newPosts.length);
+        console.log("length");
+        console.log(length);
+        if (newPosts.length === length) {
+          console.log("entrou no if");
           setHasMore(false);
         }
         setPosts(newPosts);
+        console.log("posts.length");
+        console.log(posts.length);
       }
       setSwap(false);
     } else {
@@ -61,7 +70,7 @@ export default function Timeline() {
     return posts.map((post, index) => {
       return (
         <Post
-          key={index}
+          key={post.id}
           postId={post.id}
           userId={post.user.id}
           picture={post.user.picture}
@@ -79,9 +88,15 @@ export default function Timeline() {
   }
 
   async function loadMore(page) {
+    if (page > 1) {
+      const startId = posts[posts.length-1].id;
+      await pullPosts(startId);
+    }
+    else{
+      await pullPosts();
+    }
     console.log(page);
-    await pullPosts();
-    console.log(posts);
+    //console.log(posts);
     //setHasMore(false);
     renderPosts();
     //setHasMore(true);
