@@ -32,6 +32,9 @@ const Button = styled.button`
   font-weight: 400;
 
   margin: 20px 0 20px 0;
+  :hover {
+    cursor: pointer;
+  }
 `;
 const ReloadStyled = styled(IoReload)`
   margin-left: 15px;

@@ -403,7 +403,7 @@ export default function Post(props) {
                     navigate(`/hashtag/${hashtagWithoutHash}`);
                   }}
                 >
-                  {description}
+                  {viewDescription}
                 </ReactTagify>
               </div>
             ) : isAble ? (

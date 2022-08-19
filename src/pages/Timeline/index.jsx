@@ -79,10 +79,9 @@ export default function Timeline() {
 
   async function loadMore(page) {
     if (page > 1) {
-      const startId = posts[posts.length-1].id;
+      const startId = posts[posts.length - 1].id;
       await pullPosts(startId);
-    }
-    else{
+    } else {
       await pullPosts();
     }
     renderPosts();
@@ -147,7 +146,10 @@ export default function Timeline() {
           ) : (
             <PopUpError>{messageError}</PopUpError>
           )}
-          <CreatePost setPosts={setPosts} setMessageError={setMessageError} />
+          <CreatePost
+            setMessageError={setMessageError}
+            getPostsToReload={getPostsToReload}
+          />
           {reload >= 1 ? (
             <ReloadPosts reload={reload} reloadFunction={getPostsToReload} />
           ) : (
