@@ -187,24 +187,7 @@ export default function Timeline() {
                  
             
 
-                <InfiniteScroll
-                  className="infinite"
-                  pageStart={1}
-                  loadMore={loadMore}
-                  hasMore={hasMore}
-                  loader={
-                    <Loader key={2}>
-                      <BallTriangle color="#ffffff" height={100} width={100} />
-                    </Loader>
-                  }
-                >
-                  <>{posts.length ? renderPosts() : null}</>
-                </InfiniteScroll>
-                
-
-              )}
-          </div>
-          )}
+        
         </Posts>
 
         <Sidebar />
