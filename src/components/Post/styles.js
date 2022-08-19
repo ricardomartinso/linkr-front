@@ -110,6 +110,7 @@ const PostInfo = styled.div`
     font-size: 17px;
     margin-top: 15px;
   }
+
   .description {
     font-size: 15px;
     width: 95%;
