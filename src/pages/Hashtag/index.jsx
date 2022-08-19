@@ -8,22 +8,30 @@ import UserContext from "../../contexts/UserContext";
 import { useParams } from "react-router-dom";
 import SearchBar from "../../components/SearchBar";
 import Sidebar from "../../components/Sidebar";
+import InfiniteScroll from "react-infinite-scroller";
 
 export default function Hashtag() {
   const { token } = useContext(UserContext);
   const [posts, setPosts] = useState([]);
   const [swap, setSwap] = useState(true);
-  const [alert, setAlert] = useState(false);
+  const [Alert, setAlert] = useState(false);
   const [text, setText] = useState("There are not posts yet");
   const { tag } = useParams();
+  const [hasMore, setHasMore] = useState(true);
 
-  async function pullPosts() {
-    const { resp: response, status } = await getOneHashtag(token, tag);
+  async function pullPosts(startId) {
+    const { resp: response, status } = await getOneHashtag(token, tag, startId);
+
     if (status) {
       if (response.data.length === 0) {
         setAlert(true);
       } else {
-        setPosts(response.data[0].postList);
+        const newPosts = [...posts, ...response.data.postList];
+        const { length } = response.data;
+        if (newPosts.length === length) {
+          setHasMore(false);
+        }
+        setPosts(response.data.postList);
       }
       setSwap(false);
     } else {
@@ -34,9 +42,39 @@ export default function Hashtag() {
     }
   }
 
+  function renderPosts() {
+    return posts.map((post) => {
+      return (
+        <Post
+          key={post.id}
+          postId={post.id}
+          userId={post.user.id}
+          picture={post.user.picture}
+          likes={post.postLikes.count}
+          userLiked={post.postLikes.isLiked}
+          latestLikes={post.postLikes.usernameList}
+          username={post.user.username}
+          description={post.description}
+          link={post.link}
+          pullPosts={pullPosts}
+          setPosts={setPosts}
+        />
+      );
+    });
+  }
+  async function loadMore(page) {
+    if (page > 1) {
+      const startId = posts[posts.length - 1].id;
+      await pullPosts(startId);
+    } else {
+      await pullPosts();
+    }
+    renderPosts();
+  }
+
   useEffect(() => {
     pullPosts();
-  }, []);
+  }, [tag]);
 
   return (
     <>
@@ -56,30 +94,27 @@ export default function Hashtag() {
             </Loader>
           ) : (
             <div>
-              {alert ? (
+              {Alert ? (
                 <TextErr>{text}</TextErr>
               ) : (
-                <div>
-                  {posts.map((post) => {
-                    return (
-                      <Post
-                        key={post.id}
-                        postId={post.id}
-                        picture={post.user.picture}
-                        likes={post.postLikes.count}
-                        username={post.user.username}
-                        description={post.description}
-                        link={post.link}
-                        pullPosts={pullPosts}
-                        setPosts={setPosts}
-                      />
-                    );
-                  })}
-                </div>
+                <InfiniteScroll
+                  className="infinite"
+                  pageStart={1}
+                  loadMore={loadMore}
+                  hasMore={hasMore}
+                  loader={
+                    <Loader key={2}>
+                      <BallTriangle color="#ffffff" height={100} width={100} />
+                    </Loader>
+                  }
+                >
+                  <>{posts.length ? renderPosts() : null}</>
+                </InfiniteScroll>
               )}
             </div>
           )}
         </Posts>
+
         <Sidebar />
       </Container>
     </>
