@@ -12,7 +12,7 @@ export default function CreatePost({ setPosts, setMessageError }) {
 
   async function pullPosts() {
     const { resp: response } = await getPosts(token);
-    setPosts(response.data);
+    setPosts(response.data.postList);
   }
   async function submitPost(e) {
     e.preventDefault();

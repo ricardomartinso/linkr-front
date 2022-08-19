@@ -1,10 +1,12 @@
-import { IoHeart } from "react-icons/io5";
+import { IoHeart, IoPaperPlane } from "react-icons/io5";
 import { IoHeartOutline } from "react-icons/io5";
 import { useContext, useEffect, useCallback, useState } from "react";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 import { IoMdTrash as Trash } from "react-icons/io";
+import { IoMdPaperPlane } from "react-icons/io";
 import { VscEdit as Redact } from "react-icons/vsc";
+import Comment from "../Comment";
 import {
   PostStyled,
   PictureLikes,
@@ -13,6 +15,9 @@ import {
   ButtonsDiv,
   ErrorMessage,
   ModalStyle,
+  Comments,
+  WriteComment,
+  PaperPlane,
 } from "./styles";
 import axios from "axios";
 import { getApiUrl, getConfig } from "../../utils/apiUtils";
@@ -20,6 +25,8 @@ import UserContext from "../../contexts/UserContext";
 import linkr from "../../assets/images/linkr.png";
 import Modal from "react-modal";
 import ReactTooltip from "react-tooltip";
+import { AiOutlineComment } from "react-icons/ai";
+
 
 Modal.setAppElement("#root");
 
@@ -42,9 +49,8 @@ const customStyles = {
   },
 };
 
+
 export default function Post(props) {
-  // console.log("props");
-  // console.log(props);
   const {
     picture,
     description,
@@ -58,6 +64,7 @@ export default function Post(props) {
     pullPosts,
     userId,
   } = props;
+
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
   const { userName, token } = useContext(UserContext);
@@ -68,19 +75,36 @@ export default function Post(props) {
   const [editDescription, setEditDescription] = useState(description);
   const [viewDescription, setViewDescription] = useState(description);
   const [isAble, setIsAble] = useState(true);
-
+  const [openComment, setOpenComment] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [commentText, setCommentText] = useState("");
   const tagStyle = {
     color: "white",
     fontWeight: "bold",
     cursor: "pointer",
   };
 
+  async function submitComment(commentText) {
+    const config = getConfig(token);
+    const API_URL = getApiUrl(`posts/${postId}/comments`);
+    const body = {
+      comment: commentText,
+    };
+
+    try {
+      const promise = await axios.post(API_URL, body, config);
+      await getComments();
+      setCommentText("");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
+    getComments();
     if (userLiked && !isLiked) {
       if (postId === 129) {
-        console.log("userLiked");
         console.log(userLiked);
-        console.log("Entrou no if");
       }
       setIsLiked(true);
     }
@@ -92,6 +116,23 @@ export default function Post(props) {
     }
   }, []);
 
+  async function getComments() {
+    const auth = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    try {
+      const promise = await axios.get(
+        `http://linkr-backend-30.herokuapp.com/posts/${postId}/comments`,
+        auth
+      );
+
+      setComments(promise.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   function openModal() {
     setIsOpen(true);
   }
@@ -280,136 +321,200 @@ export default function Post(props) {
       )}
 
       <PostStyled>
-        <PictureLikes>
-          <div className="picture">
-            <img
-              src={picture}
-              alt="IMG"
-              onClick={() => {
-                navigate(`/user/${username}`);
-              }}
-            />
-          </div>
-          <div className="likes">
-            {isLiked ? (
-              <IoHeart
-                fontSize={"20px"}
-                color={"red"}
-                onClick={unlikePost}
-                className="like-icon"
+        <div className="post-information">
+          <PictureLikes>
+            <div className="picture">
+              <img
+                src={picture}
+                alt="IMG"
+                onClick={() => {
+                  navigate(`/user/${userId}`);
+                }}
               />
-            ) : (
-              <IoHeartOutline
-                fontSize={"20px"}
-                onClick={likePost}
-                className="like-icon"
-              />
-            )}
-            {renderLikesCount()}
-            <ReactTooltip />
-          </div>
-        </PictureLikes>
-        {username === userName ? (
-          <>
-            <Redact
-              fontSize={"20px"}
-              className="redact"
+            </div>
+            <div className="likes">
+              {isLiked ? (
+                <IoHeart
+                  fontSize={"24px"}
+                  color={"red"}
+                  onClick={unlikePost}
+                  className="like-icon"
+                />
+              ) : (
+                <IoHeartOutline
+                  fontSize={"24px"}
+                  onClick={likePost}
+                  className="like-icon"
+                />
+              )}
+              {renderLikesCount()}
+              <ReactTooltip />
+            </div>
+            <div
+              className="comments"
               onClick={() => {
-                editText();
+                if (!openComment) {
+                  setOpenComment(true);
+                } else {
+                  setOpenComment(false);
+                }
               }}
-            />
+            >
+              <AiOutlineComment fontSize={"24px"} />{" "}
+              <p>{comments.qtdOfComments} comments</p>
+            </div>
+          </PictureLikes>
+          {username === userName ? (
+            <>
+              <Redact
+                fontSize={"20px"}
+                className="redact"
+                onClick={() => {
+                  editText();
+                }}
+              />
 
-            <Trash
-              fontSize={"20px"}
-              className="trash"
+              <Trash
+                fontSize={"20px"}
+                className="trash"
+                onClick={() => {
+                  openModal();
+                }}
+              />
+            </>
+          ) : (
+            <></>
+          )}
+
+          <PostInfo>
+            <div
+              className="username"
               onClick={() => {
-                openModal();
+                navigate(`/user/${userId}`);
               }}
-            />
-          </>
+            >
+              {username}
+            </div>
+
+            {isEditDescription ? (
+              <div className="description">
+                <ReactTagify
+                  tagStyle={tagStyle}
+                  tagClicked={(e) => {
+                    const hashtagWithoutHash = e.replace("#", "");
+                    navigate(`/hashtag/${hashtagWithoutHash}`);
+                  }}
+                >
+                  {viewDescription}
+                </ReactTagify>
+              </div>
+            ) : isAble ? (
+              <textarea
+                onFocus={(e) => focusEnd(e)}
+                onKeyDown={(e) => closeTextArea(e)}
+                ref={callbackRef}
+                className="description"
+                onChange={(e) => {
+                  setEditDescription(e.target.value);
+                }}
+                value={editDescription}
+              >
+                <ReactTagify
+                  tagStyle={tagStyle}
+                  tagClicked={(e) => {
+                    const hashtagWithoutHash = e.replace("#", "");
+                    navigate(`/hashtag/${hashtagWithoutHash}`);
+                  }}
+                ></ReactTagify>
+              </textarea>
+            ) : (
+              <textarea
+                disabled
+                onFocus={(e) => focusEnd(e)}
+                onKeyDown={(e) => closeTextArea(e)}
+                ref={callbackRef}
+                className="description"
+                onChange={(e) => {
+                  setEditDescription(e.target.value);
+                }}
+                value={editDescription}
+              >
+                <ReactTagify
+                  tagStyle={tagStyle}
+                  tagClicked={(e) => {
+                    const hashtagWithoutHash = e.replace("#", "");
+                    navigate(`/hashtag/${hashtagWithoutHash}`);
+                  }}
+                ></ReactTagify>
+              </textarea>
+            )}
+
+            <div className="link" onClick={() => routeChange(link.url)}>
+              <div className="url-metadata-info">
+                <div className="link-title">{link.title}</div>
+                <div className="link-description">{link.description}</div>
+
+                <div className="link-url">{link.url}</div>
+              </div>
+
+              <div className="url-metadata-image">
+                <img
+                  src={link.image === "" ? linkr : link.image}
+                  alt="Pré-visualização do link"
+                />
+              </div>
+            </div>
+          </PostInfo>
+        </div>
+        {openComment ? (
+          <Comments>
+            {comments.comments.map((comment) => {
+              let userComment;
+              if (comment.isFollower) {
+                userComment = "following";
+              } else if (
+                comment.postAuthor === comment.commentUserInformation.userId
+              ) {
+                userComment = "post's author";
+              } else {
+                userComment = "";
+              }
+              return (
+                <Comment
+                  key={comment.commentId}
+                  username={comment.commentUserInformation.username}
+                  commentText={comment.comment}
+                  commentPicture={comment.commentUserInformation.picture}
+                  userComment={userComment}
+                />
+              );
+            })}
+
+            <WriteComment>
+              <img
+                src="https://www.comboinfinito.com.br/principal/wp-content/uploads/2022/05/mob-psycho-100.jpg"
+                alt=""
+              />
+              <input
+                type="text"
+                value={commentText}
+                onChange={(e) => {
+                  setCommentText(e.target.value);
+                }}
+                placeholder="write a comment..."
+              />
+              <div
+                onClick={() => {
+                  submitComment(commentText);
+                }}
+              >
+                <PaperPlane />
+              </div>
+            </WriteComment>
+          </Comments>
         ) : (
           <></>
         )}
-
-        <PostInfo>
-          <div
-            className="username"
-            onClick={() => {
-              navigate(`/user/${userId}`);
-            }}
-          >
-            {username}
-          </div>
-
-          {isEditDescription ? (
-            <div className="description">
-              <ReactTagify
-                tagStyle={tagStyle}
-                tagClicked={(e) => {
-                  const hashtagWithoutHash = e.replace("#", "");
-                  navigate(`/hashtag/${hashtagWithoutHash}`);
-                }}
-              >
-                {viewDescription}
-              </ReactTagify>
-            </div>
-          ) : isAble ? (
-            <textarea
-              onFocus={(e) => focusEnd(e)}
-              onKeyDown={(e) => closeTextArea(e)}
-              ref={callbackRef}
-              className="description"
-              onChange={(e) => {
-                setEditDescription(e.target.value);
-              }}
-              value={editDescription}
-            >
-              <ReactTagify
-                tagStyle={tagStyle}
-                tagClicked={(e) => {
-                  const hashtagWithoutHash = e.replace("#", "");
-                  navigate(`/hashtag/${hashtagWithoutHash}`);
-                }}
-              ></ReactTagify>
-            </textarea>
-          ) : (
-            <textarea
-              disabled
-              onFocus={(e) => focusEnd(e)}
-              onKeyDown={(e) => closeTextArea(e)}
-              ref={callbackRef}
-              className="description"
-              onChange={(e) => {
-                setEditDescription(e.target.value);
-              }}
-              value={editDescription}
-            >
-              <ReactTagify
-                tagStyle={tagStyle}
-                tagClicked={(e) => {
-                  const hashtagWithoutHash = e.replace("#", "");
-                  navigate(`/hashtag/${hashtagWithoutHash}`);
-                }}
-              ></ReactTagify>
-            </textarea>
-          )}
-
-          <div className="link" onClick={() => routeChange(link.url)}>
-            <div className="url-metadata-info">
-              <div className="link-title">{link.title}</div>
-              <div className="link-description">{link.description}</div>
-
-              <div className="link-url">{link.url}</div>
-            </div>
-
-            <div className="url-metadata-image">
-              <img
-                src={link.image === "" ? linkr : link.image}
-                alt="Pré-visualização do link"
-              />
-            </div>
-          </div>
-        </PostInfo>
       </PostStyled>
     </>
   );

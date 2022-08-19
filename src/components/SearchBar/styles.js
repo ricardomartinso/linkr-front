@@ -33,8 +33,8 @@ const SearchContainer = styled.div`
   background-color: #e7e7e7;
   border-radius: 8px;
 
-  @media(max-width: 560px){
-    &.searchbar-mobile{
+  @media (max-width: 560px) {
+    &.searchbar-mobile {
       width: 80%;
     }
   }
@@ -76,6 +76,12 @@ const SearchResult = styled.div`
   font-size: 19px;
   line-height: 23px;
   color: #515151;
+
+  p {
+    font-size: 18px;
+    text-align: center;
+    color: #c5c5c5;
+  }
 
   img {
     width: 39px;

@@ -1,33 +1,42 @@
 import styled from "styled-components";
 import Modal from "react-modal";
+import { IoMdPaperPlane } from "react-icons/io";
 
 const PostStyled = styled.div`
   display: flex;
+  flex-direction: column;
   position: relative;
   width: 100%;
-  height: 250px;
-  background-color: black;
+  background: #1e1e1e;
+  border-radius: 10px;
   color: white;
-  margin-bottom: 18px;
   font-family: "Lato";
+  margin-bottom: 20px;
 
-  .trash {
-    position: absolute;
-    right: 20px;
-    top: 15px;
-    cursor: pointer;
-  }
-  .redact {
-    position: absolute;
-    right: 60px;
-    top: 15px;
-    color: white;
-    cursor: pointer;
+  .post-information {
+    display: flex;
+    border-radius: 10px;
+    background-color: black;
+
+    .trash {
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      cursor: pointer;
+    }
+    .redact {
+      position: absolute;
+      right: 60px;
+      top: 15px;
+      color: white;
+      cursor: pointer;
+    }
   }
 
   @media (min-width: 800px) {
-    height: 276px;
-    border-radius: 10px;
+    .post-information {
+      height: 276px;
+    }
   }
 `;
 const PictureLikes = styled.div`
@@ -35,6 +44,7 @@ const PictureLikes = styled.div`
   align-items: center;
   flex-direction: column;
   width: 20%;
+  font-size: 0.8125rem;
 
   .picture {
     margin-top: 14px;
@@ -44,6 +54,7 @@ const PictureLikes = styled.div`
       width: 40px;
       height: 40px;
       border-radius: 50%;
+      object-fit: cover;
     }
   }
   .likes {
@@ -58,6 +69,17 @@ const PictureLikes = styled.div`
 
   .like-icon:hover {
     cursor: pointer;
+  }
+  .comments {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 10px;
+
+    p {
+      margin-top: 4px;
+    }
   }
 
   @media (min-width: 800px) {
@@ -81,7 +103,7 @@ const PostInfo = styled.div`
   justify-content: flex-start;
   width: 80%;
   height: 250px;
-  padding-bottom: 10px;
+
   .username {
     font-size: 17px;
     margin-top: 15px;
@@ -158,7 +180,7 @@ const PostInfo = styled.div`
   @media (min-width: 800px) {
     font-size: 20px;
     width: 562px;
-    height: 300px;
+    height: 276px;
     .link {
       border: 1px solid #ffffff49;
       border-radius: 10px;
@@ -258,7 +280,49 @@ const ModalStyle = styled(Modal)`
     border-radius: 50px;
   }
 `;
+const Comments = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border-radius: 10px;
+  background: #1e1e1e;
+  color: white;
+  font-family: "Lato";
+`;
 
+const WriteComment = styled.div`
+  display: flex;
+  align-items: center;
+  width: 90%;
+
+  margin: 1rem 0;
+  position: relative;
+  img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 1.25rem;
+    object-fit: cover;
+  }
+  input {
+    width: 88%;
+    height: 2.44rem;
+    border: none;
+    background-color: #252525;
+    border-radius: 8px;
+    padding-left: 1rem;
+    color: white;
+    font-size: 0.92rem;
+  }
+`;
+const PaperPlane = styled(IoMdPaperPlane)`
+  position: absolute;
+  font-size: 20px;
+  right: 25px;
+  bottom: 10px;
+`;
 export {
   PostStyled,
   PictureLikes,
@@ -267,4 +331,7 @@ export {
   ButtonsDiv,
   ErrorMessage,
   ModalStyle,
+  Comments,
+  WriteComment,
+  PaperPlane,
 };

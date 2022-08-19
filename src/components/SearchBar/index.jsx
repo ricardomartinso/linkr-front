@@ -1,8 +1,10 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { IoEllipse } from "react-icons/io5";
+import { useContext, useEffect, useState } from "react";
+import UserContext from "../../contexts/UserContext";
 import { DebounceInput } from "react-debounce-input";
 import { useNavigate } from "react-router-dom";
-import { getApiUrl } from "../../utils/apiUtils";
+import { getApiUrl, getConfig } from "../../utils/apiUtils";
 import {
   InputBar,
   SearchContainer,
@@ -11,15 +13,19 @@ import {
 } from "./styles";
 
 export default function SearchBar({ className, placeholder }) {
+  const { token } = useContext(UserContext);
   const [search, setSearch] = useState("");
   const [usersData, setUsersData] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
+    const config = getConfig(token);
     if (search.length >= 3) {
+      const config = getConfig(token);
       const API_URL = getApiUrl(`users/${search}`);
-      const promise = axios.get(API_URL);
+      const promise = axios.get(API_URL, config);
       promise.then((res) => {
+        console.log(res.data);
         setUsersData(res.data);
       });
       promise.catch((error) => {
@@ -35,23 +41,30 @@ export default function SearchBar({ className, placeholder }) {
   function renderResults() {
     console.log(usersData);
     if (usersData.length) {
-      return(
+      return (
         <SearchResultsPanel>
           {usersData.map((user) => {
             return (
               <SearchResult key={user.id} onClick={() => goToUserPage(user.id)}>
                 <img src={user.picture} alt="profile image" />
                 {user.username}
+                {user.isFollowing ? (
+                  <>
+                    <IoEllipse fontSize={"9px"} color={"#C5C5C5"} />
+                    <p>following</p>
+                  </>
+                ) : null}
               </SearchResult>
             );
           })}
         </SearchResultsPanel>
-      ) 
-    }
-    else{
+      );
+    } else {
       return (
         <SearchResultsPanel>
-          <SearchResult style={{justifyContent: 'center'}}>Nenhum usuário encontrado</SearchResult>
+          <SearchResult style={{ justifyContent: "center" }}>
+            Nenhum usuário encontrado
+          </SearchResult>
         </SearchResultsPanel>
       );
     }

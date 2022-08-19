@@ -20,7 +20,9 @@ export default function Timeline() {
   const [posts, setPosts] = useState([]);
   const [swap, setSwap] = useState(true);
   const [alert, setAlert] = useState(false);
-  const [text, setText] = useState("There are no posts yet");
+  const [alertErrFollower, setAlertErrFollower] = useState(false);
+  const [textErrFollower, setTextErrFollower] = useState("");
+  const [text, setText] = useState("");
   const [reload, setReload] = useState(0);
   const [oldPosts, setOldPosts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
@@ -28,24 +30,32 @@ export default function Timeline() {
   async function pullPosts(page = 1) {
     const { resp: response, status } = await getPosts(token, page);
     if (status) {
-      if (response.data.length === 0) {
+      if (response.data.errFollower !== "") {
+        setAlertErrFollower(true);
+        setTextErrFollower(response.data.errFollower);
+      }
+      if (response.data.postList.length === 0) {
         setAlert(true);
       } else {
         await postsToReload();
         setReload(0);
-        const newPosts = [...posts, ...response.data]
+
+        const newPosts = [...posts, ...response.data.postList]
         const { length } = response.data[response.data.length-1];
         if (posts.length === length) {
           setHasMore(false);
         }
         newPosts.pop();
         setPosts(newPosts);
+
       }
       setSwap(false);
     } else {
       setAlert(true);
       setSwap(false);
-      setText(response.response.data);
+      setText(
+        "An error occured while trying to fetch the posts, please refresh the page"
+      );
     }
   }
 
@@ -98,8 +108,9 @@ export default function Timeline() {
   }, []);
 
   useInterval(() => {
-    console.log("rodou 15seg");
+
     const config = getConfig(token)
+
     const API_URL = getApiUrl(`posts/reload`);
     const promise = axios.get(API_URL, config);
 
@@ -129,13 +140,10 @@ export default function Timeline() {
             <PopUpError>{messageError}</PopUpError>
           )}
           <CreatePost setPosts={setPosts} setMessageError={setMessageError} />
-          
             {reload >= 1 ? (
               <ReloadPosts
                 reload={reload}
                 reloadFunction={pullPosts}
-                //recarregar posts with pull posts
-                //setOldPosts(res.data)
               />
             ) : (
               <></>
@@ -176,3 +184,4 @@ export default function Timeline() {
     </>
   );
 }
+
