@@ -12,6 +12,7 @@ const PostStyled = styled.div`
   color: white;
   font-family: "Lato";
   margin-bottom: 20px;
+  box-sizing: border-box;
 
   .post-information {
     display: flex;
@@ -45,6 +46,7 @@ const PictureLikes = styled.div`
   flex-direction: column;
   width: 20%;
   font-size: 0.8125rem;
+  box-sizing: border-box;
 
   .picture {
     margin-top: 14px;

@@ -75,6 +75,7 @@ const Posts = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: auto;
     box-sizing: border-box;
     overflow: hidden;
   }
