@@ -27,6 +27,7 @@ import Modal from "react-modal";
 import ReactTooltip from "react-tooltip";
 import { AiOutlineComment } from "react-icons/ai";
 
+
 Modal.setAppElement("#root");
 
 const customStyles = {
@@ -48,18 +49,22 @@ const customStyles = {
   },
 };
 
-export default function Post({
-  picture,
-  description,
-  link,
-  userLiked,
-  username,
-  likes,
-  latestLikes,
-  postId,
-  pullPosts,
-  userId,
-}) {
+
+export default function Post(props) {
+  const {
+    picture,
+    description,
+    link,
+    userLiked,
+    username,
+    likes,
+    latestLikes,
+    postId,
+    setPosts,
+    pullPosts,
+    userId,
+  } = props;
+
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
   const { userName, token } = useContext(UserContext);
@@ -72,19 +77,34 @@ export default function Post({
   const [isAble, setIsAble] = useState(true);
   const [openComment, setOpenComment] = useState(false);
   const [comments, setComments] = useState([]);
+  const [commentText, setCommentText] = useState("");
   const tagStyle = {
     color: "white",
     fontWeight: "bold",
     cursor: "pointer",
   };
 
+  async function submitComment(commentText) {
+    const config = getConfig(token);
+    const API_URL = getApiUrl(`posts/${postId}/comments`);
+    const body = {
+      comment: commentText,
+    };
+
+    try {
+      const promise = await axios.post(API_URL, body, config);
+      await getComments();
+      setCommentText("");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     getComments();
     if (userLiked && !isLiked) {
       if (postId === 129) {
-        console.log("userLiked");
         console.log(userLiked);
-        console.log("Entrou no if");
       }
       setIsLiked(true);
     }
@@ -128,7 +148,7 @@ export default function Post({
     };
 
     try {
-      const promise = await axios.delete(
+      await axios.delete(
         `http://linkr-backend-30.herokuapp.com/posts/${postId}`,
         auth
       );
@@ -308,7 +328,7 @@ export default function Post({
                 src={picture}
                 alt="IMG"
                 onClick={() => {
-                  navigate(`/user/${username}`);
+                  navigate(`/user/${userId}`);
                 }}
               />
             </div>
@@ -477,11 +497,17 @@ export default function Post({
               />
               <input
                 type="text"
-                name=""
-                id=""
+                value={commentText}
+                onChange={(e) => {
+                  setCommentText(e.target.value);
+                }}
                 placeholder="write a comment..."
               />
-              <div>
+              <div
+                onClick={() => {
+                  submitComment(commentText);
+                }}
+              >
                 <PaperPlane />
               </div>
             </WriteComment>
